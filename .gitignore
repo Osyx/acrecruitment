@@ -5,4 +5,8 @@
 
 \.idea/libraries/
 
+\.idea/artifacts/
+
+\.idea/dataSources/
+
 target/
