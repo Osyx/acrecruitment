@@ -1,9 +1,8 @@
 
 \.idea/workspace\.xml
 
-target/
-
-
 \.idea/vcs\.xml
 
 \.idea/libraries/
+
+target/
