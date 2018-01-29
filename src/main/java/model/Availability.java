@@ -30,7 +30,7 @@ public class Availability {
     @Column(name = "version")
     private int versionNum;
 
-    public Availability() {}
+    public Availability() {    }
 
     public long getAvailability_id() {
         return availability_id;
@@ -57,11 +57,12 @@ public class Availability {
      */
     @Override
     public String toString() {
-        return "Availability: [" +
-                "Availability id: " + availability_id +
-                ", person id: " + person_id +
-                ", from date: " + from_date +
-                ", to_date: " + to_date +
-                "]";
+        return "Availability{" +
+                "availability_id=" + availability_id +
+                ", person_id=" + person_id +
+                ", from_date=" + from_date +
+                ", to_date=" + to_date +
+                ", versionNum=" + versionNum +
+                '}';
     }
 }
