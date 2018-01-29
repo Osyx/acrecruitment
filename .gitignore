@@ -12,3 +12,5 @@
 \.idea/dataSources\.*
 
 target/
+
+\.idea/uiDesigner\.xml
