@@ -22,6 +22,13 @@ public class PersonExperience {
 
     public PersonExperience() {    }
 
+    public PersonExperience(long personExperienceId, long personId, long experienceId, double yearsOfExperience) {
+        this.personExperienceId = personExperienceId;
+        this.personId = personId;
+        this.experienceId = experienceId;
+        this.yearsOfExperience = yearsOfExperience;
+    }
+
     public long getPersonExperienceId() {
         return personExperienceId;
     }

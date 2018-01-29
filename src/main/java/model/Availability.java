@@ -1,15 +1,9 @@
 package model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.sql.Date;
-
-@NamedQueries({
-        @NamedQuery(
-                name = "deleteFile",
-                query = "DELETE FROM availability avail " +
-                        "WHERE avail.availability_id = :availabilityId"
-        )
-})
 
 @Entity(name = "availability")
 public class Availability {
@@ -20,17 +14,20 @@ public class Availability {
     @Column(name = "person_id", nullable = false)
     private long person_id;
 
-    @JoinColumn(name = "from_date", nullable = false)
+    @Column(name = "from_date", nullable = false)
     private Date from_date;
 
     @Column(name = "to_date", nullable = false)
     private Date to_date;
 
-    @Version
-    @Column(name = "version")
-    private int versionNum;
-
     public Availability() {    }
+
+    public Availability(long availability_id, long person_id, Date from_date, Date to_date) {
+        this.availability_id = availability_id;
+        this.person_id = person_id;
+        this.from_date = from_date;
+        this.to_date = to_date;
+    }
 
     public long getAvailability_id() {
         return availability_id;
@@ -48,10 +45,6 @@ public class Availability {
         return to_date;
     }
 
-    public int getVersionNum() {
-        return versionNum;
-    }
-
     /**
      * @return A string representation of all fields in this object.
      */
@@ -62,7 +55,6 @@ public class Availability {
                 ", person_id=" + person_id +
                 ", from_date=" + from_date +
                 ", to_date=" + to_date +
-                ", versionNum=" + versionNum +
                 '}';
     }
 }

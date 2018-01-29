@@ -15,6 +15,11 @@ public class Experience {
 
     public Experience() {   }
 
+    public Experience(long experienceId, String name) {
+        this.experienceId = experienceId;
+        this.name = name;
+    }
+
     public long getExperienceId() {
         return experienceId;
     }

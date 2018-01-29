@@ -14,6 +14,13 @@ public class Role {
     @Column(name = "name")
     private String name;
 
+    public Role() {    }
+
+    public Role(float personId, String name) {
+        this.personId = personId;
+        this.name = name;
+    }
+
     public float getPersonId() {
         return personId;
     }
