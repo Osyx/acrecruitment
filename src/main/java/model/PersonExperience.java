@@ -17,7 +17,7 @@ public class PersonExperience {
     @Column(name = "experience_id", nullable = false)
     private long experienceId;
 
-    @Column(name = "years_of_experience")
+    @Column(name = "years_of_experience", nullable = false)
     private double yearsOfExperience;
 
     public PersonExperience() {    }

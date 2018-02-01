@@ -17,13 +17,12 @@ public class Availability {
     @Column(name = "from_date", nullable = false)
     private Date from_date;
 
-    @Column(name = "to_date", nullable = false)
+    @Column(name = "to_date")
     private Date to_date;
 
     public Availability() {    }
 
-    public Availability(long availability_id, long person_id, Date from_date, Date to_date) {
-        this.availability_id = availability_id;
+    public Availability(long person_id, Date from_date, Date to_date) {
         this.person_id = person_id;
         this.from_date = from_date;
         this.to_date = to_date;

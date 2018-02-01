@@ -2,14 +2,14 @@
 -- Last modification date: 2018-01-29 10:52:02.892
 
 -- tables
--- Table: Person
-CREATE TABLE Person (
+-- Table: person
+CREATE TABLE person (
     person_id bigint NOT NULL,
     name varchar(40) NOT NULL,
     surname varchar(40) NOT NULL,
     ssn varchar(40) NOT NULL,
     email varchar(40) NOT NULL,
-    CONSTRAINT Person_pk PRIMARY KEY (person_id)
+    CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
 -- Table: availability
@@ -63,11 +63,11 @@ CREATE TABLE user (
 -- foreign keys
 -- Reference: availability_Person (table: availability)
 ALTER TABLE availability ADD CONSTRAINT availability_Person FOREIGN KEY availability_Person (person_id)
-    REFERENCES Person (person_id);
+    REFERENCES person (person_id);
 
 -- Reference: person_experience_Person (table: person_experience)
 ALTER TABLE person_experience ADD CONSTRAINT person_experience_Person FOREIGN KEY person_experience_Person (person_id)
-    REFERENCES Person (person_id);
+    REFERENCES person (person_id);
 
 -- Reference: person_experience_experience (table: person_experience)
 ALTER TABLE person_experience ADD CONSTRAINT person_experience_experience FOREIGN KEY person_experience_experience (experience_id)
@@ -75,7 +75,7 @@ ALTER TABLE person_experience ADD CONSTRAINT person_experience_experience FOREIG
 
 -- Reference: person_role_Person (table: person_role)
 ALTER TABLE person_role ADD CONSTRAINT person_role_Person FOREIGN KEY person_role_Person (person_id)
-    REFERENCES Person (person_id);
+    REFERENCES person (person_id);
 
 -- Reference: person_role_role (table: person_role)
 ALTER TABLE person_role ADD CONSTRAINT person_role_role FOREIGN KEY person_role_role (role_id)
@@ -83,7 +83,7 @@ ALTER TABLE person_role ADD CONSTRAINT person_role_role FOREIGN KEY person_role_
 
 -- Reference: user_Person (table: user)
 ALTER TABLE user ADD CONSTRAINT user_Person FOREIGN KEY user_Person (person_id)
-    REFERENCES Person (person_id);
+    REFERENCES person (person_id);
 
 -- End of file.
 
