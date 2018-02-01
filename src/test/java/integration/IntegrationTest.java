@@ -1,6 +1,5 @@
 package integration;
 
-import integration.Integration;
 import model.Availability;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -48,7 +47,7 @@ public class IntegrationTest {
     @Test
     public void can_put_in_db() {
         Availability availability = new Availability(0, getDate("20110312"), getDate("20160530"));
-        Serializable serAvail = integration.createAvailability(availability);
+        Serializable serAvail = integration.createObject(availability);
         Assert.assertTrue(serAvail.equals(availability));
     }
 

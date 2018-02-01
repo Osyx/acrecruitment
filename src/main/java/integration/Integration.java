@@ -31,15 +31,28 @@ public class Integration {
 
     public List<Availability> fetchAvailabilities(String personSsn) {
         Session session = factory.getCurrentSession();
-        Query query = session.createQuery("from availability a, person p where a.person_id = p.id and p.ssn = :ssn", Availability.class);
+        //session.beginTransaction();
+        Query query = session.createQuery("select a from availability a, person p where a.person_id = p.id and p.ssn = :ssn", Availability.class);
         query.setParameter("ssn", personSsn);
         List availabilityList = query.getResultList();
+        //session.getTransaction().commit();
         return (List<Availability>) availabilityList;
     }
 
-    public Serializable createAvailability(Availability availability) {
+    public Serializable createObject(Object object) {
         Session session = factory.getCurrentSession();
-        return session.save(availability);
+        session.beginTransaction();
+        Serializable ser = session.save(object);
+        session.getTransaction().commit();
+        return ser;
+    }
+
+    public void removeAll() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        session.createQuery("delete from person").executeUpdate();
+        session.createQuery("delete from availability").executeUpdate();
+        session.getTransaction().commit();
     }
 
     public static Date getDate(String date) {

@@ -2,6 +2,7 @@ package controller;
 
 import integration.Integration;
 import model.Availability;
+import model.Person;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -10,9 +11,20 @@ import java.util.List;
 public class Controller {
     private Integration integration = new Integration();
 
-    public void createAvailability() {
-        Availability availability = new Availability(0, Integration.getDate("20110312"), Integration.getDate("20160530"));
-        integration.createAvailability(availability);
+    public long createPerson() {
+        Person person = new Person("Pelle", "Svanslös", "12345678-9000", "hej@telia.se");
+        integration.createObject(person);
+        return person.getPersonId();
+    }
+
+    public long createAvailability(long personId) {
+        Availability availability = new Availability(personId, Integration.getDate("20110312"), Integration.getDate("20160530"));
+        integration.createObject(availability);
+        return availability.getAvailability_id();
+    }
+
+    public void removeAll() {
+        integration.removeAll();
     }
 
     public List<Availability> fetchAvailabilities(String personSsn) {

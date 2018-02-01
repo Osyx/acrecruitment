@@ -62,27 +62,27 @@ CREATE TABLE user (
 
 -- foreign keys
 -- Reference: availability_Person (table: availability)
-ALTER TABLE availability ADD CONSTRAINT availability_Person FOREIGN KEY availability_Person (person_id)
-REFERENCES Person (person_id);
+ALTER TABLE availability ADD CONSTRAINT availability_person FOREIGN KEY availability_person (person_id)
+REFERENCES person (person_id);
 
 -- Reference: person_experience_Person (table: person_experience)
-ALTER TABLE person_experience ADD CONSTRAINT person_experience_Person FOREIGN KEY person_experience_Person (person_id)
-REFERENCES Person (person_id);
+ALTER TABLE person_experience ADD CONSTRAINT person_experience_person FOREIGN KEY person_experience_person (person_id)
+REFERENCES person (person_id);
 
 -- Reference: person_experience_experience (table: person_experience)
 ALTER TABLE person_experience ADD CONSTRAINT person_experience_experience FOREIGN KEY person_experience_experience (experience_id)
 REFERENCES experience (experience_id);
 
 -- Reference: person_role_Person (table: person_role)
-ALTER TABLE person_role ADD CONSTRAINT person_role_Person FOREIGN KEY person_role_Person (person_id)
-REFERENCES Person (person_id);
+ALTER TABLE person_role ADD CONSTRAINT person_role_person FOREIGN KEY person_role_person (person_id)
+REFERENCES person (person_id);
 
 -- Reference: person_role_role (table: person_role)
 ALTER TABLE person_role ADD CONSTRAINT person_role_role FOREIGN KEY person_role_role (role_id)
 REFERENCES role (role_id);
 
 -- Reference: user_Person (table: user)
-ALTER TABLE user ADD CONSTRAINT user_Person FOREIGN KEY user_Person (person_id)
-REFERENCES Person (person_id);
+ALTER TABLE user ADD CONSTRAINT user_person FOREIGN KEY user_person (person_id)
+REFERENCES person (person_id);
 
 -- End of file.
