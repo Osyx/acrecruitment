@@ -3,9 +3,10 @@ package model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity(name = "person_role")
-public class PersonRole {
+public class PersonRole implements Serializable {
 
     @Id
     @Column(name = "person_id", nullable = false)

@@ -3,10 +3,11 @@ package model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Entity(name = "availability")
-public class Availability {
+public class Availability implements Serializable {
     @Id
     @Column(name = "availability_id", nullable = false)
     private long availability_id;

@@ -86,8 +86,6 @@
             <artifactId>jta</artifactId>
             <version>1.1</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
             <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
