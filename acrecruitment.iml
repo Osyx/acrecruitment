@@ -20,7 +20,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="Entities" value="82506afa-70e7-4e78-967a-708404c1293e" />
+          <factory-entry name="Entities" value="27d707e9-97f4-4930-a9d2-421a726f1d5c" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/persistence.xml" />
       </configuration>
@@ -48,7 +48,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.activation:activation:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.enterprise:cdi-api:1.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.jws:jsr181-api:1.0-MR1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.mail:javax.mail:1.5.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:1.1.0.Final" level="project" />
@@ -96,10 +96,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-test-impl-base:1.2.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap:shrinkwrap-spi:1.2.6" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-weld-ee-embedded-1.1:1.0.0.CR9" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-spi:1.2.0.Final" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-cdi:1.2.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.weld:weld-core:2.3.5.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.weld:weld-api:2.3.SP2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.weld:weld-spi:2.3.SP2" level="project" />
@@ -118,10 +114,85 @@
     <orderEntry type="library" name="Maven: org.hibernate.common:hibernate-commons-annotations:5.0.1.Final" level="project" />
     <orderEntry type="library" name="Maven: javax.transaction:jta:1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-glassfish-embedded-3.1:1.0.0.CR4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-spi:1.2.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.protocol:arquillian-protocol-servlet:1.2.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-cdi:1.2.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-ejb:1.2.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-resource:1.2.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-initialcontext:1.2.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: fish.payara.extras:payara-embedded-all:4.1.1.161" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.security:security-ee:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.security:security:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-api:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:config-types:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-config:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.jvnet:tiger-types:1.4" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2.external:bean-validator:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-runlevel:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:class-model:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.external:ldapbp-repackaged:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.common:glassfish-ee-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:core:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-locator:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2.external:javax.inject:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2.external:cglib:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-utils:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.admin:config-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.deployment:dol:4.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.transaction:javax.transaction-api:1.2" level="project" />
+    <orderEntry type="library" name="Maven: javax.enterprise.deploy:javax.enterprise.deploy-api:1.6" level="project" />
+    <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.resource:javax.resource-api:1.7" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.common:annotation-framework:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.common:common-util:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.security:ssl-impl:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.deployment:deployment-common:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.hk2.external:asm-all-repackaged:2.1.92" level="project" />
+    <orderEntry type="library" name="Maven: javax.security.auth.message:javax.security.auth.message-api:1.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.security.jacc:javax.security.jacc-api:1.5" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.security:jaspic.provider.framework:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.common:internal-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.grizzly:nucleus-grizzly-all:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-framework:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-rcm:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-portunif:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-http:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-http-server:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.grizzly:grizzly-config:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.common:glassfish-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.common:scattered-archive-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.ejb:javax.ejb-api:3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.ejb:ejb-internal-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.interceptor:javax.interceptor-api:1.2" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.connectors:connectors-internal-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.transaction:transaction-internal-api:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.admin:admin-util:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.security:security-services:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.11" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.resources:resources-connector:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.resourcebase.resources:nucleus-resources:4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.external:management-api:3.2.0-b001" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.gmbal:gmbal:4.0.0-b001" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.pfl:pfl-basic:4.0.0-b003" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.pfl:pfl-tf:4.0.0-b003" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.pfl:pfl-asm:4.0.0-b003" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.pfl:pfl-dynamic:4.0.0-b003" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.pfl:pfl-basic-tools:4.0.0-b003" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.pfl:pfl-tf-tools:4.0.0-b003" level="project" />
+    <orderEntry type="library" name="Maven: org.glassfish.main.external:libpam4j-repackaged:4.0" level="project" />
+    <orderEntry type="module-library">
+      <library name="Maven: com.sun:tools-jar:1">
+        <CLASSES>
+          <root url="jar://C:/Program Files/Java/jdk1.8.0_112/lib/tools.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

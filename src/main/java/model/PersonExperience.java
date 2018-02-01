@@ -23,8 +23,7 @@ public class PersonExperience implements Serializable {
 
     public PersonExperience() {    }
 
-    public PersonExperience(long personExperienceId, long personId, long experienceId, double yearsOfExperience) {
-        this.personExperienceId = personExperienceId;
+    public PersonExperience(long personId, long experienceId, double yearsOfExperience) {
         this.personId = personId;
         this.experienceId = experienceId;
         this.yearsOfExperience = yearsOfExperience;
@@ -44,6 +43,14 @@ public class PersonExperience implements Serializable {
 
     public double getYearsOfExperience() {
         return yearsOfExperience;
+    }
+
+    public void setPersonId(long personId) {
+        this.personId = personId;
+    }
+
+    public void setExperienceId(long experienceId) {
+        this.experienceId = experienceId;
     }
 
     @Override

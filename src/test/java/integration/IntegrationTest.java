@@ -1,24 +1,21 @@
 package integration;
 
+import controller.Controller;
 import model.Availability;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import model.Experience;
+import model.Person;
+import model.User;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
-import java.io.Serializable;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
-@RunWith(Arquillian.class)
+//@RunWith(Arquillian.class)
 public class IntegrationTest {
-
+    /*
     @Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
@@ -28,30 +25,61 @@ public class IntegrationTest {
 
     @Inject
     Integration integration;
+*/
+
+    Controller controller = new Controller();
+    String personSsn = "12345678-9000";
 
     @Test
-    public void can_fetch_objects_from_db() {
-        Assert.fail("Not implemented");
+    public void removeObject() {
+        List<Availability> list = controller.fetchAvailabilities(personSsn);
+        for(Availability item : list)
+            controller.removeObject(item);
+        Person person = controller.getPerson(personSsn);
+        controller.removeObject(person);
+        list = controller.fetchAvailabilities(personSsn);
+
+        Assert.assertTrue(list.size() == 0);
     }
 
     @Test
-    public void can_update_db() {
-        Assert.fail("Not implemented");
+    public void createPerson() {
+        controller.createPerson("Pelle", "Svanslös", personSsn, "hej@telia.se");
+        Person person = controller.getPerson(personSsn);
+
+        Assert.assertTrue(person != null);
+
+        removeObject();
     }
 
     @Test
-    public void can_remove_from_db() {
-        Assert.fail("Not implemented");
+    public void createAvailability() {
+        controller.createPerson("Pelle", "Svanslös", personSsn, "hej@telia.se");
+        Person person = controller.getPerson(personSsn);
+        controller.createAvailability(person.getPersonId(), getDate("20110312"), getDate("20160530"));
+        List<Availability> list = controller.fetchAvailabilities(personSsn);
+
+        Assert.assertTrue(list.size() > 0);
+
+        removeObject();
     }
 
     @Test
-    public void can_put_in_db() {
-        Availability availability = new Availability(0, getDate("20110312"), getDate("20160530"));
-        Serializable serAvail = integration.createObject(availability);
-        Assert.assertTrue(serAvail.equals(availability));
+    public void login() {
+        Assert.fail("Not yet implemented.");
     }
 
-    Date getDate(String date) {
+    @Test
+    public void registerUser() {
+        Assert.fail("Not yet implemented.");
+    }
+
+    @Test
+    public void registerJobApplication() {
+        Assert.fail("Not yet implemented.");
+    }
+
+    static Date getDate(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         java.util.Date parsed = null;
         try {

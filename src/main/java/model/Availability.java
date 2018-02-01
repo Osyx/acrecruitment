@@ -45,6 +45,10 @@ public class Availability implements Serializable {
         return to_date;
     }
 
+    public void setPersonId(long person_id) {
+        this.person_id = person_id;
+    }
+
     /**
      * @return A string representation of all fields in this object.
      */

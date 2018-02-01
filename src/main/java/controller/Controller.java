@@ -14,10 +14,9 @@ import java.util.List;
 public class Controller {
     private Integration integration = new Integration();
 
-    public long createPerson(String personSsn) {
-        Person person = new Person("Pelle", "Svanslös", personSsn, "hej@telia.se");
+    public void createPerson(String firstName, String lastName, String personSsn, String emailAdress) {
+        Person person = new Person(firstName, lastName, personSsn, emailAdress);
         integration.createObject(person);
-        return person.getPersonId();
     }
 
     public void createAvailability(long personId, Date fromDate, Date toDate) {
@@ -45,8 +44,8 @@ public class Controller {
         return integration.userRegister(person, user);
     }
 
-    public void registerJobApplication(List<Experience>, List<>) {
-
+    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities) {
+        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities);
     }
 
 }

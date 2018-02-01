@@ -30,12 +30,12 @@ public class Integration {
     public boolean login(String username, String password) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select u from user u where u.username = :username and u.password = :password", User.class);
+        Query query = session.createQuery("select u from user u where u.username = :username and u.password = :password");
         query.setParameter("username", username);
         query.setParameter("password", password);
-        User user = (User) query.getSingleResult();
+        boolean correctLogin = !query.getResultList().isEmpty();
         session.getTransaction().commit();
-        return !(user == null);
+        return correctLogin;
     }
 
     public Serializable createObject(Object object) {
@@ -59,14 +59,17 @@ public class Integration {
     public Person getPerson(String personSsn) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select p from person p where p.ssn = :ssn", Person.class);
+        Query query = session.createQuery("select p from person p where p.ssn = :ssn");
         query.setParameter("ssn", personSsn);
-        Person person = (Person) query.getSingleResult();
+        List fakeList = query.getResultList();
+        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
         session.getTransaction().commit();
         return person;
     }
 
     public void removeObject(Object object) {
+        if(object == null)
+            return;
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         session.delete(object);
@@ -76,7 +79,7 @@ public class Integration {
     public List<Availability> fetchAvailabilities(String personSsn) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select a from availability a, person p where a.person_id = p.id and p.ssn = :ssn", Availability.class);
+        Query query = session.createQuery("select a from availability a, person p where a.person_id = p.id and p.ssn = :ssn");
         query.setParameter("ssn", personSsn);
         List availabilityList = query.getResultList();
         session.getTransaction().commit();
@@ -89,6 +92,21 @@ public class Integration {
             return true;
         }
         return false;
+    }
+
+    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        for (Availability availability : availabilities) {
+            availability.setPersonId(person.getPersonId());
+            session.save(availability);
+        }
+        int yoei = 0;
+        for(Experience experience : experiences) {
+            PersonExperience personExperience = new PersonExperience(person.getPersonId(), experience.getExperienceId(), yearsOfExperiences.get(yoei++));
+            session.save(personExperience);
+        }
+        session.getTransaction().commit();
     }
 
 
