@@ -7,8 +7,8 @@ CREATE TABLE person (
     person_id bigint NOT NULL auto_increment,
     name varchar(40) NOT NULL,
     surname varchar(40) NOT NULL,
-    ssn varchar(40) NOT NULL,
-    email varchar(40) NOT NULL,
+    ssn varchar(40) NOT NULL UNIQUE,
+    email varchar(40) NOT NULL UNIQUE,
     CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
@@ -24,7 +24,7 @@ CREATE TABLE availability (
 -- Table: experience
 CREATE TABLE experience (
     experience_id bigint NOT NULL auto_increment,
-    name varchar(40) NOT NULL,
+    name varchar(40) NOT NULL UNIQUE,
     CONSTRAINT experience_pk PRIMARY KEY (experience_id)
 );
 
@@ -47,7 +47,7 @@ CREATE TABLE person_role (
 -- Table: role
 CREATE TABLE role (
     role_id bigint NOT NULL auto_increment,
-    name varchar(40) NOT NULL,
+    name varchar(40) NOT NULL UNIQUE,
     CONSTRAINT role_pk PRIMARY KEY (role_id)
 );
 
@@ -55,7 +55,7 @@ CREATE TABLE role (
 CREATE TABLE user (
     user_id bigint NOT NULL auto_increment,
     person_id bigint NOT NULL,
-    username varchar(40) NOT NULL,
+    username varchar(40) NOT NULL UNIQUE,
     password varchar(40) NOT NULL,
     CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
