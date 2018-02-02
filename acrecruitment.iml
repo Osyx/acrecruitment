@@ -46,6 +46,13 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: javax.transaction:jta:1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-glassfish-embedded-3.1:1.0.0.CR4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.protocol:arquillian-protocol-servlet:1.2.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-ejb:1.2.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-resource:1.2.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-initialcontext:1.2.0.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: fish.payara.extras:payara-embedded-all:4.1.1.161" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.activation:activation:1.1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.enterprise:cdi-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
