@@ -1,4 +1,4 @@
--- Created by Vertabelo (http://vertabelo.com)
+-- Title: Recruitment DB
 -- Last modification date: 2018-01-29 10:52:02.892
 
 -- tables
@@ -60,6 +60,14 @@ CREATE TABLE user (
     CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
 
+-- Table: application_date
+CREATE TABLE application_date (
+    application_date_id bigint NOT NULL auto_increment,
+    app_date date NOT NULL,
+    person_id bigint NOT NULL,
+    CONSTRAINT application_date_pk PRIMARY KEY (application_date_id)
+);
+
 -- foreign keys
 -- Reference: availability_Person (table: availability)
 ALTER TABLE availability ADD CONSTRAINT availability_person FOREIGN KEY availability_person (person_id)
@@ -83,6 +91,10 @@ REFERENCES role (role_id) ON DELETE CASCADE;
 
 -- Reference: user_Person (table: user)
 ALTER TABLE user ADD CONSTRAINT user_person FOREIGN KEY user_person (person_id)
+REFERENCES person (person_id) ON DELETE CASCADE;
+
+-- Reference: application_date_person (table: application_date)
+ALTER TABLE application_date ADD CONSTRAINT application_date_person FOREIGN KEY application_date_person (person_id)
 REFERENCES person (person_id) ON DELETE CASCADE;
 
 -- End of file.
