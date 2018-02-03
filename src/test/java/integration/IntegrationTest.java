@@ -2,9 +2,7 @@ package integration;
 
 import controller.Controller;
 import model.Availability;
-import model.Experience;
 import model.Person;
-import model.User;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,12 +30,9 @@ public class IntegrationTest {
 
     @Test
     public void removeObject() {
-        List<Availability> list = controller.fetchAvailabilities(personSsn);
-        for(Availability item : list)
-            controller.removeObject(item);
         Person person = controller.getPerson(personSsn);
         controller.removeObject(person);
-        list = controller.fetchAvailabilities(personSsn);
+        List<Availability> list = controller.fetchAvailabilities(personSsn);
 
         Assert.assertTrue(list.size() == 0);
     }

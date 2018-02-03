@@ -92,12 +92,6 @@
             <version>4.1.1.161</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.main.security</groupId>
-            <artifactId>security-ee</artifactId>
-            <version>4.0</version>
-        </dependency>
-
     </dependencies>
     <build>
         <finalName>acrecruitment</finalName>
