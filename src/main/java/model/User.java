@@ -1,8 +1,6 @@
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity(name = "user")
@@ -18,15 +16,15 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @Column(name = "person_id", nullable = false)
-    private long personId;
+    private Person person;
 
     public User() {    }
 
-    public User(String username, String password, long personId) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.personId = personId;
     }
 
     public long getUser_id() {
@@ -41,8 +39,8 @@ public class User implements Serializable {
         return password;
     }
 
-    public long getPersonId() {
-        return personId;
+    public Person getPerson() {
+        return person;
     }
 
     @Override
@@ -51,7 +49,7 @@ public class User implements Serializable {
                 "user_id=" + user_id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", personId=" + personId +
+                ", personId=" + person.getPersonId() +
                 '}';
     }
 }
