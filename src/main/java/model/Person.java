@@ -52,6 +52,10 @@ public class Person implements Serializable {
         return email;
     }
 
+    public void setPersonId(long personId) {
+        this.personId = personId;
+    }
+
     @Override
     public String toString() {
         return "Person{" +

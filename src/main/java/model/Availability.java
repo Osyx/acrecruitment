@@ -1,8 +1,6 @@
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 
@@ -10,43 +8,39 @@ import java.sql.Date;
 public class Availability implements Serializable {
     @Id
     @Column(name = "availability_id", nullable = false)
-    private long availability_id;
+    private long availabilityId;
 
-    @Column(name = "person_id", nullable = false)
-    private long person_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
 
     @Column(name = "from_date", nullable = false)
-    private Date from_date;
+    private Date fromDate;
 
     @Column(name = "to_date")
-    private Date to_date;
+    private Date toDate;
 
     public Availability() {    }
 
-    public Availability(long person_id, Date from_date, Date to_date) {
-        this.person_id = person_id;
-        this.from_date = from_date;
-        this.to_date = to_date;
+    public Availability(Date fromDate, Date toDate) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
     }
 
-    public long getAvailability_id() {
-        return availability_id;
+    public long getAvailabilityId() {
+        return availabilityId;
     }
 
-    public long getPerson_id() {
-        return person_id;
+    public Date getFromDate() {
+        return fromDate;
     }
 
-    public Date getFrom_date() {
-        return from_date;
+    public Date getToDate() {
+        return toDate;
     }
 
-    public Date getTo_date() {
-        return to_date;
-    }
-
-    public void setPersonId(long person_id) {
-        this.person_id = person_id;
+    public Person getPerson() {
+        return person;
     }
 
     /**
@@ -55,10 +49,10 @@ public class Availability implements Serializable {
     @Override
     public String toString() {
         return "Availability{" +
-                "availability_id=" + availability_id +
-                ", person_id=" + person_id +
-                ", from_date=" + from_date +
-                ", to_date=" + to_date +
+                "availability_id=" + availabilityId +
+                ", person_id=" + person.getPersonId() +
+                ", from_date=" + fromDate +
+                ", to_date=" + toDate +
                 '}';
     }
 }

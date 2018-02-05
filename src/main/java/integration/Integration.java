@@ -17,7 +17,7 @@ import java.util.List;
 @Singleton
 public class Integration {
 
-    private SessionFactory factory = new Configuration()
+    private final SessionFactory factory = new Configuration()
             .configure("hibernate.cfg.xml")
             .addAnnotatedClass(Availability.class)
             .addAnnotatedClass(Experience.class)
@@ -79,7 +79,7 @@ public class Integration {
 
     public List<Availability> fetchAvailabilities(String personSsn) {
         Session session = factory.getCurrentSession();
-        Query query = session.createQuery("select a from availability a, person p where a.person_id = p.id and p.ssn = :ssn");
+        Query query = session.createQuery("select a from availability a, person p where a.person.personId = p.id and p.ssn = :ssn");
         query.setParameter("ssn", personSsn);
         session.beginTransaction();
         List availabilityList = query.getResultList();
@@ -99,12 +99,12 @@ public class Integration {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         for (Availability availability : availabilities) {
-            availability.setPersonId(person.getPersonId());
+            availability.getPerson().setPersonId(person.getPersonId());
             session.save(availability);
         }
         int yoei = 0;
         for(Experience experience : experiences) {
-            PersonExperience personExperience = new PersonExperience(person.getPersonId(), experience.getExperienceId(), yearsOfExperiences.get(yoei++));
+            PersonExperience personExperience = new PersonExperience(person, experience, yearsOfExperiences.get(yoei++));
             session.save(personExperience);
             session.save(experience);
         }
@@ -112,39 +112,88 @@ public class Integration {
     }
 
     public List<Object> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
+        boolean createdQuery = false;
         Session session = factory.getCurrentSession();
         String lcParameter = searchParameter.toLowerCase();
-        Query query;
+        Query query = null;
         if("time period".equals(lcParameter)) {
             query = session.createQuery(
-                    "select p from person p, availability a, person_experience pe, experience e" +
-                    " where p.id = a.person_id" +
-                    " and p.id = pe.personId" +
-                    " and pe.experienceId = e.id" +
-                    " and a.from_date >= :fromDate" +
-                    " and a.to_date <= :toDate" +
-                    " order by a.from_date asc");
-            query.setParameter("fromDate", fromDate);
-            query.setParameter("toDate", toDate);
-            query.setMaxResults(1000);
+                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
+                    " from person p, availability a, person_experience pe, experience e, application_date ad" +
+                    " where p.id = a.person.personId" +
+                    " and p.id = pe.person.personId" +
+                    " and p.id = ad.person.personId" +
+                    " and pe.experience.experienceId = e.id" +
+                    " and a.fromDate >= :fromDate" +
+                    " and a.toDate <= :toDate" +
+                    " order by a.fromDate asc");
+            createdQuery = true;
         } else if("date of registration".equals(lcParameter)) {
             query = session.createQuery(
-                    "select p from person p, availability a, person_experience pe, experience e" +
-                            " where p.id = a.person_id" +
-                            " and p.id = pe.personId" +
-                            " and pe.experienceId = e.id" +
-                            " and a.from_date >= :fromDate" +
-                            " and a.to_date <= :toDate" +
-                            " order by a.from_date asc");
+                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
+                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
+                            " where p.id = a.person.personId" +
+                            " and p.id = pe.person.personId" +
+                            " and p.id = ad.person.personId" +
+                            " and pe.experience.experienceId = e.id" +
+                            " and ad.appDate >= :fromDate" +
+                            " and ad.appDate <= :toDate" +
+                            " order by ad.appDate asc");
+            createdQuery = true;
+        }
+        if(createdQuery) {
             query.setParameter("fromDate", fromDate);
             query.setParameter("toDate", toDate);
             query.setMaxResults(1000);
-        } else if("competence".equals(lcParameter)) {
-
-        } else if("name".equals(lcParameter)) {
-
+            session.beginTransaction();
+            List list = query.getResultList();
+            session.getTransaction().commit();
+            return (List<Object>) list;
         }
+        return null;
+    }
 
+    public List<Object> fetchJobApplications(String searchParameter, String... searchString) {
+        boolean createdQuery = false;
+        Session session = factory.getCurrentSession();
+        String lcParameter = searchParameter.toLowerCase();
+        Query query = null;
+        if("experience".equals(lcParameter)) {
+            query = session.createQuery(
+                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
+                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
+                            " where p.id = a.person.personId" +
+                            " and p.id = pe.person.personId" +
+                            " and p.id = ad.person.personId" +
+                            " and pe.experience.experienceId = e.id" +
+                            " and e.name = :experience " +
+                            " order by pe.yearsOfExperience desc");
+            query.setParameter("experience", searchString[0]);
+            query.setMaxResults(1000);
+            createdQuery = true;
+        } else if("name".equals(lcParameter)) {
+            query = session.createQuery(
+                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
+                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
+                            " where p.id = a.person.personId" +
+                            " and p.id = pe.person.personId" +
+                            " and p.id = ad.person.personId" +
+                            " and pe.experience.experienceId = e.id" +
+                            " and p.name = :name" +
+                            " and p.surname = :surname" +
+                            " order by p.personId asc");
+            query.setParameter("name", searchString[0]);
+            query.setParameter("surname", searchString[1]);
+            query.setMaxResults(1000);
+            createdQuery = true;
+        }
+        if(createdQuery) {
+            session.beginTransaction();
+            List list = query.getResultList();
+            session.getTransaction().commit();
+            return (List<Object>) list;
+        }
+        return null;
     }
 
 

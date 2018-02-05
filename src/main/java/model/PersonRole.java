@@ -1,41 +1,49 @@
 package model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity(name = "person_role")
 public class PersonRole implements Serializable {
 
     @Id
-    @Column(name = "person_id", nullable = false)
-    private long personId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
 
     @Id
-    @Column(name = "role_id", nullable = false)
-    private long roleId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     public PersonRole() {    }
 
-    public PersonRole(long personId, long roleId) {
-        this.personId = personId;
-        this.roleId = roleId;
+    public PersonRole(Person person, Role role) {
+        this.person = person;
+        this.role = role;
     }
 
-    public long getPersonId() {
-        return personId;
+    public Person getPerson() {
+        return person;
     }
 
-    public long getRoleId() {
-        return roleId;
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
     public String toString() {
         return "PersonRole{" +
-                "personId=" + personId +
-                ", roleId=" + roleId +
+                "personId=" + person.getPersonId() +
+                ", roleId=" + role.getName() +
                 '}';
     }
 }
