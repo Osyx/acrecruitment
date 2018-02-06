@@ -43,6 +43,10 @@ public class Availability implements Serializable {
         return person;
     }
 
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     /**
      * @return A string representation of all fields in this object.
      */

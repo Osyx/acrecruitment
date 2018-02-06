@@ -10,11 +10,11 @@ public class PersonExperience implements Serializable {
     @Column(name = "person_experience_id", nullable = false)
     private long personExperienceId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "experience_id", nullable = false)
     private Experience experience;
 

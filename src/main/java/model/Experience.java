@@ -2,9 +2,12 @@ package model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(name="experience")
 public class Experience implements Serializable {
+    private List<PersonExperience> personExperiences;
+
     @Id
     @Column(name = "experience_id", nullable = false)
     private long experienceId;
@@ -24,6 +27,19 @@ public class Experience implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    @OneToMany(mappedBy = "experience")
+    public List<PersonExperience> getPersonExperiences() {
+        return personExperiences;
+    }
+
+    public void setPersonExperiences(List<PersonExperience> personExperiences) {
+        this.personExperiences = personExperiences;
+    }
+
+    public void addPersonExperiences(PersonExperience personExperience) {
+        this.personExperiences.add(personExperience);
     }
 
     @Override
