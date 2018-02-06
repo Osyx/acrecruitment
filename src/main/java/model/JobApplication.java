@@ -3,7 +3,10 @@ package model;
 import javax.persistence.*;
 import java.util.List;
 
+@Entity(name = "person")
 public class JobApplication {
+    private List<PersonExperience> personExperiences;
+
     @Id
     @Column(name = "person_id", nullable = false)
     private long personId;
@@ -26,14 +29,16 @@ public class JobApplication {
     @OneToMany(mappedBy = "person")
     private List<Availability> availabilities;
 
-    @OneToMany
-    @JoinTable (
-        name="person_experience",
-        joinColumns={ @JoinColumn(name="person_id", referencedColumnName="person_id") },
-        inverseJoinColumns={ @JoinColumn(name="experience_id", referencedColumnName="experience_id", unique=true) }
-    )
-    private List<Experience> experiences;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person")
+    public List<PersonExperience> getPersonExperiences() {
+        return personExperiences;
+    }
 
+    public void setPersonExperiences(List<PersonExperience> personExperiences) {
+        this.personExperiences = personExperiences;
+    }
 
-    private List<Double> yearsOfExperience;
+    public void addPersonExperiences(PersonExperience personExperience) {
+        this.personExperiences.add(personExperience);
+    }
 }

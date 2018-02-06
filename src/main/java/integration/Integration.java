@@ -28,17 +28,6 @@ public class Integration {
             .addAnnotatedClass(User.class)
             .buildSessionFactory();
 
-    public boolean login(String username, String password) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("select u from user u where u.username = :username and u.password = :password");
-        query.setParameter("username", username);
-        query.setParameter("password", password);
-        boolean correctLogin = !query.getResultList().isEmpty();
-        session.getTransaction().commit();
-        return correctLogin;
-    }
-
     public Serializable createObject(Object object) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -57,6 +46,15 @@ public class Integration {
         return ser;
     }
 
+    public void removeObject(Object object) {
+        if(object == null)
+            return;
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        session.delete(object);
+        session.getTransaction().commit();
+    }
+
     public Person getPerson(String personSsn) {
         Session session = factory.getCurrentSession();
         Query query = session.createQuery("select p from person p where p.ssn = :ssn");
@@ -68,23 +66,15 @@ public class Integration {
         return person;
     }
 
-    public void removeObject(Object object) {
-        if(object == null)
-            return;
+    public boolean login(String username, String password) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        session.delete(object);
+        Query query = session.createQuery("select u from user u where u.username = :username and u.password = :password");
+        query.setParameter("username", username);
+        query.setParameter("password", password);
+        boolean correctLogin = !query.getResultList().isEmpty();
         session.getTransaction().commit();
-    }
-
-    public List<Availability> fetchAvailabilities(String personSsn) {
-        Session session = factory.getCurrentSession();
-        Query query = session.createQuery("select a from availability a, person p where a.person.personId = p.id and p.ssn = :ssn");
-        query.setParameter("ssn", personSsn);
-        session.beginTransaction();
-        List availabilityList = query.getResultList();
-        session.getTransaction().commit();
-        return (List<Availability>) availabilityList;
+        return correctLogin;
     }
 
     public boolean userRegister(Person person, User user) {
@@ -111,7 +101,17 @@ public class Integration {
         session.getTransaction().commit();
     }
 
-    public List<Object> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
+    public List<Availability> fetchAvailabilities(String personSsn) {
+        Session session = factory.getCurrentSession();
+        Query query = session.createQuery("select a from availability a, person p where a.person.personId = p.id and p.ssn = :ssn");
+        query.setParameter("ssn", personSsn);
+        session.beginTransaction();
+        List availabilityList = query.getResultList();
+        session.getTransaction().commit();
+        return (List<Availability>) availabilityList;
+    }
+
+    public List<JobApplication> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
         boolean createdQuery = false;
         Session session = factory.getCurrentSession();
         String lcParameter = searchParameter.toLowerCase();
@@ -148,12 +148,12 @@ public class Integration {
             session.beginTransaction();
             List list = query.getResultList();
             session.getTransaction().commit();
-            return (List<Object>) list;
+            return (List<JobApplication>) list;
         }
         return null;
     }
 
-    public List<Object> fetchJobApplications(String searchParameter, String... searchString) {
+    public List<JobApplication> fetchJobApplications(String searchParameter, String... searchString) {
         boolean createdQuery = false;
         Session session = factory.getCurrentSession();
         String lcParameter = searchParameter.toLowerCase();
@@ -191,7 +191,7 @@ public class Integration {
             session.beginTransaction();
             List list = query.getResultList();
             session.getTransaction().commit();
-            return (List<Object>) list;
+            return (List<JobApplication>) list;
         }
         return null;
     }

@@ -1,10 +1,7 @@
 package controller;
 
 import integration.Integration;
-import model.Availability;
-import model.Experience;
-import model.Person;
-import model.User;
+import model.*;
 
 import javax.transaction.Transactional;
 import java.sql.Date;
@@ -19,8 +16,9 @@ public class Controller {
         integration.createObject(person);
     }
 
-    public void createAvailability(long personId, Date fromDate, Date toDate) {
-        Availability availability = new Availability(personId, fromDate, toDate);
+    public void createAvailability(Person person, Date fromDate, Date toDate) {
+        Availability availability = new Availability(fromDate, toDate);
+        availability.setPerson(person);
         integration.createObject(availability);
     }
 
@@ -46,6 +44,14 @@ public class Controller {
 
     public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities) {
         integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities);
+    }
+
+    public List<JobApplication> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
+        return integration.fetchJobApplications(searchParameter, fromDate, toDate);
+    }
+
+    public List<JobApplication> fetchJobApplications(String searchParameter, String... searchString) {
+        return integration.fetchJobApplications(searchParameter, searchString);
     }
 
 }
