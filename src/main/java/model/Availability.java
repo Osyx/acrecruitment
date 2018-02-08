@@ -7,7 +7,7 @@ import java.sql.Date;
 @Entity(name = "availability")
 public class Availability implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "availability_id", nullable = false)
     private long availabilityId;
 

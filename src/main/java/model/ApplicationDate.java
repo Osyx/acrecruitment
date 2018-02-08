@@ -8,7 +8,7 @@ import java.sql.Date;
 public class ApplicationDate implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "application_date_id", nullable = false)
     private long applicationDateId;
 

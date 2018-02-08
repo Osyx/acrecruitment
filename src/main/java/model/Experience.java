@@ -8,7 +8,7 @@ import java.util.List;
 public class Experience implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "experience_id", nullable = false)
     private long experienceId;
 

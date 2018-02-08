@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class PersonExperience implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "person_experience_id", nullable = false)
     private long personExperienceId;
 
