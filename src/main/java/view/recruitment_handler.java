@@ -8,6 +8,9 @@ import model.Person;
 import model.User;
 import model.Role;
 
+import javax.faces.bean.ManagedBean;
+
+@ManagedBean(name = "recruitmentHandler")
 public class recruitment_handler implements Serializable{
 
     private Controller controller = new Controller();
@@ -23,6 +26,7 @@ public class recruitment_handler implements Serializable{
     private String lastName;
     private String email;
     private String ssn;
+    private String conPassword;
     private String regPersonError = "There was an error when trying to register";
     private String regJobAppError = "There was an error when trying to register the job application";
     private String regAvailabilityError = "There was an error when trying to register the availability";
@@ -35,7 +39,7 @@ public class recruitment_handler implements Serializable{
     public void regPerson(){
         try {
             person = controller.createPerson(firstName, lastName, ssn, email);
-            user = controller.createUser(username, password, person.getPersonId());
+            user = controller.createUser(username, password, person);
             controller.registerUser(person, user);
         } catch (Exception registerPersonException){
             System.out.println(regPersonError);
@@ -143,5 +147,13 @@ public class recruitment_handler implements Serializable{
 
     public String getSsn() {
         return ssn;
+    }
+
+    public String getConPassword() {
+        return conPassword;
+    }
+
+    public void setConPassword(String conPassword) {
+        this.conPassword = conPassword;
     }
 }
