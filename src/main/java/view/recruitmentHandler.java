@@ -38,11 +38,10 @@ public class recruitmentHandler implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(recruitmentHandler.class.getName());
 
-    /**
-     * Register a person with a username and password.
-     */
-    public void regPerson() {
-        LOG.log(Level.INFO, "Hej");
+
+    // This method will create a person and a user,
+    // connect the person to the user and register the user in the database
+    public void regPerson(){
         try {
             person = new Person(firstName, lastName, ssn, email);
             user = new User(username, password);
