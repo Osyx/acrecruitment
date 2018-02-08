@@ -17,7 +17,7 @@ public class User implements Serializable {
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "person_id", nullable = false)
+    @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
     public User() {    }

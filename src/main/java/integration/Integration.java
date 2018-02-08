@@ -19,8 +19,10 @@ public class Integration {
 
     private final SessionFactory factory = new Configuration()
             .configure("hibernate.cfg.xml")
+            .addAnnotatedClass(ApplicationDate.class)
             .addAnnotatedClass(Availability.class)
             .addAnnotatedClass(Experience.class)
+            .addAnnotatedClass(JobApplication.class)
             .addAnnotatedClass(Person.class)
             .addAnnotatedClass(PersonExperience.class)
             .addAnnotatedClass(PersonRole.class)
