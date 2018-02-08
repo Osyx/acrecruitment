@@ -1,11 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>Test</h1>
-    Test
-</body>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title></title>
+        <script src="https://www.w3schools.com/lib/w3.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </h:head>
+    <h:body>
+    <div w3-include-html="nav.html"></div>
+    <script>w3.includeHTML();</script>
+
+    <div class="container">
+
+        <h:form>
+            <div class="form-group row">
+                <div class="col-sm-5">
+                    <h:outputLabel for="firstNameInput">First name</h:outputLabel>
+                    <h:input type="text" class="form-control" id="firstNameInput" placeholder="Enter first name"/>
+                </div>
+                <div class="col-sm-5">
+                    <h:outputLabel for="lastNameInput">Last name</h:outputLabel>
+                    <h:input type="text" class="form-control" id="lastNameInput" placeholder="Enter last name"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-5">
+                    <h:outputLabel for="ssnInput">Social security number</h:outputLabel>
+                    <h:input type="text" class="form-control" id="ssnInput" placeholder="Enter social security number"/>
+                    <small id="ssnHelp" class="form-text text-muted">&nbsp;e.g. "9212012406"</small>
+                </div>
+                <div class="col-sm-5">
+                    <h:outputLabel for="emailInput">Email address</h:outputLabel>
+                    <h:input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Enter email address"/>
+                    <small id="emailHelp" class="form-text text-muted">&nbsp;We'll never share your email with anyone else.</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-5">
+                    <h:outputLabel for="usernameInput">Username</h:outputLabel>
+                    <h:input type="text" class="form-control" id="usernameInput" placeholder="Enter username"/>
+                </div>
+                <div class="col-sm-5">
+                    <h:outputLabel for="passwordInput">Password</h:outputLabel>
+                    <h:input type="password" class="form-control" id="passwordInput" placeholder="Enter password"/>
+                    <small id="passwordHelp" class="form-text text-muted">&nbsp;Minimum of 6 figures using A-Z, 0-9</small>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-5">
+                    <h:outputLabel for="passwordInput2">Confirm password</h:outputLabel>
+                    <h:input type="password" class="form-control" id="passwordInput2" placeholder="Enter password"/>
+                </div>
+            </div>
+            <h:button type="submit" class="btn btn-primary">Register</h:button>
+        </h:form>
+
+    </div>
+
+
+
+    <!-- the scripts that need to be present -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    </h:body>
+
 </html>

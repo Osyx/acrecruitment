@@ -1,8 +1,21 @@
 package view;
 
 import java.io.Serializable;
+import controller.Controller;
+import model.Availability;
+import model.Experience;
+import model.Person;
+import model.User;
+import model.Role;
 
 public class recruitment_handler implements Serializable{
+
+    private Controller controller = new Controller();
+    private Person person;
+    private User user;
+    private Experience experience;
+ //   private List<Availability> availability;
+    private Role role;
 
     private String username;
     private String password;
@@ -10,7 +23,79 @@ public class recruitment_handler implements Serializable{
     private String lastName;
     private String email;
     private String ssn;
+    private String regPersonError = "There was an error when trying to register";
+    private String regJobAppError = "There was an error when trying to register the job application";
+    private String regAvailabilityError = "There was an error when trying to register the availability";
+    private String regExperienceError = "There was an error when trying to register the experience";
+    private String regRoleError = "There was an error when trying to register the role";
+    private String regPersonExpError = "There was an error when trying to register the PersonExperience";
+    private String loginError = "There was an error when trying to log in";
 
+
+    public void regPerson(){
+        try {
+            person = controller.createPerson(firstName, lastName, ssn, email);
+            user = controller.createUser(username, password, person.getPersonId());
+            controller.registerUser(person, user);
+        } catch (Exception registerPersonException){
+            System.out.println(regPersonError);
+        }
+    }
+
+    public void regAvailabilites(){
+        try{
+           // controller.createAvailability(long personID, Date fromDate, Date toDate);
+
+        }catch(Exception registerAvailabilityException){
+            System.out.println(regAvailabilityError);
+        }
+
+    }
+
+    public void regExperiences(){
+        try {
+           // controller.registerExperiences();
+        }catch(Exception registerExperienceException){
+            System.out.println(regExperienceError);
+        }
+    }
+
+    public void regRole(){
+        try{
+
+        }catch(Exception registerRoleException){
+            System.out.println(regRoleError);
+        }
+
+    }
+
+    public void regPersonExperiences(){
+        try{
+
+        }catch(Exception registerPersonExpEexception){
+            System.out.println(regPersonExpError);
+        }
+
+    }
+
+    public void regJobApplication(){
+        try {
+
+
+          //  controller.registerJobApplication(person, experienceList, yearsOfExprienceList, availabiliesList);
+        }catch(Exception registerJobAppException){
+            System.out.println(regJobAppError);
+        }
+    }
+
+    public void login(){
+        try {
+            boolean loginSuccess = controller.login(username, password);
+        } catch (Exception loginException) {
+            System.out.println(loginError);
+        }
+
+    }
 
     public void setUsername(String username){
         this.username = username;
