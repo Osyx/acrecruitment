@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class Role implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "role_id", nullable = false)
     private float personId;
 

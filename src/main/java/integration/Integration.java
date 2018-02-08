@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @Transactional(value = Transactional.TxType.MANDATORY)
@@ -38,14 +37,12 @@ public class Integration {
         return ser;
     }
 
-    public List<Serializable> createObject(Object... objectList) {
-        List<Serializable> ser = new ArrayList<Serializable>();
+    public void createObject(Object... objectList) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         for(Object object : objectList)
-            ser.add(session.save(object));
+            session.save(object);
         session.getTransaction().commit();
-        return ser;
     }
 
     public void removeObject(Object object) {
@@ -59,9 +56,9 @@ public class Integration {
 
     public Person getPerson(String personSsn) {
         Session session = factory.getCurrentSession();
+        session.beginTransaction();
         Query query = session.createQuery("select p from person p where p.ssn = :ssn");
         query.setParameter("ssn", personSsn);
-        session.beginTransaction();
         List fakeList = query.getResultList();
         Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
         session.getTransaction().commit();
@@ -80,7 +77,7 @@ public class Integration {
     }
 
     public boolean userRegister(Person person, User user) {
-        if(getPerson(person.getSsn()) != null) {
+        if(getPerson(person.getSsn()) == null) {
             createObject(person, user);
             return true;
         }
@@ -105,9 +102,9 @@ public class Integration {
 
     public List<Availability> fetchAvailabilities(String personSsn) {
         Session session = factory.getCurrentSession();
+        session.beginTransaction();
         Query query = session.createQuery("select a from availability a, person p where a.person.personId = p.id and p.ssn = :ssn");
         query.setParameter("ssn", personSsn);
-        session.beginTransaction();
         List availabilityList = query.getResultList();
         session.getTransaction().commit();
         return (List<Availability>) availabilityList;

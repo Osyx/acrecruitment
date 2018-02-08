@@ -7,7 +7,7 @@ import java.util.List;
 public class JobApplication {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "person_id", nullable = false)
     private long personId;
 

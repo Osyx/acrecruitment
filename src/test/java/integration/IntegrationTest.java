@@ -3,6 +3,7 @@ package integration;
 import controller.Controller;
 import model.Availability;
 import model.Person;
+import model.User;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,10 +40,17 @@ public class IntegrationTest {
 
     @Test
     public void createPerson() {
-        controller.createPerson("Pelle", "Svanslös", personSsn, "hej@telia.se");
-        Person person = controller.getPerson(personSsn);
+        //Person person = controller.createPerson("Hej", "hej", "ssn", "email");
+        //User user = controller.createUser("user", "pass", person);
 
-        Assert.assertTrue(person != null);
+        Person person = new Person("Hej", "hej", personSsn, "email");
+        User user = new User("user", "pass");
+        user.setPerson(person);
+        boolean created = controller.registerUser(person, user);
+        Person personFetch = controller.getPerson(personSsn);
+
+        System.out.println(personFetch.toString());
+        Assert.assertTrue(personFetch != null && created);
 
         removeObject();
     }
