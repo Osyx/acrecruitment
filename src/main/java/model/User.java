@@ -43,6 +43,10 @@ public class User implements Serializable {
         return person;
     }
 
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
     @Override
     public String toString() {
         return "User{" +

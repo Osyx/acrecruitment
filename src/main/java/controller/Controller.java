@@ -4,7 +4,6 @@ import integration.Integration;
 import model.*;
 
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.sql.Date;
 import java.util.List;
 
@@ -18,8 +17,9 @@ public class Controller {
         return person;
     }
 
-    public User createUser(String userName, String password, long personId) {
-        User user = new User(userName, password, personId);
+    public User createUser(String userName, String password, Person person) {
+        User user = new User(userName, password);
+        user.setPerson(person);
         integration.createObject(user);
         return user;
     }
@@ -35,8 +35,8 @@ public class Controller {
         integration.createObject(experience);
     }
 
-    public void createPersonExperience(long personID, long experienceID, double yearsOfExperience){
-        PersonExperience personExperience = new PersonExperience(personID, experienceID, yearsOfExperience);
+    public void createPersonExperience(Person person, Experience experience, double yearsOfExperience){
+        PersonExperience personExperience = new PersonExperience(person, experience, yearsOfExperience);
         integration.createObject(personExperience);
     }
 
@@ -45,8 +45,8 @@ public class Controller {
         integration.createObject(role);
     }
 
-    public void createPersonRole(long personID, long roleID){
-        PersonRole personRole = new PersonRole(personID, roleID);
+    public void createPersonRole(Person person, Role role){
+        PersonRole personRole = new PersonRole(person, role);
         integration.createObject(personRole);
     }
 
