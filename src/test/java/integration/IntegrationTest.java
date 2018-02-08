@@ -51,7 +51,7 @@ public class IntegrationTest {
     public void createAvailability() {
         controller.createPerson("Pelle", "Svanslös", personSsn, "hej@telia.se");
         Person person = controller.getPerson(personSsn);
-        controller.createAvailability(person.getPersonId(), getDate("20110312"), getDate("20160530"));
+        controller.createAvailability(person, getDate("20110312"), getDate("20160530"));
         List<Availability> list = controller.fetchAvailabilities(personSsn);
 
         Assert.assertTrue(list.size() > 0);
