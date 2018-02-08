@@ -40,8 +40,10 @@ public class Integration {
     public void createObject(Object... objectList) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        for(Object object : objectList)
+        for(Object object : objectList) {
             session.save(object);
+            System.out.println("hejhej");
+        }
         session.getTransaction().commit();
     }
 

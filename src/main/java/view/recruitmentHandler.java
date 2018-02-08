@@ -1,17 +1,21 @@
 package view;
 
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import controller.Controller;
 import model.Availability;
 import model.Experience;
 import model.Person;
 import model.User;
 import model.Role;
+import sun.rmi.runtime.Log;
 
 import javax.faces.bean.ManagedBean;
 
 @ManagedBean(name = "recruitmentHandler")
-public class recruitment_handler implements Serializable{
+public class recruitmentHandler implements Serializable{
 
     private Controller controller = new Controller();
     private Person person;
@@ -35,15 +39,21 @@ public class recruitment_handler implements Serializable{
     private String regPersonExpError = "There was an error when trying to register the PersonExperience";
     private String loginError = "There was an error when trying to log in";
 
+    private static final Logger LOG = Logger.getLogger(recruitmentHandler.class.getName());
+
 
     public void regPerson(){
-        try {
-            person = controller.createPerson(firstName, lastName, ssn, email);
-            user = controller.createUser(username, password, person);
+        LOG.log(Level.INFO, "Hej");
+
+            person = new Person(firstName, lastName, ssn, email);
+            user = new User(username, password);
+            user.setPerson(person);
             controller.registerUser(person, user);
-        } catch (Exception registerPersonException){
+
+            LOG.log(Level.INFO, "FEEEEEL");
             System.out.println(regPersonError);
-        }
+
+
     }
 
     public void regAvailabilites(){
@@ -156,4 +166,6 @@ public class recruitment_handler implements Serializable{
     public void setConPassword(String conPassword) {
         this.conPassword = conPassword;
     }
+
+
 }
