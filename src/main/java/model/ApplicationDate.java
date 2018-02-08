@@ -8,6 +8,7 @@ import java.sql.Date;
 public class ApplicationDate implements Serializable {
 
     @Id
+    @GeneratedValue
     @Column(name = "application_date_id", nullable = false)
     private long applicationDateId;
 

@@ -7,6 +7,7 @@ import java.io.Serializable;
 @Entity(name = "person")
 public class Person implements Serializable {
     @Id
+    @GeneratedValue
     @Column(name = "person_id", nullable = false)
     private long personId;
 

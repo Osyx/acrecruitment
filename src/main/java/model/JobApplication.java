@@ -5,9 +5,9 @@ import java.util.List;
 
 @Entity(name = "person")
 public class JobApplication {
-    private List<PersonExperience> personExperiences;
 
     @Id
+    @GeneratedValue
     @Column(name = "person_id", nullable = false)
     private long personId;
 
@@ -30,13 +30,7 @@ public class JobApplication {
     private List<Availability> availabilities;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person")
-    public List<PersonExperience> getPersonExperiences() {
-        return personExperiences;
-    }
-
-    public void setPersonExperiences(List<PersonExperience> personExperiences) {
-        this.personExperiences = personExperiences;
-    }
+    private List<PersonExperience> personExperiences;
 
     public void addPersonExperiences(PersonExperience personExperience) {
         this.personExperiences.add(personExperience);

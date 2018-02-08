@@ -6,9 +6,9 @@ import java.util.List;
 
 @Entity(name="experience")
 public class Experience implements Serializable {
-    private List<PersonExperience> personExperiences;
 
     @Id
+    @GeneratedValue
     @Column(name = "experience_id", nullable = false)
     private long experienceId;
 
@@ -30,13 +30,7 @@ public class Experience implements Serializable {
     }
 
     @OneToMany(mappedBy = "experience")
-    public List<PersonExperience> getPersonExperiences() {
-        return personExperiences;
-    }
-
-    public void setPersonExperiences(List<PersonExperience> personExperiences) {
-        this.personExperiences = personExperiences;
-    }
+    private List<PersonExperience> personExperiences;
 
     public void addPersonExperiences(PersonExperience personExperience) {
         this.personExperiences.add(personExperience);
