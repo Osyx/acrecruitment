@@ -8,7 +8,6 @@ import org.hibernate.query.Query;
 
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
-import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
@@ -29,33 +28,46 @@ public class Integration {
             .addAnnotatedClass(User.class)
             .buildSessionFactory();
 
-    public Serializable createObject(Object object) {
+    /**
+     * Takes one entity object and saves it to the database.
+     * @param object The object to be saved in the database.
+     */
+    public void createObject(Object object) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Serializable ser = session.save(object);
+        session.save(object);
         session.getTransaction().commit();
-        return ser;
     }
 
+    /**
+     * Takes several entities and saves them in the order that the arguments are given in.
+     * @param objectList A list created by the params given, to be saved to the database.
+     */
     public void createObject(Object... objectList) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        for(Object object : objectList) {
+        for(Object object : objectList)
             session.save(object);
-            System.out.println("hejhej");
-        }
         session.getTransaction().commit();
     }
 
+    /**
+     * Takes an entity and removes it from the database.
+     * @param object The object to be deleted.
+     */
     public void removeObject(Object object) {
-        if(object == null)
-            return;
+        if(object == null)  return;
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         session.delete(object);
         session.getTransaction().commit();
     }
 
+    /**
+     * Fetches the person in the database with the SSN given.
+     * @param personSsn The SSN of the person to be fetched.
+     * @return the person with the given SSN.
+     */
     public Person getPerson(String personSsn) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -67,6 +79,13 @@ public class Integration {
         return person;
     }
 
+    /**
+     * Checks if the login details are correct.
+     * @param username The username of the user to be logged in.
+     * @param password  The password of the user to be logged in.
+     * @return a boolean indicating whether it was the correct details or not.
+     * <code>True</code> for correct, <code>false</code> for incorrect.
+     */
     public boolean login(String username, String password) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -78,6 +97,13 @@ public class Integration {
         return correctLogin;
     }
 
+    /**
+     * Register a person with a username and password.
+     * @param person The person to be added to the database.
+     * @param user The user details for the person to be added.
+     * @return a boolean indicating whether the user creation was successful (<code>true</code>)
+     * or not (<code>false</code>).
+     */
     public boolean userRegister(Person person, User user) {
         if(getPerson(person.getSsn()) == null) {
             createObject(person, user);
@@ -86,6 +112,13 @@ public class Integration {
         return false;
     }
 
+    /**
+     * Register a new job application.
+     * @param person The applicant that us applying for a job.
+     * @param experiences The previous experiences that the applicant has.
+     * @param yearsOfExperiences The amount of years the applicant has in each <code>experience</code>.
+     * @param availabilities The time slots where the applicant can work.
+     */
     public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -102,6 +135,11 @@ public class Integration {
         session.getTransaction().commit();
     }
 
+    /**
+     * Fetch the availabilities of a applicant by their SSN.
+     * @param personSsn The SSN of the applicant.
+     * @return A list of the availabilities for the applicant.
+     */
     public List<Availability> fetchAvailabilities(String personSsn) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -112,6 +150,16 @@ public class Integration {
         return (List<Availability>) availabilityList;
     }
 
+    /**
+     * Fetch the job applications, with date filters.
+     * Available filters:
+     * * <code>time period</code>
+     * * <code>date of registration</code>
+     * @param searchParameter The filter to choose.
+     * @param fromDate The date from which you want applications.
+     * @param toDate The date to which you want the applications.
+     * @return A list with the available job applications.
+     */
     public List<JobApplication> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
         boolean createdQuery = false;
         Session session = factory.getCurrentSession();
@@ -154,6 +202,15 @@ public class Integration {
         return null;
     }
 
+    /**
+     * Fetch the job applications, with experience or applicant name filters.
+     * Available filters:
+     * * <code>experience</code> name.
+     * * <code>name</code> of the applicant.
+     * @param searchParameter The filter to choose.
+     * @param searchString The name or experience to search for.
+     * @return A list with the available job applications.
+     */
     public List<JobApplication> fetchJobApplications(String searchParameter, String... searchString) {
         boolean createdQuery = false;
         Session session = factory.getCurrentSession();
@@ -196,6 +253,4 @@ public class Integration {
         }
         return null;
     }
-
-
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Transactional(Transactional.TxType.REQUIRES_NEW)
 public class Controller {
-    private Integration integration = new Integration();
+    private final Integration integration = new Integration();
 
     public Person createPerson(String firstName, String lastName, String personSsn, String emailAdress) {
         Person person = new Person(firstName, lastName, personSsn, emailAdress);
@@ -61,12 +61,6 @@ public class Controller {
     public List<Availability> fetchAvailabilities(String personSsn) {
         return integration.fetchAvailabilities(personSsn);
     }
-
-    /*
-    public List<Experience> fetchExperiences() {
-      //  return integration.fetchExperiences();
-    }
-    */
 
     public boolean login(String username, String password) {
         return integration.login(username, password);

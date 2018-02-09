@@ -1,28 +1,23 @@
 package view;
 
+import controller.Controller;
+import model.*;
+
+import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import controller.Controller;
-import model.Availability;
-import model.Experience;
-import model.Person;
-import model.User;
-import model.Role;
-import sun.rmi.runtime.Log;
-
-import javax.faces.bean.ManagedBean;
-
 @ManagedBean(name = "recruitmentHandler")
-public class recruitmentHandler implements Serializable{
+public class recruitmentHandler implements Serializable {
 
-    private Controller controller = new Controller();
+    private final Controller controller = new Controller();
     private Person person;
     private User user;
-    private Experience experience;
- //   private List<Availability> availability;
     private Role role;
+    private List<Availability> availabilities;
+    private List<Experience> experiences;
 
     private String username;
     private String password;
@@ -31,108 +26,131 @@ public class recruitmentHandler implements Serializable{
     private String email;
     private String ssn;
     private String conPassword;
-    private String regPersonError = "There was an error when trying to register";
-    private String regJobAppError = "There was an error when trying to register the job application";
-    private String regAvailabilityError = "There was an error when trying to register the availability";
-    private String regExperienceError = "There was an error when trying to register the experience";
-    private String regRoleError = "There was an error when trying to register the role";
-    private String regPersonExpError = "There was an error when trying to register the PersonExperience";
-    private String loginError = "There was an error when trying to log in";
+    private final String regPersonError = "There was an error when trying to register";
+    private final String regJobAppError = "There was an error when trying to register the job application";
+    private final String regAvailabilityError = "There was an error when trying to register the availability";
+    private final String regExperienceError = "There was an error when trying to register the experience";
+    private final String regRoleError = "There was an error when trying to register the role";
+    private final String regPersonExpError = "There was an error when trying to register the PersonExperience";
+    private final String loginError = "There was an error when trying to log in";
+
+    private boolean success = false;
 
     private static final Logger LOG = Logger.getLogger(recruitmentHandler.class.getName());
 
-
-    public void regPerson(){
+    /**
+     * Register a person with a username and password.
+     */
+    public void regPerson() {
         LOG.log(Level.INFO, "Hej");
-
+        try {
             person = new Person(firstName, lastName, ssn, email);
             user = new User(username, password);
             user.setPerson(person);
             controller.registerUser(person, user);
-
-            LOG.log(Level.INFO, "FEEEEEL");
-            System.out.println(regPersonError);
-
-
+            success = true;
+        } catch (Exception registerPersonException) {
+            LOG.log(Level.WARNING, regPersonError, registerPersonException);
+        }
     }
 
-    public void regAvailabilites(){
-        try{
+    /**
+     *
+     */
+    public void regAvailabilities() {
+        try {
            // controller.createAvailability(long personID, Date fromDate, Date toDate);
 
-        }catch(Exception registerAvailabilityException){
-            System.out.println(regAvailabilityError);
+        } catch (Exception registerAvailabilityException) {
+            LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
         }
 
     }
 
-    public void regExperiences(){
+    /**
+     *
+     */
+    public void regExperiences() {
         try {
            // controller.registerExperiences();
-        }catch(Exception registerExperienceException){
-            System.out.println(regExperienceError);
+        } catch (Exception registerExperienceException) {
+            LOG.log(Level.WARNING, regExperienceError, registerExperienceException);
         }
     }
 
+    /**
+     *
+     */
     public void regRole(){
-        try{
-
-        }catch(Exception registerRoleException){
-            System.out.println(regRoleError);
-        }
-
-    }
-
-    public void regPersonExperiences(){
-        try{
-
-        }catch(Exception registerPersonExpEexception){
-            System.out.println(regPersonExpError);
-        }
-
-    }
-
-    public void regJobApplication(){
         try {
 
+        } catch (Exception registerRoleException) {
+            LOG.log(Level.WARNING, regRoleError, registerRoleException);
+        }
 
-          //  controller.registerJobApplication(person, experienceList, yearsOfExprienceList, availabiliesList);
-        }catch(Exception registerJobAppException){
-            System.out.println(regJobAppError);
+    }
+
+    /**
+     *
+     */
+    public void regPersonExperiences() {
+        try {
+
+        } catch (Exception registerPersonException) {
+            LOG.log(Level.WARNING, regPersonExpError, registerPersonException);
+        }
+
+    }
+
+    /**
+     *
+     */
+    public void regJobApplication() {
+        try {
+          //  controller.registerJobApplication(person, experienceList, yearsOfExperienceList, availabilitiesList);
+        } catch(Exception registerJobAppException) {
+            LOG.log(Level.WARNING, regJobAppError, registerJobAppException);
         }
     }
 
-    public void login(){
+    /**
+     *
+     */
+    public void login() {
         try {
             boolean loginSuccess = controller.login(username, password);
         } catch (Exception loginException) {
-            System.out.println(loginError);
+            LOG.log(Level.WARNING, loginError, loginException);
         }
 
     }
 
-    public void setUsername(String username){
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setPassword(String password){
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setFirstName(String firstName){
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public void setLastName(String lastName){
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public void setEmail(String email){
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setSsn(String ssn){
+    public void setSsn(String ssn) {
         this.ssn = ssn;
+    }
+
+    public void setConPassword(String conPassword) {
+        this.conPassword = conPassword;
     }
 
     public String getUsername() {
@@ -163,8 +181,10 @@ public class recruitmentHandler implements Serializable{
         return conPassword;
     }
 
-    public void setConPassword(String conPassword) {
-        this.conPassword = conPassword;
+    public boolean getSuccess() {
+        boolean tempSuccess = success;
+        success = false;
+        return tempSuccess;
     }
 
 
