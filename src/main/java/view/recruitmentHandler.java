@@ -143,19 +143,19 @@ public class recruitmentHandler implements Serializable {
     /**
      * fetches a persons experiences according to
      */
-    public List<Experience> getExperiences(){
+    /*public List<Experience> getExperiences(){
         experiences = controller.fetchExperiences();
         return experiences;
-    }
+    }*/
 
     /**
      * fetches a persons years of experience for all experiences according to the
      */
-    public List<Double> getYearsOfExperiences(){
+  /*  public List<Double> getYearsOfExperiences(){
         yearsOfExperiences = controller.fetchYearsOfExperiences();
         return yearsOfExperiences;
     }
-
+*/
     /**
      * fetches job applications by time period or date of registration
      */

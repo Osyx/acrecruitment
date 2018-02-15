@@ -1,28 +1,37 @@
-package viewmodel.response;
+package common;
+
+import model.Person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class PersonRest {
-    private String personId;
+public class PersonPublicDTO {
+    private long personId;
     private String name;
     private String surname;
     private String email;
 
-    public PersonRest() {    }
+    public PersonPublicDTO() {    }
 
-    public PersonRest(String personId, String name, String surname, String email) {
+    public PersonPublicDTO(long personId, String name, String surname, String email) {
         this.personId = personId;
         this.name = name;
         this.surname = surname;
         this.email = email;
     }
 
-    public String getPersonId() {
+    public PersonPublicDTO(Person person) {
+        this.personId = person.getPersonId();
+        this.name = person.getName();
+        this.surname = person.getSurname();
+        this.email = person.getEmail();
+    }
+
+    public long getPersonId() {
         return personId;
     }
 
-    public void setPersonId(String personId) {
+    public void setPersonId(long personId) {
         this.personId = personId;
     }
 

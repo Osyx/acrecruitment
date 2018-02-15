@@ -1,5 +1,7 @@
 package integration;
 
+import common.PersonDTO;
+import common.PersonPublicDTO;
 import model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,6 +11,7 @@ import org.hibernate.query.Query;
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional(value = Transactional.TxType.MANDATORY)
@@ -77,6 +80,58 @@ public class Integration {
         Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
         session.getTransaction().commit();
         return person;
+    }
+
+    /**
+     * Fetches the person in the database with the SSN given.
+     * @param personId The ID of the person to be fetched.
+     * @return the person with the given ID.
+     */
+    public PersonDTO getPersonById(long personId) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select p from person p where p.personId = :id");
+        query.setParameter("id", personId);
+        List fakeList = query.getResultList();
+        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
+        session.getTransaction().commit();
+        return new PersonDTO(person);
+    }
+
+    /**
+     * Fetches a list of all persons in the db.
+     * @return A list containing information about the persons, but not their ssn.
+     */
+    public List<PersonPublicDTO> getPersons() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select p from person p");
+        List persons = query.getResultList();
+        session.getTransaction().commit();
+        List<PersonPublicDTO> response = new ArrayList<PersonPublicDTO>();
+        if(persons != null) {
+            for(Object person : persons)
+                response.add(new PersonPublicDTO((Person) person));
+        }
+        return response;
+    }
+
+    /**
+     * Updates information about a person.
+     * @param personDTO The DTO object encapsulating the JSON info given, which will be the new info.
+     */
+    public void updatePerson(PersonDTO personDTO) {
+        Person person = getPerson(personDTO.getSsn());
+        if(!personDTO.getEmail().trim().isEmpty())
+            person.setEmail(personDTO.getEmail());
+        if(!personDTO.getName().trim().isEmpty())
+            person.setName(personDTO.getName());
+        if(!personDTO.getSurname().trim().isEmpty())
+            person.setSurname(personDTO.getSurname());
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        session.update(person);
+        session.getTransaction().commit();
     }
 
     /**
