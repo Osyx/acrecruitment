@@ -1,28 +1,21 @@
 package common;
 
-import java.io.Serializable;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class PersonDTO implements Serializable{
-    private long id;
-    private String personId;
+@XmlRootElement
+public class PersonDTO {
     private String name;
     private String surname;
+    private String ssn;
     private String email;
 
-    public long getId() {
-        return id;
-    }
+    public PersonDTO() {    }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(String personId) {
-        this.personId = personId;
+    public PersonDTO(String name, String surname, String ssn, String email) {
+        this.name = name;
+        this.surname = surname;
+        this.ssn = ssn;
+        this.email = email;
     }
 
     public String getName() {
@@ -43,6 +36,14 @@ public class PersonDTO implements Serializable{
 
     public String getEmail() {
         return email;
+    }
+
+    public String getSsn() {
+        return ssn;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
     }
 
     public void setEmail(String email) {

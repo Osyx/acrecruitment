@@ -9,6 +9,15 @@ public class PersonRest {
     private String surname;
     private String email;
 
+    public PersonRest() {    }
+
+    public PersonRest(String personId, String name, String surname, String email) {
+        this.personId = personId;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+    }
+
     public String getPersonId() {
         return personId;
     }

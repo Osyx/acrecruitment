@@ -6,14 +6,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ErrorMessage {
     private String errorMessage;
     private String errorMessageKey;
-    private String href;
 
     public ErrorMessage() {    }
 
-    public ErrorMessage(String errorMessage, String errorMessageKey, String href) {
+    public ErrorMessage(String errorMessage, String errorMessageKey) {
         this.errorMessage = errorMessage;
         this.errorMessageKey = errorMessageKey;
-        this.href = href;
     }
 
     public String getErrorMessage() {
@@ -30,13 +28,5 @@ public class ErrorMessage {
 
     public void setErrorMessageKey(String errorMessageKey) {
         this.errorMessageKey = errorMessageKey;
-    }
-
-    public String getHref() {
-        return href;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
     }
 }

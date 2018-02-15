@@ -1,7 +1,6 @@
 package viewmodel.services;
 
 import common.ErrorMessages;
-import common.PersonDTO;
 import viewmodel.MissingRequiredFieldException;
 
 public class PersonUtils {

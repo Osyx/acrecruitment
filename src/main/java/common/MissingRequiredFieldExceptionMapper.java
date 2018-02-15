@@ -13,7 +13,7 @@ public class MissingRequiredFieldExceptionMapper implements ExceptionMapper<Miss
     @Override
     public Response toResponse(MissingRequiredFieldException e) {
         ErrorMessage errorMessage = new ErrorMessage(e.getMessage(),
-                ErrorMessages.MISSING_REQUIRED_FIELD.name(), "randomUrlForErrorHere.");
+                ErrorMessages.MISSING_REQUIRED_FIELD.name());
         return Response.status(Response.Status.BAD_REQUEST).build();
     }
 }

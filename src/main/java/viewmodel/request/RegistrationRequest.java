@@ -3,11 +3,13 @@ package viewmodel.request;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class CreatePersonRequestModel {
+public class RegistrationRequest {
     private String name;
     private String surname;
     private String ssn;
     private String email;
+    private String username;
+    private String password;
 
     public String getName() {
         return name;
