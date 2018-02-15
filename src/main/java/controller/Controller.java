@@ -30,9 +30,10 @@ public class Controller {
         integration.createObject(availability);
     }
 
-    public void createExperience(String experienceName) {
+    public Experience createExperience(String experienceName) {
         Experience experience = new Experience(experienceName);
         integration.createObject(experience);
+        return experience;
     }
 
     public void createPersonExperience(Person person, Experience experience, double yearsOfExperience){
@@ -40,8 +41,8 @@ public class Controller {
         integration.createObject(personExperience);
     }
 
-    public void createRole(long personID, String roleName){
-        Role role = new Role(personID, roleName);
+    public void createRole(Person person, String roleName){
+        Role role = new Role(person, roleName);  //Ska det verkligen vara en float här?
         integration.createObject(role);
     }
 
@@ -60,6 +61,14 @@ public class Controller {
 
     public List<Availability> fetchAvailabilities(String personSsn) {
         return integration.fetchAvailabilities(personSsn);
+    }
+
+    public List<Experience> fetchExperiences() {
+        return integration.fetchExperiences();
+    }
+
+    public List<Double> fetchYearsOfExperiences() {
+        return integration.fetchYearsOfExperiences();
     }
 
     public boolean login(String username, String password) {

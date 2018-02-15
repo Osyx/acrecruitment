@@ -5,6 +5,7 @@ import model.*;
 
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,9 +17,16 @@ public class recruitmentHandler implements Serializable {
     private Person person;
     private User user;
     private Role role;
+    private Experience experience;
     private List<Availability> availabilities;
     private List<Experience> experiences;
-
+    private List<Double> yearsOfExperiences;
+    private List <JobApplication> jobApplication;
+    private List <String> experienceNames;
+    private List <Double> years;
+    private Date fromDate;
+    private Date toDate;
+    private double yearsOfExperience;
     private String username;
     private String password;
     private String firstName;
@@ -26,11 +34,14 @@ public class recruitmentHandler implements Serializable {
     private String email;
     private String ssn;
     private String conPassword;
+    private String searchTimePeriod = "time period";
+    private String searchRegDate = "date of registration";
+    private String searchExperience = "experience";
+    private String searchName = "name";
     private final String regPersonError = "There was an error when trying to register";
     private final String regJobAppError = "There was an error when trying to register the job application";
     private final String regAvailabilityError = "There was an error when trying to register the availability";
     private final String regExperienceError = "There was an error when trying to register the experience";
-    private final String regRoleError = "There was an error when trying to register the role";
     private final String regPersonExpError = "There was an error when trying to register the PersonExperience";
     private final String loginError = "There was an error when trying to log in";
 
@@ -38,16 +49,17 @@ public class recruitmentHandler implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(recruitmentHandler.class.getName());
 
+
     /**
-     * Register a person with a username and password.
+     * Creates a person and a user, connects the person
+     * to the user and registers the user in the database
      */
-    public void regPerson() {
-        LOG.log(Level.INFO, "Hej");
+    public void regPerson(){
         try {
             person = new Person(firstName, lastName, ssn, email);
             user = new User(username, password);
             user.setPerson(person);
-            controller.registerUser(person, user);
+            success = controller.registerUser(person, user); // Ska väl sparas i en variabel?
             success = true;
         } catch (Exception registerPersonException) {
             LOG.log(Level.WARNING, regPersonError, registerPersonException);
@@ -55,12 +67,11 @@ public class recruitmentHandler implements Serializable {
     }
 
     /**
-     *
+     * registers a persons availabilities for a job application
      */
     public void regAvailabilities() {
         try {
-           // controller.createAvailability(long personID, Date fromDate, Date toDate);
-
+           controller.createAvailability(person, fromDate, toDate);
         } catch (Exception registerAvailabilityException) {
             LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
         }
@@ -68,26 +79,16 @@ public class recruitmentHandler implements Serializable {
     }
 
     /**
-     *
+     * registers a persons experiences
      */
-    public void regExperiences() {
+    public Experience regExperiences(String experienceName) { // Hur blir det här om vi får ett exception?
         try {
-           // controller.registerExperiences();
+            experience = controller.createExperience(experienceName);
+            return experience;
         } catch (Exception registerExperienceException) {
             LOG.log(Level.WARNING, regExperienceError, registerExperienceException);
         }
-    }
-
-    /**
-     *
-     */
-    public void regRole(){
-        try {
-
-        } catch (Exception registerRoleException) {
-            LOG.log(Level.WARNING, regRoleError, registerRoleException);
-        }
-
+        return experience;
     }
 
     /**
@@ -96,6 +97,10 @@ public class recruitmentHandler implements Serializable {
     public void regPersonExperiences() {
         try {
 
+            for (int i = 0; i < experienceNames.size(); i++){
+                experience = regExperiences(experienceNames.get(i));
+                controller.createPersonExperience(person, experience, years.get(i));
+            }
         } catch (Exception registerPersonException) {
             LOG.log(Level.WARNING, regPersonExpError, registerPersonException);
         }
@@ -103,18 +108,21 @@ public class recruitmentHandler implements Serializable {
     }
 
     /**
-     *
+     * registers a persons job application
      */
     public void regJobApplication() {
         try {
-          //  controller.registerJobApplication(person, experienceList, yearsOfExperienceList, availabilitiesList);
+            regPerson();
+            regPersonExperiences();
+            regAvailabilities();
+            controller.registerJobApplication(person, experiences, yearsOfExperiences, availabilities);
         } catch(Exception registerJobAppException) {
             LOG.log(Level.WARNING, regJobAppError, registerJobAppException);
         }
     }
 
     /**
-     *
+     * will let a user log in
      */
     public void login() {
         try {
@@ -122,7 +130,78 @@ public class recruitmentHandler implements Serializable {
         } catch (Exception loginException) {
             LOG.log(Level.WARNING, loginError, loginException);
         }
+    }
 
+    /**
+     * fetches a persons availabilities according to the ssn
+     */
+    public List<Availability> getAvailabilities(){
+        availabilities = controller.fetchAvailabilities(ssn);
+        return availabilities;
+    }
+
+    /**
+     * fetches a persons experiences according to
+     */
+    public List<Experience> getExperiences(){
+        experiences = controller.fetchExperiences();
+        return experiences;
+    }
+
+    /**
+     * fetches a persons years of experience for all experiences according to the
+     */
+    public List<Double> getYearsOfExperiences(){
+        yearsOfExperiences = controller.fetchYearsOfExperiences();
+        return yearsOfExperiences;
+    }
+
+    /**
+     * fetches job applications by time period or date of registration
+     */
+    public List<JobApplication> fetchJobApplications() {
+        jobApplication = controller.fetchJobApplications(searchTimePeriod, fromDate, toDate);
+        return jobApplication;
+    }
+
+    /**
+     * fetches job applications by experience
+
+     public List<JobApplication> fetchJobApplications() {
+     return controller.fetchJobApplications();
+     }
+     */
+
+    public Date getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(Date fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public Date getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(Date toDate) {
+        this.toDate = toDate;
+    }
+
+    public List<String> getExperienceNames() {
+        return experienceNames;
+    }
+
+    public void setExperienceNames(List<String> experienceNames) {
+        this.experienceNames = experienceNames;
+    }
+
+    public List<Double> getYears() {
+        return years;
+    }
+
+    public void setYears(List<Double> years) {
+        this.years = years;
     }
 
     public void setUsername(String username) {

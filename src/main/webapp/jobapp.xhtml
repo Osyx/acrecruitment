@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:b="http://bootsfaces.net/ui">
+
+    <h:head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <title>Job Application</title>
+        <h:outputScript src="https://www.w3schools.com/lib/w3.js"></h:outputScript>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+        <link rel="stylesheet" type="text/css" href="style.css" />
+    </h:head>
+
+    <h:body>
+        <ui:include src="navbar.xhtml"/>
+        <b:container>
+
+        <h1>Job Application</h1>
+
+        <h:form>
+            <h2>Personal info</h2>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="firstNameInput">First name</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name"/>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="lastNameInput">Last name</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="ssnInput">Social security number</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.ssn}" type="text" class="form-control" id="ssnInput" a:placeholder="Enter social security number"/>
+                    <small id="ssnHelp" class="form-text text-muted">&nbsp;e.g. "9212012406"</small>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="emailInput">Email address</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.email}" type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" a:placeholder="Enter email address"/>
+                    <small id="emailHelp" class="form-text text-muted">&nbsp;We'll never share your email with anyone else.</small>
+                </div>
+            </div>
+            <h2>Job specifics</h2>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="AvailableFromInput">Available from</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.fromDate}" type="date" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true"/>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date"/>
+                </div>
+            </div>
+            <h2>Experience</h2>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceTypeInfo1">Name of experience</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.experienceNames}" type="text" class="form-control" id="experienceTypeInfo1" a:placeholder="Enter type of experience" required="true"/>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceYearsInfo1">Years of experience</h:outputLabel>
+                    <b:selectOneMenu value="#{recruitmentHandler.years}" class="form-control" id="experienceYearsInfo1">
+                        <ui:include src="selectItems.xhtml"/>
+                    </b:selectOneMenu>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceTypeInfo2">Name of experience</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.experienceNames}" type="text" class="form-control" id="experienceTypeInfo2" a:placeholder="Enter type of experience" required="true"/>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceYearsInfo2">Years of experience</h:outputLabel>
+                    <b:selectOneMenu value="#{recruitmentHandler.years}" class="form-control" id="experienceYearsInfo2">
+                        <ui:include src="selectItems.xhtml"/>
+                    </b:selectOneMenu>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.experienceNames}"type="text" class="form-control" id="experienceTypeInfo3" a:placeholder="Enter type of experience" required="true"/>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
+                    <b:selectOneMenu value="#{recruitmentHandler.years}" class="form-control" id="experienceYearsInfo3">
+                        <ui:include src="selectItems.xhtml"/>
+                    </b:selectOneMenu>
+                </div>
+            </div>
+
+            <h:commandButton action="#{recruitmentHandler.regJobApplication}" class="btn btn-primary">
+                Register
+            </h:commandButton>
+        </h:form>
+
+        </b:container>
+
+
+
+    <!-- the scripts that need to be present -->
+    <h:outputScript src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></h:outputScript>
+    <h:outputScript src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></h:outputScript>
+    <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></h:outputScript>
+
+    </h:body>
+
+</html>
