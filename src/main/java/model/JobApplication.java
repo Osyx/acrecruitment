@@ -35,4 +35,32 @@ public class JobApplication {
     public void addPersonExperiences(PersonExperience personExperience) {
         this.personExperiences.add(personExperience);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public String getSsn() {
+        return ssn;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public List<ApplicationDate> getApplicationDates() {
+        return applicationDates;
+    }
+
+    public List<Availability> getAvailabilities() {
+        return availabilities;
+    }
+
+    public List<PersonExperience> getPersonExperiences() {
+        return personExperiences;
+    }
 }

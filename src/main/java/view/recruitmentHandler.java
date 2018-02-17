@@ -160,7 +160,7 @@ public class recruitmentHandler implements Serializable {
      * fetches job applications by time period or date of registration
      */
     public List<JobApplication> fetchJobApplications() {
-        jobApplication = controller.fetchJobApplications(searchTimePeriod, fromDate, toDate);
+        //jobApplication = controller.fetchJobApplications(searchTimePeriod, fromDate, toDate);
         return jobApplication;
     }
 

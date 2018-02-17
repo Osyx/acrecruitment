@@ -1,5 +1,6 @@
 package integration;
 
+import common.JobApplicationDTO;
 import common.PersonDTO;
 import common.PersonPublicDTO;
 import model.*;
@@ -206,6 +207,27 @@ public class Integration {
     }
 
     /**
+     * Fetch the job applications.
+     * @return A list with all job applications (If less than 1000 else the first 1000).
+     */
+    public List<JobApplicationDTO> fetchJobApplications() {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery(
+                "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
+                        " from person p, availability a, person_experience pe, experience e, application_date ad" +
+                        " where p.id = a.person.personId" +
+                        " and p.id = pe.person.personId" +
+                        " and p.id = ad.person.personId" +
+                        " and pe.experience.experienceId = e.id" +
+                        " order by a.fromDate asc");
+        query.setMaxResults(1000);
+        List list = query.getResultList();
+        session.getTransaction().commit();
+        return listToJobApplicationDTOList(list);
+    }
+
+    /**
      * Fetch the job applications, with date filters.
      * Available filters:
      * * <code>time period</code>
@@ -215,11 +237,12 @@ public class Integration {
      * @param toDate The date to which you want the applications.
      * @return A list with the available job applications.
      */
-    public List<JobApplication> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
+    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
         boolean createdQuery = false;
         Session session = factory.getCurrentSession();
         String lcParameter = searchParameter.toLowerCase();
         Query query = null;
+        session.beginTransaction();
         if("time period".equals(lcParameter)) {
             query = session.createQuery(
                     "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
@@ -249,10 +272,9 @@ public class Integration {
             query.setParameter("fromDate", fromDate);
             query.setParameter("toDate", toDate);
             query.setMaxResults(1000);
-            session.beginTransaction();
             List list = query.getResultList();
             session.getTransaction().commit();
-            return (List<JobApplication>) list;
+            return listToJobApplicationDTOList(list);
         }
         return null;
     }
@@ -266,11 +288,12 @@ public class Integration {
      * @param searchString The name or experience to search for.
      * @return A list with the available job applications.
      */
-    public List<JobApplication> fetchJobApplications(String searchParameter, String... searchString) {
+    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, String... searchString) {
         boolean createdQuery = false;
         Session session = factory.getCurrentSession();
         String lcParameter = searchParameter.toLowerCase();
         Query query = null;
+        session.beginTransaction();
         if("experience".equals(lcParameter)) {
             query = session.createQuery(
                     "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
@@ -301,11 +324,24 @@ public class Integration {
             createdQuery = true;
         }
         if(createdQuery) {
-            session.beginTransaction();
             List list = query.getResultList();
             session.getTransaction().commit();
-            return (List<JobApplication>) list;
+            return listToJobApplicationDTOList(list);
         }
         return null;
+    }
+
+    private List<JobApplicationDTO> listToJobApplicationDTOList(List list) {
+        List<JobApplicationDTO> jobApplicationList = new ArrayList<>();
+        for(JobApplication jobApplication : (List<JobApplication>) list)
+            jobApplicationList.add(new JobApplicationDTO(
+                    jobApplication.getName(),
+                    jobApplication.getSurname(),
+                    jobApplication.getSsn(),
+                    jobApplication.getEmail(),
+                    jobApplication.getApplicationDates(),
+                    jobApplication.getAvailabilities(),
+                    jobApplication.getPersonExperiences()));
+        return jobApplicationList;
     }
 }

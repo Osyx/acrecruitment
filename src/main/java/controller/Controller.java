@@ -1,5 +1,6 @@
 package controller;
 
+import common.JobApplicationDTO;
 import common.PersonDTO;
 import common.PersonPublicDTO;
 import integration.Integration;
@@ -196,12 +197,20 @@ public class Controller {
 
     /**
      *
+     * @return
+     */
+    public List<JobApplicationDTO> fetchJobApplications() {
+        return integration.fetchJobApplications();
+    }
+
+    /**
+     *
      * @param searchParameter
      * @param fromDate
      * @param toDate
      * @return
      */
-    public List<JobApplication> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
+    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
         return integration.fetchJobApplications(searchParameter, fromDate, toDate);
     }
 
@@ -211,7 +220,7 @@ public class Controller {
      * @param searchString
      * @return
      */
-    public List<JobApplication> fetchJobApplications(String searchParameter, String... searchString) {
+    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, String... searchString) {
         return integration.fetchJobApplications(searchParameter, searchString);
     }
 }
