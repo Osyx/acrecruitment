@@ -1,10 +1,8 @@
-package model;
+package integration.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(name = "role")
 public class Role implements Serializable {
@@ -12,20 +10,15 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "role_id", nullable = false)
-    private float personId;
+    private float roleId;
 
     @Column(name = "name")
     private String name;
 
     public Role() {    }
 
-    public Role(float personId, String name) {
-        this.personId = personId;
+    public Role(String name) {
         this.name = name;
-    }
-
-    public float getPersonId() {
-        return personId;
     }
 
     public String getName() {
@@ -35,7 +28,6 @@ public class Role implements Serializable {
     @Override
     public String toString() {
         return "Role{" +
-                "personId=" + personId +
                 ", name='" + name + '\'' +
                 '}';
     }

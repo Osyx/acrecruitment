@@ -1,4 +1,4 @@
-package model;
+package integration.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,15 +25,19 @@ public class ApplicationDate implements Serializable {
         this.appDate = appDate;
     }
 
-    public long getApplicationDateId() {
-        return applicationDateId;
-    }
-
     public Date getAppDate() {
         return appDate;
     }
 
+    public void setAppDate(Date appDate) {
+        this.appDate = appDate;
+    }
+
     public Person getPerson() {
         return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
     }
 }

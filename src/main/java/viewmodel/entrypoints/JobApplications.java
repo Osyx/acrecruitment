@@ -1,15 +1,11 @@
 package viewmodel.entrypoints;
 
-import common.JobApplicationDTO;
+import common.*;
 import controller.Controller;
-import model.JobApplication;
+import viewmodel.request.JobApplicationRequest;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.Date;
 import java.util.List;
 
 @Path("/jobapplications")
@@ -50,4 +46,16 @@ public class JobApplications {
         return controller.fetchJobApplications("name", firstname, surname);
     }
     */
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void createJobApplication(JobApplicationRequest jobApplicationRequest) {
+        controller.registerJobApplication(
+                jobApplicationRequest.getPerson(),
+                jobApplicationRequest.getExperiences(),
+                jobApplicationRequest.getAvailabilities(),
+                jobApplicationRequest.getApplicationDates()
+        );
+    }
 }

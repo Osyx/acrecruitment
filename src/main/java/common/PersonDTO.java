@@ -1,6 +1,6 @@
 package common;
 
-import model.Person;
+import integration.entity.Person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -11,6 +11,7 @@ public class PersonDTO {
     private String surname;
     private String ssn;
     private String email;
+    private String role;
 
     public PersonDTO() {    }
 
@@ -21,12 +22,29 @@ public class PersonDTO {
         this.email = email;
     }
 
+    public PersonDTO(String name, String surname, String ssn, String email, String role) {
+        this.name = name;
+        this.surname = surname;
+        this.ssn = ssn;
+        this.email = email;
+        this.role = role;
+    }
+
     public PersonDTO(Person person) {
         this.id = person.getPersonId();
         this.name = person.getName();
         this.surname = person.getSurname();
         this.ssn = person.getSsn();
         this.email = person.getEmail();
+    }
+
+    public PersonDTO(Person person, String role) {
+        this.id = person.getPersonId();
+        this.name = person.getName();
+        this.surname = person.getSurname();
+        this.ssn = person.getSsn();
+        this.email = person.getEmail();
+        this.role = role;
     }
 
     public long getId() {
@@ -67,5 +85,13 @@ public class PersonDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

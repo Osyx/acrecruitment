@@ -9,7 +9,8 @@ public enum ErrorMessages {
     REGISTER_EXPERIENCE_ERROR("There was an error when trying to register the experience"),
     REGISTER_ROLE_ERROR("There was an error when trying to register the role"),
     REGISTER_PERSON_EXPERIENCE_ERROR("There was an error when trying to register the PersonExperience"),
-    LOGIN_ERROR("There was an error when trying to log in");
+    LOGIN_ERROR("There was an error when trying to log in"),
+    SYSTEM_ERROR("There was an error during execute");
 
     private String errorMessage;
 

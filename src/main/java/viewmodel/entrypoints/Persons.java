@@ -33,12 +33,14 @@ public class Persons {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public void createPerson(PersonDTO requestObject) {
         controller.createPerson(requestObject);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public void updatePerson(PersonDTO personDTO) {
         controller.updatePerson(personDTO);
     }

@@ -1,6 +1,6 @@
 package common;
 
-import model.Person;
+import integration.entity.Person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 

@@ -1,4 +1,4 @@
-package model;
+package integration.entity;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 

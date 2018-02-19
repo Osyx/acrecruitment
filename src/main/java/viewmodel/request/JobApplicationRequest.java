@@ -1,29 +1,27 @@
-package common;
+package viewmodel.request;
+
+import common.ApplicationDateDTO;
+import common.AvailabilityDTO;
+import common.ExperienceDTO;
+import common.PersonDTO;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement
-public class JobApplicationDTO {
-    private PersonPublicDTO person;
+public class JobApplicationRequest {
+    private PersonDTO person;
     private List<AvailabilityDTO> availabilities;
     private List<ExperienceDTO> experiences;
     private List<ApplicationDateDTO> applicationDates;
 
-    public JobApplicationDTO() {}
+    public JobApplicationRequest() {}
 
-    public JobApplicationDTO(PersonPublicDTO person, List<AvailabilityDTO> availabilities, List<ExperienceDTO> experiences, List<ApplicationDateDTO> applicationDates) {
-        this.person = person;
-        this.availabilities = availabilities;
-        this.experiences = experiences;
-        this.applicationDates = applicationDates;
-    }
-
-    public PersonPublicDTO getPerson() {
+    public PersonDTO getPerson() {
         return person;
     }
 
-    public void setPerson(PersonPublicDTO person) {
+    public void setPerson(PersonDTO person) {
         this.person = person;
     }
 

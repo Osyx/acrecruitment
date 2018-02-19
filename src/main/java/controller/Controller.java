@@ -1,9 +1,8 @@
 package controller;
 
-import common.JobApplicationDTO;
-import common.PersonDTO;
-import common.PersonPublicDTO;
+import common.*;
 import integration.Integration;
+import integration.entity.*;
 import model.*;
 
 import javax.transaction.Transactional;
@@ -187,13 +186,13 @@ public class Controller {
 
     /**
      *
-     * @param person
-     * @param experiences
-     * @param yearsOfExperiences
-     * @param availabilities
+     * @param personDTO
+     * @param experienceDTOs
+     * @param availabilityDTOs
+     * @param applicationDateDTOs
      */
-    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities) {
-        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities);
+    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, List<ApplicationDateDTO> applicationDateDTOs) {
+        jobApplication.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDateDTOs);
     }
 
     /**

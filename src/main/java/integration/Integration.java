@@ -1,8 +1,8 @@
 package integration;
 
-import common.JobApplicationDTO;
 import common.PersonDTO;
 import common.PersonPublicDTO;
+import integration.entity.*;
 import model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -11,7 +11,6 @@ import org.hibernate.query.Query;
 
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +49,10 @@ public class Integration {
     public void createObject(Object... objectList) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        for(Object object : objectList)
-            session.save(object);
+        for(Object object : objectList) {
+            if(object != null)
+                session.save(object);
+        }
         session.getTransaction().commit();
     }
 
@@ -175,18 +176,26 @@ public class Integration {
      * @param yearsOfExperiences The amount of years the applicant has in each <code>experience</code>.
      * @param availabilities The time slots where the applicant can work.
      */
-    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities) {
+    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, List<ApplicationDate> applicationDates) {
+        userRegister(person, null);
+        Person savedPerson = getPerson(person.getSsn());
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         for (Availability availability : availabilities) {
-            availability.getPerson().setPersonId(person.getPersonId());
+            availability.setPerson(savedPerson);
             session.save(availability);
         }
         int yoei = 0;
         for(Experience experience : experiences) {
-            PersonExperience personExperience = new PersonExperience(person, experience, yearsOfExperiences.get(yoei++));
+            Experience existingExperience = getExperience(experience.getName());
+            if(existingExperience != null)
+                experience = existingExperience;
+            PersonExperience personExperience = new PersonExperience(savedPerson, experience, yearsOfExperiences.get(yoei++));
             session.save(personExperience);
-            session.save(experience);
+        }
+        for (ApplicationDate applicationDate : applicationDates) {
+            applicationDate.setPerson(savedPerson);
+            session.save(applicationDate);
         }
         session.getTransaction().commit();
     }
@@ -209,7 +218,7 @@ public class Integration {
     public List<Person> getPersonsByRole(String role) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select p from person p, role r where r.personId = p.personId and r.name = :role");
+        Query query = session.createQuery("select p from person p, role r, person_role pr where p.id = pr.person.id and r.id = pr.role.id and r.name = :role");
         query.setParameter("role", role);
         List personList = query.getResultList();
         session.getTransaction().commit();
@@ -224,5 +233,23 @@ public class Integration {
         List dateList = query.getResultList();
         session.getTransaction().commit();
         return (List<ApplicationDate>) dateList;
+    }
+
+    public Role getRole(String type) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select r from role r where r.name = :type");
+        query.setParameter("type", type);
+        List fakeList = query.getResultList();
+        session.getTransaction().commit();
+        return fakeList.isEmpty() ? null : (Role) fakeList.get(0);
+    }
+
+    public Experience getExperience(String experienceName) {
+        Session session = factory.getCurrentSession();
+        Query query = session.createQuery("select e from experience e where e.name = :name");
+        query.setParameter("name", experienceName);
+        List fakeList = query.getResultList();
+        return fakeList.isEmpty() ? null : (Experience) fakeList.get(0);
     }
 }

@@ -1,9 +1,9 @@
 package integration;
 
 import controller.Controller;
-import model.Availability;
-import model.Person;
-import model.User;
+import integration.entity.Availability;
+import integration.entity.Person;
+import integration.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
 
