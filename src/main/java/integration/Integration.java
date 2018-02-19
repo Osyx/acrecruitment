@@ -199,149 +199,30 @@ public class Integration {
     public List<Availability> fetchAvailabilities(String personSsn) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select a from availability a, person p where a.person.personId = p.id and p.ssn = :ssn");
+        Query query = session.createQuery("select a from availability a, person p " + "where a.person.personId = p.id and p.ssn = :ssn");
         query.setParameter("ssn", personSsn);
         List availabilityList = query.getResultList();
         session.getTransaction().commit();
         return (List<Availability>) availabilityList;
     }
 
-    /**
-     * Fetch the job applications.
-     * @return A list with all job applications (If less than 1000 else the first 1000).
-     */
-    public List<JobApplicationDTO> fetchJobApplications() {
+    public List<Person> getPersonsByRole(String role) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery(
-                "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                        " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                        " where p.id = a.person.personId" +
-                        " and p.id = pe.person.personId" +
-                        " and p.id = ad.person.personId" +
-                        " and pe.experience.experienceId = e.id" +
-                        " order by a.fromDate asc");
-        query.setMaxResults(1000);
-        List list = query.getResultList();
+        Query query = session.createQuery("select p from person p, role r where r.personId = p.personId and r.name = :role");
+        query.setParameter("role", role);
+        List personList = query.getResultList();
         session.getTransaction().commit();
-        return listToJobApplicationDTOList(list);
+        return (List<Person>) personList;
     }
 
-    /**
-     * Fetch the job applications, with date filters.
-     * Available filters:
-     * * <code>time period</code>
-     * * <code>date of registration</code>
-     * @param searchParameter The filter to choose.
-     * @param fromDate The date from which you want applications.
-     * @param toDate The date to which you want the applications.
-     * @return A list with the available job applications.
-     */
-    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
-        boolean createdQuery = false;
+    public List<ApplicationDate> getApplicationDates(String personSsn) {
         Session session = factory.getCurrentSession();
-        String lcParameter = searchParameter.toLowerCase();
-        Query query = null;
         session.beginTransaction();
-        if("time period".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                    " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                    " where p.id = a.person.personId" +
-                    " and p.id = pe.person.personId" +
-                    " and p.id = ad.person.personId" +
-                    " and pe.experience.experienceId = e.id" +
-                    " and a.fromDate >= :fromDate" +
-                    " and a.toDate <= :toDate" +
-                    " order by a.fromDate asc");
-            createdQuery = true;
-        } else if("date of registration".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                            " where p.id = a.person.personId" +
-                            " and p.id = pe.person.personId" +
-                            " and p.id = ad.person.personId" +
-                            " and pe.experience.experienceId = e.id" +
-                            " and ad.appDate >= :fromDate" +
-                            " and ad.appDate <= :toDate" +
-                            " order by ad.appDate asc");
-            createdQuery = true;
-        }
-        if(createdQuery) {
-            query.setParameter("fromDate", fromDate);
-            query.setParameter("toDate", toDate);
-            query.setMaxResults(1000);
-            List list = query.getResultList();
-            session.getTransaction().commit();
-            return listToJobApplicationDTOList(list);
-        }
-        return null;
-    }
-
-    /**
-     * Fetch the job applications, with experience or applicant name filters.
-     * Available filters:
-     * * <code>experience</code> name.
-     * * <code>name</code> of the applicant.
-     * @param searchParameter The filter to choose.
-     * @param searchString The name or experience to search for.
-     * @return A list with the available job applications.
-     */
-    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, String... searchString) {
-        boolean createdQuery = false;
-        Session session = factory.getCurrentSession();
-        String lcParameter = searchParameter.toLowerCase();
-        Query query = null;
-        session.beginTransaction();
-        if("experience".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                            " where p.id = a.person.personId" +
-                            " and p.id = pe.person.personId" +
-                            " and p.id = ad.person.personId" +
-                            " and pe.experience.experienceId = e.id" +
-                            " and e.name = :experience " +
-                            " order by pe.yearsOfExperience desc");
-            query.setParameter("experience", searchString[0]);
-            query.setMaxResults(1000);
-            createdQuery = true;
-        } else if("name".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                            " where p.id = a.person.personId" +
-                            " and p.id = pe.person.personId" +
-                            " and p.id = ad.person.personId" +
-                            " and pe.experience.experienceId = e.id" +
-                            " and p.name = :name" +
-                            " and p.surname = :surname" +
-                            " order by p.personId asc");
-            query.setParameter("name", searchString[0]);
-            query.setParameter("surname", searchString[1]);
-            query.setMaxResults(1000);
-            createdQuery = true;
-        }
-        if(createdQuery) {
-            List list = query.getResultList();
-            session.getTransaction().commit();
-            return listToJobApplicationDTOList(list);
-        }
-        return null;
-    }
-
-    private List<JobApplicationDTO> listToJobApplicationDTOList(List list) {
-        List<JobApplicationDTO> jobApplicationList = new ArrayList<>();
-        for(JobApplication jobApplication : (List<JobApplication>) list)
-            jobApplicationList.add(new JobApplicationDTO(
-                    jobApplication.getName(),
-                    jobApplication.getSurname(),
-                    jobApplication.getSsn(),
-                    jobApplication.getEmail(),
-                    jobApplication.getApplicationDates(),
-                    jobApplication.getAvailabilities(),
-                    jobApplication.getPersonExperiences()));
-        return jobApplicationList;
+        Query query = session.createQuery("select ad from person p, application_date ad where ad.person.personId = p.personId and p.ssn = :ssn");
+        query.setParameter("ssn", personSsn);
+        List dateList = query.getResultList();
+        session.getTransaction().commit();
+        return (List<ApplicationDate>) dateList;
     }
 }

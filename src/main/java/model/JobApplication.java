@@ -1,66 +1,58 @@
 package model;
 
+import common.ApplicationDateDTO;
+import common.AvailabilityDTO;
+import common.ExperienceDTO;
+import common.JobApplicationDTO;
+import integration.Integration;
+
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "person")
 public class JobApplication {
 
-    @Id
-    @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-    @Column(name = "person_id", nullable = false)
-    private long personId;
+    private Integration integration = new Integration();
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    public List<JobApplicationDTO> getJobApplications() {
+        List<JobApplicationDTO> jobApplications = new ArrayList<>();
+        List<Person> personList = integration.getPersonsByRole("applicant");
+        for(Person person : personList) {
+            List<ExperienceDTO> experiences = new ArrayList<>();
+            for(PersonExperience personExperience : person.getPersonExperiences()) {
+                experiences.add(new ExperienceDTO(
+                        personExperience.getExperience().getName(),
+                        personExperience.getYearsOfExperience()
+                ));
+                }
 
-    @Column(name = "surname", nullable = false)
-    private String surname;
+            List<AvailabilityDTO> availabilities = new ArrayList<>();
+            for(Availability availability : person.getAvailabilities()) {
+                availabilities.add(new AvailabilityDTO(
+                        availability.getFromDate(),
+                        availability.getToDate()
+                ));
+            }
 
-    @Column(name = "ssn", nullable = false)
-    private String ssn;
+            List<ApplicationDateDTO> applicationDates = new ArrayList<>();
+            for(ApplicationDate applicationDate : integration.getApplicationDates(person.getSsn())) {
+                applicationDates.add(new ApplicationDateDTO(
+                        applicationDate.getAppDate()
+                ));
+            }
 
-    @Column(name = "email", nullable = false)
-    private String email;
-
-    @OneToMany(mappedBy = "person")
-    private List<ApplicationDate> applicationDates;
-
-    @OneToMany(mappedBy = "person")
-    private List<Availability> availabilities;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person")
-    private List<PersonExperience> personExperiences;
-
-    public void addPersonExperiences(PersonExperience personExperience) {
-        this.personExperiences.add(personExperience);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getSsn() {
-        return ssn;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public List<ApplicationDate> getApplicationDates() {
-        return applicationDates;
-    }
-
-    public List<Availability> getAvailabilities() {
-        return availabilities;
-    }
-
-    public List<PersonExperience> getPersonExperiences() {
-        return personExperiences;
+            JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
+                    person.getName(),
+                    person.getSurname(),
+                    person.getEmail(),
+                    availabilities,
+                    experiences,
+                    applicationDates
+            );
+            jobApplications.add(jobApplicationDTO);
+        }
+        return jobApplications;
     }
 }

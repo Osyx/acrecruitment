@@ -2,6 +2,7 @@ package viewmodel.entrypoints;
 
 import common.JobApplicationDTO;
 import controller.Controller;
+import model.JobApplication;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,7 +21,7 @@ public class JobApplications {
     public List<JobApplicationDTO> getJobApplications() {
         return controller.fetchJobApplications();
     }
-
+/*
     @GET
     @Path("/TimePeriod/{fromDate}/{toDate}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -48,4 +49,5 @@ public class JobApplications {
     public List<JobApplicationDTO> getJobApplicationsByName(@PathParam("firstname") String firstname, @PathParam("surname") String surname) {
         return controller.fetchJobApplications("name", firstname, surname);
     }
+    */
 }

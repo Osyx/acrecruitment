@@ -11,22 +11,20 @@ import java.util.List;
 public class JobApplicationDTO {
     private String name;
     private String surname;
-    private String ssn;
     private String email;
-    private List<ApplicationDate> applicationDates;
-    private List<Availability> availabilities;
-    private List<PersonExperience> personExperiences;
+    private List<AvailabilityDTO> availabilities;
+    private List<ExperienceDTO> experiences;
+    private List<ApplicationDateDTO> applicationDates;
 
     public JobApplicationDTO() {}
 
-    public JobApplicationDTO(String name, String surname, String ssn, String email, List<ApplicationDate> applicationDates, List<Availability> availabilities, List<PersonExperience> personExperiences) {
+    public JobApplicationDTO(String name, String surname, String email, List<AvailabilityDTO> availabilities, List<ExperienceDTO> experiences, List<ApplicationDateDTO> applicationDates) {
         this.name = name;
         this.surname = surname;
-        this.ssn = ssn;
         this.email = email;
-        this.applicationDates = applicationDates;
         this.availabilities = availabilities;
-        this.personExperiences = personExperiences;
+        this.experiences = experiences;
+        this.applicationDates = applicationDates;
     }
 
     public String getName() {
@@ -45,14 +43,6 @@ public class JobApplicationDTO {
         this.surname = surname;
     }
 
-    public String getSsn() {
-        return ssn;
-    }
-
-    public void setSsn(String ssn) {
-        this.ssn = ssn;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -61,27 +51,27 @@ public class JobApplicationDTO {
         this.email = email;
     }
 
-    public List<ApplicationDate> getApplicationDates() {
-        return applicationDates;
-    }
-
-    public void setApplicationDates(List<ApplicationDate> applicationDates) {
-        this.applicationDates = applicationDates;
-    }
-
-    public List<Availability> getAvailabilities() {
+    public List<AvailabilityDTO> getAvailabilities() {
         return availabilities;
     }
 
-    public void setAvailabilities(List<Availability> availabilities) {
+    public void setAvailabilities(List<AvailabilityDTO> availabilities) {
         this.availabilities = availabilities;
     }
 
-    public List<PersonExperience> getPersonExperiences() {
-        return personExperiences;
+    public List<ExperienceDTO> getExperiences() {
+        return experiences;
     }
 
-    public void setPersonExperiences(List<PersonExperience> personExperiences) {
-        this.personExperiences = personExperiences;
+    public void setExperiences(List<ExperienceDTO> experiences) {
+        this.experiences = experiences;
+    }
+
+    public List<ApplicationDateDTO> getApplicationDates() {
+        return applicationDates;
+    }
+
+    public void setApplicationDates(List<ApplicationDateDTO> applicationDates) {
+        this.applicationDates = applicationDates;
     }
 }

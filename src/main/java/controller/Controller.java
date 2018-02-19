@@ -13,6 +13,7 @@ import java.util.List;
 @Transactional(Transactional.TxType.REQUIRES_NEW)
 public class Controller {
     private final Integration integration = new Integration();
+    private final JobApplication jobApplication = new JobApplication();
 
     /**
      * Creates and saves a person in the database with the given info.
@@ -200,27 +201,7 @@ public class Controller {
      * @return
      */
     public List<JobApplicationDTO> fetchJobApplications() {
-        return integration.fetchJobApplications();
+        return jobApplication.getJobApplications();
     }
 
-    /**
-     *
-     * @param searchParameter
-     * @param fromDate
-     * @param toDate
-     * @return
-     */
-    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
-        return integration.fetchJobApplications(searchParameter, fromDate, toDate);
-    }
-
-    /**
-     *
-     * @param searchParameter
-     * @param searchString
-     * @return
-     */
-    public List<JobApplicationDTO> fetchJobApplications(String searchParameter, String... searchString) {
-        return integration.fetchJobApplications(searchParameter, searchString);
-    }
 }
