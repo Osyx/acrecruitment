@@ -3,7 +3,7 @@ package viewmodel.request;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class RegistrationRequest {
+class RegistrationRequest {
     private String name;
     private String surname;
     private String ssn;

@@ -1,7 +1,7 @@
 package integration;
 
-import common.PersonDTO;
-import common.PersonPublicDTO;
+import common.ErrorMessages;
+import common.SystemException;
 import integration.entity.*;
 import model.*;
 import org.hibernate.Session;
@@ -10,8 +10,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import javax.inject.Singleton;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 //@Transactional(value = Transactional.TxType.MANDATORY)
@@ -20,7 +18,7 @@ public class Integration {
 
     private final SessionFactory factory = new Configuration()
             .configure("hibernate.cfg.xml")
-            .addAnnotatedClass(ApplicationDate.class)
+            .addAnnotatedClass(Application.class)
             .addAnnotatedClass(Availability.class)
             .addAnnotatedClass(Experience.class)
             .addAnnotatedClass(JobApplication.class)
@@ -30,111 +28,6 @@ public class Integration {
             .addAnnotatedClass(Role.class)
             .addAnnotatedClass(User.class)
             .buildSessionFactory();
-
-    /**
-     * Takes one entity object and saves it to the database.
-     * @param object The object to be saved in the database.
-     */
-    public void createObject(Object object) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        session.save(object);
-        session.getTransaction().commit();
-    }
-
-    /**
-     * Takes several entities and saves them in the order that the arguments are given in.
-     * @param objectList A list created by the params given, to be saved to the database.
-     */
-    public void createObject(Object... objectList) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        for(Object object : objectList) {
-            if(object != null)
-                session.save(object);
-        }
-        session.getTransaction().commit();
-    }
-
-    /**
-     * Takes an entity and removes it from the database.
-     * @param object The object to be deleted.
-     */
-    public void removeObject(Object object) {
-        if(object == null)  return;
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        session.delete(object);
-        session.getTransaction().commit();
-    }
-
-    /**
-     * Fetches the person in the database with the SSN given.
-     * @param personSsn The SSN of the person to be fetched.
-     * @return the person with the given SSN.
-     */
-    public Person getPerson(String personSsn) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("select p from person p where p.ssn = :ssn");
-        query.setParameter("ssn", personSsn);
-        List fakeList = query.getResultList();
-        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
-        session.getTransaction().commit();
-        return person;
-    }
-
-    /**
-     * Fetches the person in the database with the SSN given.
-     * @param personId The ID of the person to be fetched.
-     * @return the person with the given ID.
-     */
-    public PersonDTO getPersonById(long personId) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("select p from person p where p.personId = :id");
-        query.setParameter("id", personId);
-        List fakeList = query.getResultList();
-        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
-        session.getTransaction().commit();
-        return new PersonDTO(person);
-    }
-
-    /**
-     * Fetches a list of all persons in the db.
-     * @return A list containing information about the persons, but not their ssn.
-     */
-    public List<PersonPublicDTO> getPersons() {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("select p from person p");
-        List persons = query.getResultList();
-        session.getTransaction().commit();
-        List<PersonPublicDTO> response = new ArrayList<PersonPublicDTO>();
-        if(persons != null) {
-            for(Object person : persons)
-                response.add(new PersonPublicDTO((Person) person));
-        }
-        return response;
-    }
-
-    /**
-     * Updates information about a person.
-     * @param personDTO The DTO object encapsulating the JSON info given, which will be the new info.
-     */
-    public void updatePerson(PersonDTO personDTO) {
-        Person person = getPerson(personDTO.getSsn());
-        if(!personDTO.getEmail().trim().isEmpty())
-            person.setEmail(personDTO.getEmail());
-        if(!personDTO.getName().trim().isEmpty())
-            person.setName(personDTO.getName());
-        if(!personDTO.getSurname().trim().isEmpty())
-            person.setSurname(personDTO.getSurname());
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        session.update(person);
-        session.getTransaction().commit();
-    }
 
     /**
      * Checks if the login details are correct.
@@ -158,15 +51,29 @@ public class Integration {
      * Register a person with a username and password.
      * @param person The person to be added to the database.
      * @param user The user details for the person to be added.
-     * @return a boolean indicating whether the user creation was successful (<code>true</code>)
-     * or not (<code>false</code>).
      */
-    public boolean userRegister(Person person, User user) {
-        if(getPerson(person.getSsn()) == null) {
-            createObject(person, user);
-            return true;
+    public void userRegister(Person person, User user) throws SystemException {
+        if(user == null && person != null) {
+            createObject(person);
+        } else {
+            user.setPerson(person);
+            if (getUser(user.getUsername()) == null) {
+                if (person == null)
+                    throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.PERSON_MISSING.getErrorMessage());
+                else {
+                    if (personHasUser(person.getSsn()) == null) {
+                        Person regPerson = getPerson(person.getSsn());
+                        if (regPerson == null) {
+                            createObject(person, user);
+                        }
+                        user.setPerson(regPerson);
+                        createObject(user);
+                    } else
+                        throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.REGISTER_USER_ERROR.getErrorMessage());
+                }
+            } else
+                throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.REGISTER_USERNAME_ERROR.getErrorMessage());
         }
-        return false;
     }
 
     /**
@@ -176,7 +83,7 @@ public class Integration {
      * @param yearsOfExperiences The amount of years the applicant has in each <code>experience</code>.
      * @param availabilities The time slots where the applicant can work.
      */
-    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, List<ApplicationDate> applicationDates) {
+    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, List<Application> applications) throws SystemException {
         userRegister(person, null);
         Person savedPerson = getPerson(person.getSsn());
         Session session = factory.getCurrentSession();
@@ -193,28 +100,22 @@ public class Integration {
             PersonExperience personExperience = new PersonExperience(savedPerson, experience, yearsOfExperiences.get(yoei++));
             session.save(personExperience);
         }
-        for (ApplicationDate applicationDate : applicationDates) {
-            applicationDate.setPerson(savedPerson);
-            session.save(applicationDate);
+        for (Application application : applications) {
+            application.setPerson(savedPerson);
+            session.save(application);
         }
         session.getTransaction().commit();
+        createObject(new PersonRole(
+                person,
+                getRole("applicant")
+        ));
     }
 
     /**
-     * Fetch the availabilities of a applicant by their SSN.
-     * @param personSsn The SSN of the applicant.
-     * @return A list of the availabilities for the applicant.
+     * Get all persons of a certain role, thus eg all applicants.
+     * @param role The role which persons part of are returned.
+     * @return All persons which has the specified role.
      */
-    public List<Availability> fetchAvailabilities(String personSsn) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("select a from availability a, person p " + "where a.person.personId = p.id and p.ssn = :ssn");
-        query.setParameter("ssn", personSsn);
-        List availabilityList = query.getResultList();
-        session.getTransaction().commit();
-        return (List<Availability>) availabilityList;
-    }
-
     public List<Person> getPersonsByRole(String role) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -225,17 +126,24 @@ public class Integration {
         return (List<Person>) personList;
     }
 
-    public List<ApplicationDate> getApplicationDates(String personSsn) {
+    /**
+     * Get the dates for which a person has applied for.
+     * @param personSsn The SSN of the person whose application dates are returned.
+     * @return The application dates registered by the given person.
+     */
+    public List<Application> getApplicationDates(String personSsn) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         Query query = session.createQuery("select ad from person p, application_date ad where ad.person.personId = p.personId and p.ssn = :ssn");
         query.setParameter("ssn", personSsn);
         List dateList = query.getResultList();
         session.getTransaction().commit();
-        return (List<ApplicationDate>) dateList;
+        return (List<Application>) dateList;
     }
 
-    public Role getRole(String type) {
+    // Private functions
+
+    private Role getRole(String type) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         Query query = session.createQuery("select r from role r where r.name = :type");
@@ -245,11 +153,62 @@ public class Integration {
         return fakeList.isEmpty() ? null : (Role) fakeList.get(0);
     }
 
-    public Experience getExperience(String experienceName) {
+    private Experience getExperience(String experienceName) {
         Session session = factory.getCurrentSession();
         Query query = session.createQuery("select e from experience e where e.name = :name");
         query.setParameter("name", experienceName);
         List fakeList = query.getResultList();
         return fakeList.isEmpty() ? null : (Experience) fakeList.get(0);
+    }
+
+    private Person getPerson(String personSsn) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select p from person p where p.ssn = :ssn");
+        query.setParameter("ssn", personSsn);
+        List fakeList = query.getResultList();
+        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
+        session.getTransaction().commit();
+        return person;
+    }
+
+    private User getUser(String username) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select u from user u where u.username = :username");
+        query.setParameter("username", username);
+        List fakeList = query.getResultList();
+        User user = fakeList.isEmpty() ? null : (User) fakeList.get(0);
+        session.getTransaction().commit();
+        return user;
+    }
+
+    private User personHasUser(String personSsn) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select u from user u, person p where u.person.personId = p.personId and p.ssn = :ssn");
+        query.setParameter("ssn", personSsn);
+        List fakeList = query.getResultList();
+        User user = fakeList.isEmpty() ? null : (User) fakeList.get(0);
+        session.getTransaction().commit();
+        return user;
+    }
+
+    private void createObject(Object... objectList) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        for(Object object : objectList) {
+            if(object != null)
+                session.save(object);
+        }
+        session.getTransaction().commit();
+    }
+
+    private void removeObject(Object object) {
+        if(object == null)  return;
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        session.delete(object);
+        session.getTransaction().commit();
     }
 }

@@ -10,7 +10,10 @@ public enum ErrorMessages {
     REGISTER_ROLE_ERROR("There was an error when trying to register the role"),
     REGISTER_PERSON_EXPERIENCE_ERROR("There was an error when trying to register the PersonExperience"),
     LOGIN_ERROR("There was an error when trying to log in"),
-    SYSTEM_ERROR("There was an error during execute");
+    SYSTEM_ERROR("There was an error during execute"),
+    REGISTER_USERNAME_ERROR("Username already exists"),
+    REGISTER_USER_ERROR("You already have an user registered"),
+    PERSON_MISSING("There is either no such person found or a person isn't given");
 
     private String errorMessage;
 

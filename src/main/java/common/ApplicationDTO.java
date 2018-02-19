@@ -4,16 +4,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
 
 @XmlRootElement
-public class ApplicationDateDTO {
+public class ApplicationDTO {
     private String date;
+    private String accepted;
 
-    public ApplicationDateDTO() {}
+    public ApplicationDTO() {}
 
-    public ApplicationDateDTO(String date) {
+    public ApplicationDTO(String date) {
         this.date = date;
     }
 
-    public ApplicationDateDTO(Date date) {
+    public ApplicationDTO(Date date) {
         this.date = date.toString();
     }
 
@@ -27,5 +28,13 @@ public class ApplicationDateDTO {
 
     public void setDate(Date date) {
         this.date = date.toString();
+    }
+
+    public String getAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(String accepted) {
+        this.accepted = accepted;
     }
 }

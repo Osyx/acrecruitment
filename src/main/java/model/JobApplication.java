@@ -10,8 +10,12 @@ import java.util.List;
 
 public class JobApplication {
 
-    private Integration integration = new Integration();
+    private final Integration integration = new Integration();
 
+    /**
+     * Fetches all job applications.
+     * @return All job aaplications.
+     */
     public List<JobApplicationDTO> getJobApplications() {
         List<JobApplicationDTO> jobApplications = new ArrayList<>();
         List<Person> personList = integration.getPersonsByRole("applicant");
@@ -32,10 +36,10 @@ public class JobApplication {
                 ));
             }
 
-            List<ApplicationDateDTO> applicationDates = new ArrayList<>();
-            for(ApplicationDate applicationDate : integration.getApplicationDates(person.getSsn())) {
-                applicationDates.add(new ApplicationDateDTO(
-                        applicationDate.getAppDate()
+            List<ApplicationDTO> applicationDates = new ArrayList<>();
+            for(Application application : integration.getApplicationDates(person.getSsn())) {
+                applicationDates.add(new ApplicationDTO(
+                        application.getAppDate()
                 ));
             }
 
@@ -52,7 +56,15 @@ public class JobApplication {
         return jobApplications;
     }
 
-    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, List<ApplicationDateDTO> applicationDateDTOs) {
+    /**
+     * Registers a new job application.
+     * @param personDTO The DTO of the person to be the applicant.
+     * @param experienceDTOs The list of experiences that the applicant has.
+     * @param availabilityDTOs The list of dates that the applicant is available.
+     * @param applicationDTOs The dates of when the applicant registered the applications.
+     * @throws SystemException in case that there is an error when registering the application to the database.
+     */
+    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, List<ApplicationDTO> applicationDTOs) throws SystemException {
         Person person = new Person(
                 personDTO.getName(),
                 personDTO.getSurname(),
@@ -74,16 +86,12 @@ public class JobApplication {
                     Date.valueOf(availabilityDTO.getToDate())
             ));
         }
-        List<ApplicationDate> applicationDates = new ArrayList<>();
-        for(ApplicationDateDTO applicationDateDTO : applicationDateDTOs) {
-            applicationDates.add(new ApplicationDate(
-                    Date.valueOf(applicationDateDTO.getDate())
+        List<Application> applications = new ArrayList<>();
+        for(ApplicationDTO applicationDTO : applicationDTOs) {
+            applications.add(new Application(
+                    Date.valueOf(applicationDTO.getDate())
             ));
         }
-        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities, applicationDates);
-        integration.createObject(new PersonRole(
-                person,
-                integration.getRole("applicant")
-        ));
+        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities, applications);
     }
 }

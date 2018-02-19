@@ -1,6 +1,6 @@
 package viewmodel.request;
 
-import common.ApplicationDateDTO;
+import common.ApplicationDTO;
 import common.AvailabilityDTO;
 import common.ExperienceDTO;
 import common.PersonDTO;
@@ -13,7 +13,7 @@ public class JobApplicationRequest {
     private PersonDTO person;
     private List<AvailabilityDTO> availabilities;
     private List<ExperienceDTO> experiences;
-    private List<ApplicationDateDTO> applicationDates;
+    private List<ApplicationDTO> applicationDates;
 
     public JobApplicationRequest() {}
 
@@ -41,11 +41,11 @@ public class JobApplicationRequest {
         this.experiences = experiences;
     }
 
-    public List<ApplicationDateDTO> getApplicationDates() {
+    public List<ApplicationDTO> getApplicationDates() {
         return applicationDates;
     }
 
-    public void setApplicationDates(List<ApplicationDateDTO> applicationDates) {
+    public void setApplicationDates(List<ApplicationDTO> applicationDates) {
         this.applicationDates = applicationDates;
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Path("/jobapplications")
 public class JobApplications {
-    Controller controller = new Controller();
+    private final Controller controller = new Controller();
 
     @GET
     @Path("/{username}/{password}")
@@ -25,7 +25,7 @@ public class JobApplications {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void createJobApplication(JobApplicationRequest jobApplicationRequest) {
+    public void createJobApplication(JobApplicationRequest jobApplicationRequest) throws SystemException {
         controller.registerJobApplication(
                 jobApplicationRequest.getPerson(),
                 jobApplicationRequest.getExperiences(),

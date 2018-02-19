@@ -25,7 +25,7 @@ public class IntegrationTest {
     @Inject
     Integration integration;
 */
-
+/*
     Controller controller = new Controller();
     String personSsn = "12345678-9000";
 
@@ -92,4 +92,5 @@ public class IntegrationTest {
         }
         return new java.sql.Date(parsed.getTime());
     }
+    */
 }
