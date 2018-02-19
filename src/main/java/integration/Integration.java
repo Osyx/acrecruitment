@@ -14,7 +14,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional(value = Transactional.TxType.MANDATORY)
+//@Transactional(value = Transactional.TxType.MANDATORY)
 @Singleton
 public class Integration {
 

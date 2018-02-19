@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import java.sql.Date;
 import java.util.List;
 
-@Transactional(Transactional.TxType.REQUIRES_NEW)
+//@Transactional(Transactional.TxType.REQUIRES_NEW)
 public class Controller {
     private final Integration integration = new Integration();
     private final JobApplication jobApplication = new JobApplication();

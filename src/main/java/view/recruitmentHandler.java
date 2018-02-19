@@ -1,6 +1,7 @@
 package view;
 
 import controller.Controller;
+import integration.entity.*;
 import model.*;
 
 import javax.faces.bean.ManagedBean;
@@ -115,7 +116,7 @@ public class recruitmentHandler implements Serializable {
             regPerson();
             regPersonExperiences();
             regAvailabilities();
-            controller.registerJobApplication(person, experiences, yearsOfExperiences, availabilities);
+            //controller.registerJobApplication(person, experiences, yearsOfExperiences, availabilities);
         } catch(Exception registerJobAppException) {
             LOG.log(Level.WARNING, regJobAppError, registerJobAppException);
         }

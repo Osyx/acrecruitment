@@ -13,39 +13,14 @@ public class JobApplications {
     Controller controller = new Controller();
 
     @GET
+    @Path("/{username}/{password}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplications() {
-        return controller.fetchJobApplications();
+    public List<JobApplicationDTO> getJobApplications(@PathParam("username") String username, @PathParam("password") String password) throws SystemException {
+        if(controller.login(username, password))
+            return controller.fetchJobApplications();
+        else
+            throw new SystemException(ErrorMessages.LOGIN_ERROR.getErrorMessage(), ErrorMessages.LOGIN_ERROR.name());
     }
-/*
-    @GET
-    @Path("/TimePeriod/{fromDate}/{toDate}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplicationsByTP(@PathParam("fromDate") Date fromDate, @PathParam("toDate") Date toDate) {
-        return controller.fetchJobApplications("time period", fromDate, toDate);
-    }
-
-    @GET
-    @Path("/DateOfRegistration/{fromDate}/{toDate}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplicationsByDOR(@PathParam("fromDate") Date fromDate, @PathParam("toDate") Date toDate) {
-        return controller.fetchJobApplications("date of registration", fromDate, toDate);
-    }
-
-    @GET
-    @Path("/Experience/{experience}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplicationsByExperience(@PathParam("experience") String experience) {
-        return controller.fetchJobApplications("experience", experience);
-    }
-
-    @GET
-    @Path("/Name/{firstname}/{surname}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplicationsByName(@PathParam("firstname") String firstname, @PathParam("surname") String surname) {
-        return controller.fetchJobApplications("name", firstname, surname);
-    }
-    */
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
