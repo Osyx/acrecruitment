@@ -7,6 +7,7 @@ import model.*;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,6 +51,14 @@ public class recruitmentHandler implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(recruitmentHandler.class.getName());
 
+
+    {
+        experienceNames = new ArrayList<String>();
+        years = new ArrayList<Double>();
+        for(int i = 1; i<=10; i++) {
+            experienceNames.add("");
+        }
+    }
 
     /**
      * Creates a person and a user, connects the person
@@ -152,11 +161,12 @@ public class recruitmentHandler implements Serializable {
     /**
      * fetches a persons years of experience for all experiences according to the
      */
+
   /*  public List<Double> getYearsOfExperiences(){
         yearsOfExperiences = controller.fetchYearsOfExperiences();
         return yearsOfExperiences;
     }
-*/
+  */
     /**
      * fetches job applications by time period or date of registration
      */
