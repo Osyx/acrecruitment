@@ -46,26 +46,28 @@
                     <small id="emailHelp" class="form-text text-muted">&nbsp;We'll never share your email with anyone else.</small>
                 </div>
             </div>
-            <h2>Job specifics</h2>
+            <h2>Availability</h2>
             <div class="form-group row">
                 <div class="col-md-5">
                     <h:outputLabel for="AvailableFromInput">Available from</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.fromDate}" type="date" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true"/>
+                    <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true"/>
                 </div>
                 <div class="col-md-5">
                     <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date"/>
+                    <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
+                        <f:convertDateTime type="date" dateStyle="full" pattern="dd/MM/yyyy" />
+                    </h:inputText>
                 </div>
             </div>
             <h2>Experience</h2>
             <div class="form-group row">
                 <div class="col-md-5">
                     <h:outputLabel for="experienceTypeInfo1">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames}" type="text" class="form-control" id="experienceTypeInfo1" a:placeholder="Enter type of experience" required="true"/>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceTypeInfo1" a:placeholder="Enter type of experience" required="true"/>
                 </div>
                 <div class="col-md-5">
                     <h:outputLabel for="experienceYearsInfo1">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years}" class="form-control" id="experienceYearsInfo1">
+                    <b:selectOneMenu value="#{recruitmentHandler.years[0]}" class="form-control" id="experienceYearsInfo1">
                         <ui:include src="selectItems.xhtml"/>
                     </b:selectOneMenu>
                 </div>
@@ -73,11 +75,11 @@
             <div class="form-group row">
                 <div class="col-md-5">
                     <h:outputLabel for="experienceTypeInfo2">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames}" type="text" class="form-control" id="experienceTypeInfo2" a:placeholder="Enter type of experience" required="true"/>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[1]}" type="text" class="form-control" id="experienceTypeInfo2" a:placeholder="Enter type of experience" required="true"/>
                 </div>
                 <div class="col-md-5">
                     <h:outputLabel for="experienceYearsInfo2">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years}" class="form-control" id="experienceYearsInfo2">
+                    <b:selectOneMenu value="#{recruitmentHandler.years[1]" class="form-control" id="experienceYearsInfo2">
                         <ui:include src="selectItems.xhtml"/>
                     </b:selectOneMenu>
                 </div>
@@ -85,11 +87,11 @@
             <div class="form-group row">
                 <div class="col-md-5">
                     <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames}"type="text" class="form-control" id="experienceTypeInfo3" a:placeholder="Enter type of experience" required="true"/>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[2]}" type="text" class="form-control" id="experienceTypeInfo3" a:placeholder="Enter type of experience" required="true"/>
                 </div>
                 <div class="col-md-5">
                     <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years}" class="form-control" id="experienceYearsInfo3">
+                    <b:selectOneMenu value="#{recruitmentHandler.years[2]}" class="form-control" id="experienceYearsInfo3">
                         <ui:include src="selectItems.xhtml"/>
                     </b:selectOneMenu>
                 </div>
