@@ -41,11 +41,6 @@ public class Controller {
         integration.createObject(personExperience);
     }
 
-    public void createRole(Person person, String roleName){
-        Role role = new Role(person, roleName);  //Ska det verkligen vara en float här?
-        integration.createObject(role);
-    }
-
     public void createPersonRole(Person person, Role role){
         PersonRole personRole = new PersonRole(person, role);
         integration.createObject(personRole);
@@ -63,6 +58,7 @@ public class Controller {
         return integration.fetchAvailabilities(personSsn);
     }
 
+    /*
     public List<Experience> fetchExperiences() {
         return integration.fetchExperiences();
     }
@@ -70,6 +66,8 @@ public class Controller {
     public List<Double> fetchYearsOfExperiences() {
         return integration.fetchYearsOfExperiences();
     }
+
+    */
 
     public boolean login(String username, String password) {
         return integration.login(username, password);
