@@ -1,7 +1,10 @@
-package model;
+package integration.entity;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
-
+import java.util.List;
 
 
 @Entity(name = "person")
@@ -22,6 +25,14 @@ public class Person implements Serializable {
 
     @Column(name = "email", nullable = false)
     private String email;
+
+    @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<PersonExperience> personExperiences;
+
+    @OneToMany(mappedBy="person", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Availability> availabilities;
 
 
     public Person() {}
@@ -55,6 +66,38 @@ public class Person implements Serializable {
 
     public void setPersonId(long personId) {
         this.personId = personId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<PersonExperience> getPersonExperiences() {
+        return personExperiences;
+    }
+
+    public void setPersonExperiences(List<PersonExperience> personExperiences) {
+        this.personExperiences = personExperiences;
+    }
+
+    public List<Availability> getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(List<Availability> availabilities) {
+        this.availabilities = availabilities;
     }
 
     @Override

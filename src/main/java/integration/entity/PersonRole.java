@@ -1,4 +1,4 @@
-package model;
+package integration.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class PersonRole implements Serializable {
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
@@ -16,7 +16,7 @@ public class PersonRole implements Serializable {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    public PersonRole() {    }
+    public PersonRole() {}
 
     public PersonRole(Person person, Role role) {
         this.person = person;

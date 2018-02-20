@@ -20,7 +20,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
-          <factory-entry name="Entities" value="82506afa-70e7-4e78-967a-708404c1293e" />
+          <factory-entry name="Entities" value="91df291c-f6a4-4f21-8733-94e3e0e9b5a0" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/persistence.xml" />
       </configuration>
@@ -35,7 +35,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6">
+  <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -50,7 +50,6 @@
     <orderEntry type="library" name="Maven: org.glassfish.main.security:security:4.0" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-api:2.1.92" level="project" />
-    <orderEntry type="library" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:config-types:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-config:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.jvnet:tiger-types:1.4" level="project" />
@@ -66,7 +65,6 @@
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-utils:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.main.admin:config-api:4.0" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.main.deployment:dol:4.0" level="project" />
-    <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: javax.transaction:javax.transaction-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: javax.enterprise.deploy:javax.enterprise.deploy-api:1.6" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
@@ -113,7 +111,6 @@
     <orderEntry type="library" name="Maven: org.glassfish.main.security:security:4.0" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-api:2.1.92" level="project" />
-    <orderEntry type="library" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:config-types:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-config:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.jvnet:tiger-types:1.4" level="project" />
@@ -129,7 +126,6 @@
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-utils:2.1.92" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.main.admin:config-api:4.0" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.main.deployment:dol:4.0" level="project" />
-    <orderEntry type="library" name="Maven: javax.annotation:javax.annotation-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: javax.transaction:javax.transaction-api:1.2" level="project" />
     <orderEntry type="library" name="Maven: javax.enterprise.deploy:javax.enterprise.deploy-api:1.6" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
@@ -249,5 +245,30 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-initialcontext:1.2.0.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: fish.payara.extras:payara-embedded-all:4.1.1.161" level="project" />
     <orderEntry type="library" name="Maven: net.bootsfaces:bootsfaces:1.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.bundles:jaxrs-ri:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-common:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.annotation:javax.annotation-api:1.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.bundles.repackaged:jersey-guava:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-api:2.5.0-b30" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-utils:2.5.0-b30" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2.external:aopalliance-repackaged:2.5.0-b30" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2.external:javax.inject:2.5.0-b30" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-locator:2.5.0-b30" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-jaxb:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-client:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-server:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet-core:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-moxy:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.ext:jersey-entity-filtering:2.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.core:2.6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:org.eclipse.persistence.asm:2.6.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish:javax.json:1.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-beans:4.3.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-core:4.3.7.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
   </component>
 </module>
