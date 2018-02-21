@@ -1,5 +1,8 @@
 package integration;
 
+import common.ErrorMessages;
+import common.SystemException;
+import integration.entity.*;
 import model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -7,17 +10,15 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import javax.inject.Singleton;
-import javax.transaction.Transactional;
-import java.sql.Date;
 import java.util.List;
 
-@Transactional(value = Transactional.TxType.MANDATORY)
+//@Transactional(value = Transactional.TxType.MANDATORY)
 @Singleton
 public class Integration {
 
     private final SessionFactory factory = new Configuration()
             .configure("hibernate.cfg.xml")
-            .addAnnotatedClass(ApplicationDate.class)
+            .addAnnotatedClass(Application.class)
             .addAnnotatedClass(Availability.class)
             .addAnnotatedClass(Experience.class)
             .addAnnotatedClass(JobApplication.class)
@@ -27,57 +28,6 @@ public class Integration {
             .addAnnotatedClass(Role.class)
             .addAnnotatedClass(User.class)
             .buildSessionFactory();
-
-    /**
-     * Takes one entity object and saves it to the database.
-     * @param object The object to be saved in the database.
-     */
-    public void createObject(Object object) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        session.save(object);
-        session.getTransaction().commit();
-    }
-
-    /**
-     * Takes several entities and saves them in the order that the arguments are given in.
-     * @param objectList A list created by the params given, to be saved to the database.
-     */
-    public void createObject(Object... objectList) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        for(Object object : objectList)
-            session.save(object);
-        session.getTransaction().commit();
-    }
-
-    /**
-     * Takes an entity and removes it from the database.
-     * @param object The object to be deleted.
-     */
-    public void removeObject(Object object) {
-        if(object == null)  return;
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        session.delete(object);
-        session.getTransaction().commit();
-    }
-
-    /**
-     * Fetches the person in the database with the SSN given.
-     * @param personSsn The SSN of the person to be fetched.
-     * @return the person with the given SSN.
-     */
-    public Person getPerson(String personSsn) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("select p from person p where p.ssn = :ssn");
-        query.setParameter("ssn", personSsn);
-        List fakeList = query.getResultList();
-        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
-        session.getTransaction().commit();
-        return person;
-    }
 
     /**
      * Checks if the login details are correct.
@@ -101,15 +51,29 @@ public class Integration {
      * Register a person with a username and password.
      * @param person The person to be added to the database.
      * @param user The user details for the person to be added.
-     * @return a boolean indicating whether the user creation was successful (<code>true</code>)
-     * or not (<code>false</code>).
      */
-    public boolean userRegister(Person person, User user) {
-        if(getPerson(person.getSsn()) == null) {
-            createObject(person, user);
-            return true;
+    public void userRegister(Person person, User user) throws SystemException {
+        if(user == null && person != null) {
+            createObject(person);
+        } else {
+            user.setPerson(person);
+            if (getUser(user.getUsername()) == null) {
+                if (person == null)
+                    throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.PERSON_MISSING.getErrorMessage());
+                else {
+                    if (personHasUser(person.getSsn()) == null) {
+                        Person regPerson = getPerson(person.getSsn());
+                        if (regPerson == null) {
+                            createObject(person, user);
+                        }
+                        user.setPerson(regPerson);
+                        createObject(user);
+                    } else
+                        throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.REGISTER_USER_ERROR.getErrorMessage());
+                }
+            } else
+                throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.REGISTER_USERNAME_ERROR.getErrorMessage());
         }
-        return false;
     }
 
     /**
@@ -119,138 +83,132 @@ public class Integration {
      * @param yearsOfExperiences The amount of years the applicant has in each <code>experience</code>.
      * @param availabilities The time slots where the applicant can work.
      */
-    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities) {
+    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, List<Application> applications) throws SystemException {
+        userRegister(person, null);
+        Person savedPerson = getPerson(person.getSsn());
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         for (Availability availability : availabilities) {
-            availability.getPerson().setPersonId(person.getPersonId());
+            availability.setPerson(savedPerson);
             session.save(availability);
         }
         int yoei = 0;
         for(Experience experience : experiences) {
-            PersonExperience personExperience = new PersonExperience(person, experience, yearsOfExperiences.get(yoei++));
+            Experience existingExperience = getExperience(experience.getName());
+            if(existingExperience != null)
+                experience = existingExperience;
+            PersonExperience personExperience = new PersonExperience(savedPerson, experience, yearsOfExperiences.get(yoei++));
             session.save(personExperience);
-            session.save(experience);
+        }
+        for (Application application : applications) {
+            application.setPerson(savedPerson);
+            session.save(application);
         }
         session.getTransaction().commit();
+        createObject(new PersonRole(
+                person,
+                getRole("applicant")
+        ));
     }
 
     /**
-     * Fetch the availabilities of a applicant by their SSN.
-     * @param personSsn The SSN of the applicant.
-     * @return A list of the availabilities for the applicant.
+     * Get all persons of a certain role, thus eg all applicants.
+     * @param role The role which persons part of are returned.
+     * @return All persons which has the specified role.
      */
-    public List<Availability> fetchAvailabilities(String personSsn) {
+    public List<Person> getPersonsByRole(String role) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select a from availability a, person p where a.person.personId = p.id and p.ssn = :ssn");
-        query.setParameter("ssn", personSsn);
-        List availabilityList = query.getResultList();
+        Query query = session.createQuery("select p from person p, role r, person_role pr where p.id = pr.person.id and r.id = pr.role.id and r.name = :role");
+        query.setParameter("role", role);
+        List personList = query.getResultList();
         session.getTransaction().commit();
-        return (List<Availability>) availabilityList;
+        return (List<Person>) personList;
     }
 
     /**
-     * Fetch the job applications, with date filters.
-     * Available filters:
-     * * <code>time period</code>
-     * * <code>date of registration</code>
-     * @param searchParameter The filter to choose.
-     * @param fromDate The date from which you want applications.
-     * @param toDate The date to which you want the applications.
-     * @return A list with the available job applications.
+     * Get the dates for which a person has applied for.
+     * @param personSsn The SSN of the person whose application dates are returned.
+     * @return The application dates registered by the given person.
      */
-    public List<JobApplication> fetchJobApplications(String searchParameter, Date fromDate, Date toDate) {
-        boolean createdQuery = false;
+    public List<Application> getApplicationDates(String personSsn) {
         Session session = factory.getCurrentSession();
-        String lcParameter = searchParameter.toLowerCase();
-        Query query = null;
-        if("time period".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                    " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                    " where p.id = a.person.personId" +
-                    " and p.id = pe.person.personId" +
-                    " and p.id = ad.person.personId" +
-                    " and pe.experience.experienceId = e.id" +
-                    " and a.fromDate >= :fromDate" +
-                    " and a.toDate <= :toDate" +
-                    " order by a.fromDate asc");
-            createdQuery = true;
-        } else if("date of registration".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                            " where p.id = a.person.personId" +
-                            " and p.id = pe.person.personId" +
-                            " and p.id = ad.person.personId" +
-                            " and pe.experience.experienceId = e.id" +
-                            " and ad.appDate >= :fromDate" +
-                            " and ad.appDate <= :toDate" +
-                            " order by ad.appDate asc");
-            createdQuery = true;
-        }
-        if(createdQuery) {
-            query.setParameter("fromDate", fromDate);
-            query.setParameter("toDate", toDate);
-            query.setMaxResults(1000);
-            session.beginTransaction();
-            List list = query.getResultList();
-            session.getTransaction().commit();
-            return (List<JobApplication>) list;
-        }
-        return null;
+        session.beginTransaction();
+        Query query = session.createQuery("select ad from person p, application_date ad where ad.person.personId = p.personId and p.ssn = :ssn");
+        query.setParameter("ssn", personSsn);
+        List dateList = query.getResultList();
+        session.getTransaction().commit();
+        return (List<Application>) dateList;
     }
 
-    /**
-     * Fetch the job applications, with experience or applicant name filters.
-     * Available filters:
-     * * <code>experience</code> name.
-     * * <code>name</code> of the applicant.
-     * @param searchParameter The filter to choose.
-     * @param searchString The name or experience to search for.
-     * @return A list with the available job applications.
-     */
-    public List<JobApplication> fetchJobApplications(String searchParameter, String... searchString) {
-        boolean createdQuery = false;
+    // Private functions
+
+    private Role getRole(String type) {
         Session session = factory.getCurrentSession();
-        String lcParameter = searchParameter.toLowerCase();
-        Query query = null;
-        if("experience".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                            " where p.id = a.person.personId" +
-                            " and p.id = pe.person.personId" +
-                            " and p.id = ad.person.personId" +
-                            " and pe.experience.experienceId = e.id" +
-                            " and e.name = :experience " +
-                            " order by pe.yearsOfExperience desc");
-            query.setParameter("experience", searchString[0]);
-            query.setMaxResults(1000);
-            createdQuery = true;
-        } else if("name".equals(lcParameter)) {
-            query = session.createQuery(
-                    "select p.ssn, p.name, p.surname, p.email, a.fromDate, a.toDate, e.name, pe.yearsOfExperience, ad.appDate" +
-                            " from person p, availability a, person_experience pe, experience e, application_date ad" +
-                            " where p.id = a.person.personId" +
-                            " and p.id = pe.person.personId" +
-                            " and p.id = ad.person.personId" +
-                            " and pe.experience.experienceId = e.id" +
-                            " and p.name = :name" +
-                            " and p.surname = :surname" +
-                            " order by p.personId asc");
-            query.setParameter("name", searchString[0]);
-            query.setParameter("surname", searchString[1]);
-            query.setMaxResults(1000);
-            createdQuery = true;
+        session.beginTransaction();
+        Query query = session.createQuery("select r from role r where r.name = :type");
+        query.setParameter("type", type);
+        List fakeList = query.getResultList();
+        session.getTransaction().commit();
+        return fakeList.isEmpty() ? null : (Role) fakeList.get(0);
+    }
+
+    private Experience getExperience(String experienceName) {
+        Session session = factory.getCurrentSession();
+        Query query = session.createQuery("select e from experience e where e.name = :name");
+        query.setParameter("name", experienceName);
+        List fakeList = query.getResultList();
+        return fakeList.isEmpty() ? null : (Experience) fakeList.get(0);
+    }
+
+    private Person getPerson(String personSsn) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select p from person p where p.ssn = :ssn");
+        query.setParameter("ssn", personSsn);
+        List fakeList = query.getResultList();
+        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
+        session.getTransaction().commit();
+        return person;
+    }
+
+    private User getUser(String username) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select u from user u where u.username = :username");
+        query.setParameter("username", username);
+        List fakeList = query.getResultList();
+        User user = fakeList.isEmpty() ? null : (User) fakeList.get(0);
+        session.getTransaction().commit();
+        return user;
+    }
+
+    private User personHasUser(String personSsn) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("select u from user u, person p where u.person.personId = p.personId and p.ssn = :ssn");
+        query.setParameter("ssn", personSsn);
+        List fakeList = query.getResultList();
+        User user = fakeList.isEmpty() ? null : (User) fakeList.get(0);
+        session.getTransaction().commit();
+        return user;
+    }
+
+    private void createObject(Object... objectList) {
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        for(Object object : objectList) {
+            if(object != null)
+                session.save(object);
         }
-        if(createdQuery) {
-            session.beginTransaction();
-            List list = query.getResultList();
-            session.getTransaction().commit();
-            return (List<JobApplication>) list;
-        }
-        return null;
+        session.getTransaction().commit();
+    }
+
+    private void removeObject(Object object) {
+        if(object == null)  return;
+        Session session = factory.getCurrentSession();
+        session.beginTransaction();
+        session.delete(object);
+        session.getTransaction().commit();
     }
 }

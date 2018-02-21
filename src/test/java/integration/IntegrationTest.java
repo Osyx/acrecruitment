@@ -1,9 +1,9 @@
 package integration;
 
 import controller.Controller;
-import model.Availability;
-import model.Person;
-import model.User;
+import integration.entity.Availability;
+import integration.entity.Person;
+import integration.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -25,7 +25,7 @@ public class IntegrationTest {
     @Inject
     Integration integration;
 */
-
+/*
     Controller controller = new Controller();
     String personSsn = "12345678-9000";
 
@@ -92,4 +92,5 @@ public class IntegrationTest {
         }
         return new java.sql.Date(parsed.getTime());
     }
+    */
 }

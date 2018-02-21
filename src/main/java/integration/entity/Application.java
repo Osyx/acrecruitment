@@ -1,11 +1,11 @@
-package model;
+package integration.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 
 @Entity(name = "application_date")
-public class ApplicationDate implements Serializable {
+public class Application implements Serializable {
 
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
@@ -19,21 +19,36 @@ public class ApplicationDate implements Serializable {
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
-    public ApplicationDate() {  }
+    //private boolean accepted;
 
-    public ApplicationDate(Date appDate) {
+    public Application() {  }
+
+    public Application(Date appDate) {
         this.appDate = appDate;
-    }
-
-    public long getApplicationDateId() {
-        return applicationDateId;
     }
 
     public Date getAppDate() {
         return appDate;
     }
 
+    public void setAppDate(Date appDate) {
+        this.appDate = appDate;
+    }
+
     public Person getPerson() {
         return person;
     }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+/*
+    public boolean isAccepted() {
+        return accepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        this.accepted = accepted;
+    }
+    */
 }
