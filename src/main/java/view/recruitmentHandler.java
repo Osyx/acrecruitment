@@ -25,7 +25,7 @@ public class recruitmentHandler implements Serializable {
     private List<Double> yearsOfExperiences;
     private List <JobApplication> jobApplication;
     private List <String> experienceNames;
-    private List <Double> years;
+    private List <String> years;
     private Date fromDate;
     private Date toDate;
     private double yearsOfExperience;
@@ -53,10 +53,11 @@ public class recruitmentHandler implements Serializable {
 
 
     {
-        experienceNames = new ArrayList<String>();
-        years = new ArrayList<Double>();
+        experienceNames = new ArrayList<>();
+        years = new ArrayList<>();
         for(int i = 1; i<=10; i++) {
             experienceNames.add("");
+            years.add("");
         }
     }
 
@@ -108,8 +109,9 @@ public class recruitmentHandler implements Serializable {
         try {
 
             for (int i = 0; i < experienceNames.size(); i++){
+                String temp = years.get(i);
                 experience = regExperiences(experienceNames.get(i));
-                controller.createPersonExperience(person, experience, years.get(i));
+                controller.createPersonExperience(person, experience, Double.parseDouble(temp));
             }
         } catch (Exception registerPersonException) {
             LOG.log(Level.WARNING, regPersonExpError, registerPersonException);
@@ -207,11 +209,11 @@ public class recruitmentHandler implements Serializable {
         this.experienceNames = experienceNames;
     }
 
-    public List<Double> getYears() {
+    public List<String> getYears() {
         return years;
     }
 
-    public void setYears(List<Double> years) {
+    public void setYears(List<String> years) {
         this.years = years;
     }
 
