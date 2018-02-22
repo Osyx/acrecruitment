@@ -86,18 +86,7 @@ public class Controller {
         PersonExperience personExperience = new PersonExperience(person, experience, yearsOfExperience);
         integration.createObject(personExperience);
     }
-/*
-    public void createRole(Person person, String roleName){
-        Role role = new Role(person, roleName);  //Ska det verkligen vara en float här?
-        integration.createObject(role);
-    }
-*/
 
-    /**
-     *
-     * @param person
-     * @param role
-     */
     public void createPersonRole(Person person, Role role){
         PersonRole personRole = new PersonRole(person, role);
         integration.createObject(personRole);
@@ -162,7 +151,7 @@ public class Controller {
     public List<Double> fetchYearsOfExperiences() {
         return integration.fetchYearsOfExperiences();
     }
-*/
+    */
 
     /**
      *
