@@ -21,6 +21,10 @@ public class User implements Serializable {
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     public User() {    }
 
     public User(String username, String password) {

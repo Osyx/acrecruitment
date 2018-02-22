@@ -1,6 +1,6 @@
 package common;
 
-public enum ErrorMessages {
+public enum Messages {
     MISSING_REQUIRED_FIELD("Missing required field(s). Please check that you have included them all."),
     RECORD_ALREADY_EXISTS("Record already exists."),
     REGISTER_PERSON_ERROR("There was an error when trying to register"),
@@ -13,11 +13,12 @@ public enum ErrorMessages {
     SYSTEM_ERROR("There was an error during execute"),
     REGISTER_USERNAME_ERROR("Username already exists"),
     REGISTER_USER_ERROR("You already have an user registered"),
-    PERSON_MISSING("There is either no such person found or a person isn't given");
+    PERSON_MISSING("There is either no such person found or a person isn't given"),
+    SAVE_TO_DB_FAILED("Something went wrong during the save to the DB");
 
     private String errorMessage;
 
-    ErrorMessages(String errorMessage) {
+    Messages(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 

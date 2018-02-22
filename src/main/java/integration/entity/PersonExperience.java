@@ -22,6 +22,10 @@ public class PersonExperience implements Serializable {
     @Column(name = "years_of_experience", nullable = false)
     private double yearsOfExperience;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     public PersonExperience() {    }
 
     public PersonExperience(double yearsOfExperience) {

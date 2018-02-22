@@ -1,4 +1,4 @@
-package integration;
+package controller;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -11,11 +11,11 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 //@RunWith(Arquillian.class)
-public class IntegrationTest {
+public class ControllerTest {
     //@Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
-                .addClass(Integration.class)
+                .addClass(Controller.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
@@ -24,7 +24,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void userRegister() {
+    public void registerUser() {
     }
 
     @Test
@@ -32,7 +32,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void getPersonsByRole() {
+    public void fetchJobApplications() {
     }
 
     @Test

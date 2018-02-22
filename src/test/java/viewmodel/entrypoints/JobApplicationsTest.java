@@ -1,4 +1,4 @@
-package integration;
+package viewmodel.entrypoints;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -11,31 +11,19 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 //@RunWith(Arquillian.class)
-public class IntegrationTest {
+public class JobApplicationsTest {
     //@Deployment
     public static JavaArchive createDeployment() {
         return ShrinkWrap.create(JavaArchive.class)
-                .addClass(Integration.class)
+                .addClass(JobApplications.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test
-    public void login() {
+    public void getJobApplications() {
     }
 
     @Test
-    public void userRegister() {
-    }
-
-    @Test
-    public void registerJobApplication() {
-    }
-
-    @Test
-    public void getPersonsByRole() {
-    }
-
-    @Test
-    public void acceptOrDeclineJobApplication() {
+    public void createJobApplication() {
     }
 }

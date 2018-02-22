@@ -16,6 +16,10 @@ public class PersonRole implements Serializable {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     public PersonRole() {}
 
     public PersonRole(Person person, Role role) {

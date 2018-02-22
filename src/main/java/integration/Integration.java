@@ -1,6 +1,7 @@
 package integration;
 
-import common.ErrorMessages;
+import common.ApplicationDTO;
+import common.Messages;
 import common.SystemException;
 import integration.entity.*;
 import model.*;
@@ -11,10 +12,14 @@ import org.hibernate.query.Query;
 
 import javax.inject.Singleton;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //@Transactional(value = Transactional.TxType.MANDATORY)
 @Singleton
 public class Integration {
+
+    private static final Logger LOG = Logger.getLogger(Integration.class.getName());
 
     private final SessionFactory factory = new Configuration()
             .configure("hibernate.cfg.xml")
@@ -48,19 +53,15 @@ public class Integration {
     }
 
     /**
-     * Register a person with a username and password.
+     * Register a person (recruit) with a username and password.
      * @param person The person to be added to the database.
      * @param user The user details for the person to be added.
      */
-    public void userRegister(Person person, User user) throws SystemException {
-        if(user == null && person != null) {
-            createObject(person);
-        } else {
-            user.setPerson(person);
-            if (getUser(user.getUsername()) == null) {
-                if (person == null)
-                    throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.PERSON_MISSING.getErrorMessage());
-                else {
+    public void registerUser(Person person, User user) throws SystemException {
+        try {
+            if (user != null && person != null) {
+                user.setPerson(person);
+                if (getUser(user.getUsername()) == null) {
                     if (personHasUser(person.getSsn()) == null) {
                         Person regPerson = getPerson(person.getSsn());
                         if (regPerson == null) {
@@ -68,11 +69,22 @@ public class Integration {
                         }
                         user.setPerson(regPerson);
                         createObject(user);
+                        createObject(new PersonRole(
+                                person,
+                                getRole("recruit")
+                        ));
                     } else
-                        throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.REGISTER_USER_ERROR.getErrorMessage());
-                }
-            } else
-                throw new SystemException(ErrorMessages.REGISTER_USER_ERROR.name(), ErrorMessages.REGISTER_USERNAME_ERROR.getErrorMessage());
+                        throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.REGISTER_USER_ERROR.getErrorMessage());
+                } else
+                    throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.REGISTER_USERNAME_ERROR.getErrorMessage());
+            } else if(person != null) {
+                createObject(person);
+            } else if (person == null)
+                throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.PERSON_MISSING.getErrorMessage());
+
+        } catch (SystemException exception) {
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw exception;
         }
     }
 
@@ -84,31 +96,36 @@ public class Integration {
      * @param availabilities The time slots where the applicant can work.
      */
     public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, List<Application> applications) throws SystemException {
-        userRegister(person, null);
-        Person savedPerson = getPerson(person.getSsn());
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        for (Availability availability : availabilities) {
-            availability.setPerson(savedPerson);
-            session.save(availability);
+        try {
+            registerUser(person, null);
+            Person savedPerson = getPerson(person.getSsn());
+            Session session = factory.getCurrentSession();
+            session.beginTransaction();
+            for (Availability availability : availabilities) {
+                availability.setPerson(savedPerson);
+                session.save(availability);
+            }
+            int yoei = 0;
+            for(Experience experience : experiences) {
+                Experience existingExperience = getExperience(experience.getName());
+                if(existingExperience != null)
+                    experience = existingExperience;
+                PersonExperience personExperience = new PersonExperience(savedPerson, experience, yearsOfExperiences.get(yoei++));
+                session.save(personExperience);
+            }
+            for (Application application : applications) {
+                application.setPerson(savedPerson);
+                session.save(application);
+            }
+            session.getTransaction().commit();
+            createObject(new PersonRole(
+                    person,
+                    getRole("applicant")
+            ));
+        } catch (SystemException exception) {
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw exception;
         }
-        int yoei = 0;
-        for(Experience experience : experiences) {
-            Experience existingExperience = getExperience(experience.getName());
-            if(existingExperience != null)
-                experience = existingExperience;
-            PersonExperience personExperience = new PersonExperience(savedPerson, experience, yearsOfExperiences.get(yoei++));
-            session.save(personExperience);
-        }
-        for (Application application : applications) {
-            application.setPerson(savedPerson);
-            session.save(application);
-        }
-        session.getTransaction().commit();
-        createObject(new PersonRole(
-                person,
-                getRole("applicant")
-        ));
     }
 
     /**
@@ -127,18 +144,20 @@ public class Integration {
     }
 
     /**
-     * Get the dates for which a person has applied for.
-     * @param personSsn The SSN of the person whose application dates are returned.
-     * @return The application dates registered by the given person.
+     * Accept or decline a job application.
+     * @param applicationDTO A DTO encapsulating the job application to be changed and has the <code>accepted</code> value changed to the new value.
      */
-    public List<Application> getApplicationDates(String personSsn) {
+    public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) {
+        Boolean accepted = null;
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select ad from person p, application_date ad where ad.person.personId = p.personId and p.ssn = :ssn");
-        query.setParameter("ssn", personSsn);
-        List dateList = query.getResultList();
+        Query query = session.createQuery("update application a set a.accepted = :status where a.applicationId = :id");
+        if(applicationDTO.getAccepted() != null)
+            accepted = applicationDTO.getAccepted().equals("Accepted");
+        query.setParameter("status", accepted);
+        query.setParameter("id", applicationDTO.getApplicationNr());
+        query.executeUpdate();
         session.getTransaction().commit();
-        return (List<Application>) dateList;
     }
 
     // Private functions
@@ -194,21 +213,35 @@ public class Integration {
         return user;
     }
 
-    private void createObject(Object... objectList) {
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        for(Object object : objectList) {
-            if(object != null)
-                session.save(object);
+    private void createObject(Object... objectList) throws SystemException {
+        try {
+            Session session = factory.getCurrentSession();
+            session.beginTransaction();
+            for (Object object : objectList) {
+                if (object != null)
+                    session.save(object);
+            }
+            session.flush();
+            session.getTransaction().commit();
+        } catch (Exception versionMismatch) {
+            SystemException exception = new SystemException(Messages.SAVE_TO_DB_FAILED.name(), versionMismatch.toString());
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw exception;
         }
-        session.getTransaction().commit();
     }
 
-    private void removeObject(Object object) {
-        if(object == null)  return;
-        Session session = factory.getCurrentSession();
-        session.beginTransaction();
-        session.delete(object);
-        session.getTransaction().commit();
+    private void removeObject(Object object) throws SystemException {
+        try {
+            if(object == null)  return;
+            Session session = factory.getCurrentSession();
+            session.beginTransaction();
+            session.delete(object);
+            session.flush();
+            session.getTransaction().commit();
+        } catch (Exception versionMismatch) {
+            SystemException exception = new SystemException(Messages.SAVE_TO_DB_FAILED.name(), versionMismatch.toString());
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw exception;
+        }
     }
 }

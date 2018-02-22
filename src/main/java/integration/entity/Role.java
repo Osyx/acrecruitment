@@ -14,6 +14,10 @@ public class Role implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     public Role() {    }
 
     public Role(String name) {
