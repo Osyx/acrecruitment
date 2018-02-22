@@ -24,7 +24,7 @@ public class recruitmentHandler implements Serializable {
     private List<Availability> availabilities;
     private List<Experience> experiences;
     private List<Double> yearsOfExperiences;
-    private List <JobApplication> jobApplication;
+    private List <JobApplicationDTO> jobApplications;
     private List <String> experienceNames;
     private List <String> years;
     private Date fromDate;
@@ -82,7 +82,7 @@ public class recruitmentHandler implements Serializable {
      */
     public void regAvailabilities() {
         try {
-           //controller.createAvailability(person, fromDate, toDate);
+
         } catch (Exception registerAvailabilityException) {
             LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
         }
@@ -170,20 +170,14 @@ public class recruitmentHandler implements Serializable {
     }
   */
     /**
-     * fetches job applications by time period or date of registration
+     * fetches job applications
      */
-    public List<JobApplication> fetchJobApplications() {
-        //jobApplication = controller.fetchJobApplications(searchTimePeriod, fromDate, toDate);
-        return jobApplication;
+    public List<JobApplicationDTO> fetchJobApplications() {
+        jobApplications = controller.fetchJobApplications();
+        return jobApplications;
     }
 
-    /**
-     * fetches job applications by experience
 
-     public List<JobApplication> fetchJobApplications() {
-     return controller.fetchJobApplications();
-     }
-     */
 
     public Date getFromDate() {
         return fromDate;
