@@ -1,8 +1,10 @@
 package viewmodel.entrypoints;
 
-import common.*;
+import common.JobApplicationDTO;
+import common.SystemException;
 import controller.Controller;
 import viewmodel.request.JobApplicationRequest;
+import viewmodel.response.Message;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -34,12 +36,13 @@ public class JobApplications {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void createJobApplication(JobApplicationRequest jobApplicationRequest) throws SystemException {
+    public Message createJobApplication(JobApplicationRequest jobApplicationRequest) throws SystemException {
         controller.registerJobApplication(
                 jobApplicationRequest.getPerson(),
                 jobApplicationRequest.getExperiences(),
                 jobApplicationRequest.getAvailabilities(),
                 jobApplicationRequest.getApplications()
         );
+        return new Message("SUCCESS", "Registered the job application.");
     }
 }
