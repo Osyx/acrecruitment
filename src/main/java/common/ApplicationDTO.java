@@ -10,12 +10,14 @@ public class ApplicationDTO {
 
     public ApplicationDTO() {}
 
-    public ApplicationDTO(String date) {
+    public ApplicationDTO(String date, String accepted) {
         this.date = date;
+        this.accepted = accepted;
     }
 
-    public ApplicationDTO(Date date) {
+    public ApplicationDTO(Date date, String accepted) {
         this.date = date.toString();
+        this.accepted = accepted;
     }
 
     public String getDate() {

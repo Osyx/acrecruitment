@@ -1,9 +1,14 @@
 -- Title: Recruitment DB
 -- Last modification date: 2018-01-29 10:52:02.892
 
+DROP DATABASE IF EXISTS `recruitment`;
+
+CREATE SCHEMA IF NOT EXISTS `recruitment` DEFAULT CHARACTER SET utf8 ;
+USE `recruitment` ;
+
 -- tables
 -- Table: Person
-CREATE TABLE person (
+CREATE TABLE IF NOT EXISTS person(
     person_id bigint NOT NULL auto_increment,
     name varchar(40) NOT NULL,
     surname varchar(40) NOT NULL,
@@ -13,7 +18,7 @@ CREATE TABLE person (
 );
 
 -- Table: availability
-CREATE TABLE availability (
+CREATE TABLE IF NOT EXISTS availability (
     availability_id bigint NOT NULL auto_increment,
     person_id bigint NOT NULL,
     from_date date NOT NULL,
@@ -22,14 +27,14 @@ CREATE TABLE availability (
 );
 
 -- Table: experience
-CREATE TABLE experience (
+CREATE TABLE IF NOT EXISTS experience (
     experience_id bigint NOT NULL auto_increment,
     name varchar(40) NOT NULL UNIQUE,
     CONSTRAINT experience_pk PRIMARY KEY (experience_id)
 );
 
 -- Table: person_experience
-CREATE TABLE person_experience (
+CREATE TABLE IF NOT EXISTS person_experience (
     person_experience_id bigint NOT NULL auto_increment,
     person_id bigint NOT NULL,
     experience_id bigint NOT NULL,
@@ -38,21 +43,21 @@ CREATE TABLE person_experience (
 );
 
 -- Table: person_role
-CREATE TABLE person_role (
+CREATE TABLE IF NOT EXISTS person_role (
     person_id bigint NOT NULL,
     role_id bigint NOT NULL,
     CONSTRAINT person_role_pk PRIMARY KEY (person_id,role_id)
 );
 
 -- Table: role
-CREATE TABLE role (
+CREATE TABLE IF NOT EXISTS role (
     role_id bigint NOT NULL auto_increment,
     name varchar(40) NOT NULL UNIQUE,
     CONSTRAINT role_pk PRIMARY KEY (role_id)
 );
 
 -- Table: user
-CREATE TABLE user (
+CREATE TABLE IF NOT EXISTS user (
     user_id bigint NOT NULL auto_increment,
     person_id bigint NOT NULL,
     username varchar(40) NOT NULL UNIQUE,
@@ -61,11 +66,12 @@ CREATE TABLE user (
 );
 
 -- Table: application_date
-CREATE TABLE application_date (
-    application_date_id bigint NOT NULL auto_increment,
+CREATE TABLE IF NOT EXISTS application (
+    application_id bigint NOT NULL auto_increment,
     app_date date NOT NULL,
     person_id bigint NOT NULL,
-    CONSTRAINT application_date_pk PRIMARY KEY (application_date_id)
+    accepted bit,
+    CONSTRAINT application_date_pk PRIMARY KEY (application_id)
 );
 
 -- foreign keys
@@ -94,7 +100,11 @@ ALTER TABLE user ADD CONSTRAINT user_person FOREIGN KEY user_person (person_id)
 REFERENCES person (person_id) ON DELETE CASCADE;
 
 -- Reference: application_date_person (table: application_date)
-ALTER TABLE application_date ADD CONSTRAINT application_date_person FOREIGN KEY application_date_person (person_id)
+ALTER TABLE application ADD CONSTRAINT application_person FOREIGN KEY application_person (person_id)
 REFERENCES person (person_id) ON DELETE CASCADE;
+
+-- Insert the values for the role.
+INSERT INTO role (name) VALUES ("applicant");
+INSERT INTO role (name) VALUES ("recruit");
 
 -- End of file.

@@ -34,6 +34,10 @@ public class Person implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Availability> availabilities;
 
+    @OneToMany(mappedBy="person", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Application> applications;
+
 
     public Person() {}
 
@@ -98,6 +102,14 @@ public class Person implements Serializable {
 
     public void setAvailabilities(List<Availability> availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public List<Application> getApplications() {
+        return applications;
+    }
+
+    public void setApplications(List<Application> applications) {
+        this.applications = applications;
     }
 
     @Override

@@ -14,7 +14,7 @@ public class JobApplication {
 
     /**
      * Fetches all job applications.
-     * @return All job aaplications.
+     * @return All job applications.
      */
     public List<JobApplicationDTO> getJobApplications() {
         List<JobApplicationDTO> jobApplications = new ArrayList<>();
@@ -37,9 +37,14 @@ public class JobApplication {
             }
 
             List<ApplicationDTO> applicationDates = new ArrayList<>();
-            for(Application application : integration.getApplicationDates(person.getSsn())) {
+            for(Application application : person.getApplications()) {
+                String accepted = "Under consideration";
+                if(application.isAccepted() != null)
+                    accepted = application.isAccepted() ? "Accepted" : "Rejected";
+
                 applicationDates.add(new ApplicationDTO(
-                        application.getAppDate()
+                        application.getAppDate(),
+                        accepted
                 ));
             }
 
