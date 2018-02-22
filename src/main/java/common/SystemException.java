@@ -6,7 +6,7 @@ public class SystemException extends Exception {
 
     public SystemException(String message) {
         this.message = message;
-        this.messageKey = ErrorMessages.SYSTEM_ERROR.name();
+        this.messageKey = Messages.SYSTEM_ERROR.name();
     }
 
     public SystemException(String messageKey, String message) {
@@ -21,5 +21,12 @@ public class SystemException extends Exception {
     @Override
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public String toString() {
+        return "SystemException: " +
+                messageKey + ",\n" +
+                "Message: " + message + "\n";
     }
 }

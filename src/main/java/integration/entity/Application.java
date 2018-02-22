@@ -10,7 +10,7 @@ public class Application implements Serializable {
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
     @Column(name = "application_id", nullable = false)
-    private long applicationDateId;
+    private long applicationId;
 
     @Column(name = "app_date", nullable = false)
     private Date appDate;
@@ -22,10 +22,18 @@ public class Application implements Serializable {
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     public Application() {  }
 
     public Application(Date appDate) {
         this.appDate = appDate;
+    }
+
+    public long getApplicationId() {
+        return applicationId;
     }
 
     public Date getAppDate() {

@@ -26,6 +26,10 @@ public class Person implements Serializable {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     @OneToMany(mappedBy = "person", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<PersonExperience> personExperiences;

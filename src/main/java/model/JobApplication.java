@@ -14,7 +14,7 @@ public class JobApplication {
 
     /**
      * Fetches all job applications.
-     * @return All job applications.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      */
     public List<JobApplicationDTO> getJobApplications() {
         List<JobApplicationDTO> jobApplications = new ArrayList<>();
@@ -36,13 +36,15 @@ public class JobApplication {
                 ));
             }
 
-            List<ApplicationDTO> applicationDates = new ArrayList<>();
+            int applicationNr = 1;
+            List<ApplicationDTO> applications = new ArrayList<>();
             for(Application application : person.getApplications()) {
                 String accepted = "Under consideration";
                 if(application.isAccepted() != null)
                     accepted = application.isAccepted() ? "Accepted" : "Rejected";
 
-                applicationDates.add(new ApplicationDTO(
+                applications.add(new ApplicationDTO(
+                        applicationNr++,
                         application.getAppDate(),
                         accepted
                 ));
@@ -54,7 +56,7 @@ public class JobApplication {
                     personPublicDTO,
                     availabilities,
                     experiences,
-                    applicationDates
+                    applications
             );
             jobApplications.add(jobApplicationDTO);
         }
@@ -98,5 +100,13 @@ public class JobApplication {
             ));
         }
         integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities, applications);
+    }
+
+    /**
+     * Accept or decline a job application.
+     * @param applicationDTO A DTO encapsulating the job application to be changed and has the <code>accepted</code> value changed to the new value.
+     */
+    public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) {
+        integration.acceptOrDeclineJobApplication(applicationDTO);
     }
 }

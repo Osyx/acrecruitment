@@ -12,16 +12,25 @@ import java.util.List;
 public class JobApplications {
     private final Controller controller = new Controller();
 
+    /**
+     * REST method for fetching the JobApplications.
+     * @return A <code>List</code> containing <code>JobApplicationDTO</code>s,
+     * is converted to a JSON object if asked for by REST.
+     */
     @GET
-    @Path("/{username}/{password}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplications(@PathParam("username") String username, @PathParam("password") String password) throws SystemException {
-        if(controller.login(username, password))
-            return controller.fetchJobApplications();
-        else
-            throw new SystemException(ErrorMessages.LOGIN_ERROR.getErrorMessage(), ErrorMessages.LOGIN_ERROR.name());
+    public List<JobApplicationDTO> getJobApplications() {
+        return controller.fetchJobApplications();
     }
 
+    /**
+     * Creates a job application from the given info.
+     * @param jobApplicationRequest Converted from JSON into an <code>JobApplicationRequest</code> object
+     *                              which contains the person, experiences, availability dates and application
+     *                              which is registered as an job application.
+     * @throws SystemException in case something goes wrong during registration
+     *                         which is sent as a response back to the client.
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,7 +39,7 @@ public class JobApplications {
                 jobApplicationRequest.getPerson(),
                 jobApplicationRequest.getExperiences(),
                 jobApplicationRequest.getAvailabilities(),
-                jobApplicationRequest.getApplicationDates()
+                jobApplicationRequest.getApplications()
         );
     }
 }

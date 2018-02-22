@@ -15,6 +15,10 @@ public class Experience implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     public Experience() {   }
 
     public Experience(String name) {

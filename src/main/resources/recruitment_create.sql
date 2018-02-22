@@ -1,5 +1,5 @@
 -- Title: Recruitment DB
--- Last modification date: 2018-01-29 10:52:02.892
+-- Last modification date: 2018-02-20 10:52:02.892
 
 DROP DATABASE IF EXISTS `recruitment`;
 
@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS person(
     surname varchar(40) NOT NULL,
     ssn varchar(40) NOT NULL UNIQUE,
     email varchar(40) NOT NULL UNIQUE,
+    version int NOT NULL DEFAULT 1,
     CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
@@ -23,6 +24,7 @@ CREATE TABLE IF NOT EXISTS availability (
     person_id bigint NOT NULL,
     from_date date NOT NULL,
     to_date date,
+    version int NOT NULL DEFAULT 1,
     CONSTRAINT availability_pk PRIMARY KEY (availability_id)
 );
 
@@ -30,6 +32,7 @@ CREATE TABLE IF NOT EXISTS availability (
 CREATE TABLE IF NOT EXISTS experience (
     experience_id bigint NOT NULL auto_increment,
     name varchar(40) NOT NULL UNIQUE,
+    version int NOT NULL DEFAULT 1,
     CONSTRAINT experience_pk PRIMARY KEY (experience_id)
 );
 
@@ -39,6 +42,7 @@ CREATE TABLE IF NOT EXISTS person_experience (
     person_id bigint NOT NULL,
     experience_id bigint NOT NULL,
     years_of_experience double(4,2) NOT NULL,
+    version int NOT NULL DEFAULT 1,
     CONSTRAINT person_experience_pk PRIMARY KEY (person_experience_id)
 );
 
@@ -46,6 +50,7 @@ CREATE TABLE IF NOT EXISTS person_experience (
 CREATE TABLE IF NOT EXISTS person_role (
     person_id bigint NOT NULL,
     role_id bigint NOT NULL,
+    version int NOT NULL DEFAULT 1,
     CONSTRAINT person_role_pk PRIMARY KEY (person_id,role_id)
 );
 
@@ -53,6 +58,7 @@ CREATE TABLE IF NOT EXISTS person_role (
 CREATE TABLE IF NOT EXISTS role (
     role_id bigint NOT NULL auto_increment,
     name varchar(40) NOT NULL UNIQUE,
+    version int NOT NULL DEFAULT 1,
     CONSTRAINT role_pk PRIMARY KEY (role_id)
 );
 
@@ -62,16 +68,18 @@ CREATE TABLE IF NOT EXISTS user (
     person_id bigint NOT NULL,
     username varchar(40) NOT NULL UNIQUE,
     password varchar(40) NOT NULL,
+    version int NOT NULL DEFAULT 1,
     CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
 
--- Table: application_date
+-- Table: application
 CREATE TABLE IF NOT EXISTS application (
     application_id bigint NOT NULL auto_increment,
     app_date date NOT NULL,
     person_id bigint NOT NULL,
     accepted bit,
-    CONSTRAINT application_date_pk PRIMARY KEY (application_id)
+    version int NOT NULL DEFAULT 1,
+    CONSTRAINT application_pk PRIMARY KEY (application_id)
 );
 
 -- foreign keys
@@ -99,7 +107,7 @@ REFERENCES role (role_id) ON DELETE CASCADE;
 ALTER TABLE user ADD CONSTRAINT user_person FOREIGN KEY user_person (person_id)
 REFERENCES person (person_id) ON DELETE CASCADE;
 
--- Reference: application_date_person (table: application_date)
+-- Reference: application_person (table: application)
 ALTER TABLE application ADD CONSTRAINT application_person FOREIGN KEY application_person (person_id)
 REFERENCES person (person_id) ON DELETE CASCADE;
 

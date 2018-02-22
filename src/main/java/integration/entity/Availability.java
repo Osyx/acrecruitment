@@ -21,6 +21,10 @@ public class Availability implements Serializable {
     @Column(name = "to_date")
     private Date toDate;
 
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
+
     public Availability() {    }
 
     public Availability(Date fromDate, Date toDate) {
