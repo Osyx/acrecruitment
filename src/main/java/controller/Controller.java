@@ -25,7 +25,7 @@ public class Controller {
 
     /**
      * Register a person with a username and password.
-     * @param person The person to be added to the database.
+     * @param person The person info to be added to the database.
      * @param user The user details for the person to be added.
      */
     public void registerUser(PersonDTO person, UserDTO user) throws SystemException {
