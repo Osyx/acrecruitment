@@ -1,4 +1,5 @@
 package integration.entity;
+import common.PersonDTO;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -50,6 +51,13 @@ public class Person implements Serializable {
         this.surname = surname;
         this.ssn = ssn;
         this.email = email;
+    }
+
+    public Person(PersonDTO personDTO) {
+        this.name = personDTO.getName();
+        this.surname = personDTO.getSurname();
+        this.ssn = personDTO.getSsn();
+        this.email = personDTO.getEmail();
     }
 
     public long getPersonId() {

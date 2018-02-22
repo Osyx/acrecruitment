@@ -1,5 +1,7 @@
 package integration.entity;
 
+import common.UserDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -30,6 +32,11 @@ public class User implements Serializable {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(UserDTO userDTO) {
+        this.username = userDTO.getUsername();
+        this.password = userDTO.getPassword();
     }
 
     public long getUser_id() {

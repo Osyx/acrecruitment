@@ -28,7 +28,7 @@ public class Controller {
      * @param person The person to be added to the database.
      * @param user The user details for the person to be added.
      */
-    public void registerUser(Person person, User user) throws SystemException {
+    public void registerUser(PersonDTO person, UserDTO user) throws SystemException {
         integration.registerUser(person, user);
     }
 

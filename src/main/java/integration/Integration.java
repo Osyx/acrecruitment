@@ -1,8 +1,6 @@
 package integration;
 
-import common.ApplicationDTO;
-import common.Messages;
-import common.SystemException;
+import common.*;
 import integration.entity.*;
 import model.*;
 import org.hibernate.Session;
@@ -57,6 +55,20 @@ public class Integration {
      * @param person The person to be added to the database.
      * @param user The user details for the person to be added.
      */
+    public void registerUser(PersonDTO person, UserDTO user) throws SystemException {
+        if(person != null && user != null)
+            registerUser(new Person(person), new User(user));
+        else if(person != null)
+            registerUser(new Person(person), null);
+        else
+            registerUser((Person) null, null);
+    }
+
+    /**
+     * Register a person (recruit) with a username and password.
+     * @param person The person to be added to the database.
+     * @param user The user details for the person to be added.
+     */
     public void registerUser(Person person, User user) throws SystemException {
         try {
             if (user != null && person != null) {
@@ -79,7 +91,7 @@ public class Integration {
                     throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.REGISTER_USERNAME_ERROR.getErrorMessage());
             } else if(person != null) {
                 createObject(person);
-            } else if (person == null)
+            } else
                 throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.PERSON_MISSING.getErrorMessage());
 
         } catch (SystemException exception) {
