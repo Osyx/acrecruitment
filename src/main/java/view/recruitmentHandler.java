@@ -3,6 +3,7 @@ package view;
 import controller.Controller;
 import integration.entity.*;
 import model.*;
+import common.*;
 
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
@@ -16,8 +17,8 @@ import java.util.logging.Logger;
 public class recruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
-    private Person person;
-    private User user;
+    private PersonDTO personDTO;
+    private UserDTO userDTO;
     private Role role;
     private Experience experience;
     private List<Availability> availabilities;
@@ -67,10 +68,9 @@ public class recruitmentHandler implements Serializable {
      */
     public void regPerson(){
         try {
-            person = new Person(firstName, lastName, ssn, email);
-            user = new User(username, password);
-            user.setPerson(person);
-            success = controller.registerUser(person, user); // Ska väl sparas i en variabel?
+            personDTO = new PersonDTO(firstName, lastName, ssn, email);
+            userDTO = new UserDTO(username, password);
+            controller.registerUser(personDTO, userDTO);
             success = true;
         } catch (Exception registerPersonException) {
             LOG.log(Level.WARNING, regPersonError, registerPersonException);
@@ -82,7 +82,7 @@ public class recruitmentHandler implements Serializable {
      */
     public void regAvailabilities() {
         try {
-           controller.createAvailability(person, fromDate, toDate);
+           //controller.createAvailability(person, fromDate, toDate);
         } catch (Exception registerAvailabilityException) {
             LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
         }
@@ -94,7 +94,7 @@ public class recruitmentHandler implements Serializable {
      */
     public Experience regExperiences(String experienceName) { // Hur blir det här om vi får ett exception?
         try {
-            experience = controller.createExperience(experienceName);
+           // experience = controller.createExperience(experienceName);
             return experience;
         } catch (Exception registerExperienceException) {
             LOG.log(Level.WARNING, regExperienceError, registerExperienceException);
@@ -111,7 +111,7 @@ public class recruitmentHandler implements Serializable {
             for (int i = 0; i < experienceNames.size(); i++){
                 String temp = years.get(i);
                 experience = regExperiences(experienceNames.get(i));
-                controller.createPersonExperience(person, experience, Double.parseDouble(temp));
+                //controller.createPersonExperience(person, experience, Double.parseDouble(temp));
             }
         } catch (Exception registerPersonException) {
             LOG.log(Level.WARNING, regPersonExpError, registerPersonException);
@@ -148,7 +148,7 @@ public class recruitmentHandler implements Serializable {
      * fetches a persons availabilities according to the ssn
      */
     public List<Availability> getAvailabilities(){
-        availabilities = controller.fetchAvailabilities(ssn);
+        //availabilities = controller.fetchAvailabilities(ssn);
         return availabilities;
     }
 
