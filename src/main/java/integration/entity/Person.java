@@ -39,9 +39,9 @@ public class Person implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Availability> availabilities;
 
-    @OneToMany(mappedBy="person", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy="person", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Application> applications;
+    private Application application;
 
 
     public Person() {}
@@ -116,12 +116,12 @@ public class Person implements Serializable {
         this.availabilities = availabilities;
     }
 
-    public List<Application> getApplications() {
-        return applications;
+    public Application getApplication() {
+        return application;
     }
 
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
+    public void setApplication(Application application) {
+        this.application = application;
     }
 
     @Override

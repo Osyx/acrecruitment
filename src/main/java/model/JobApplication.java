@@ -36,19 +36,15 @@ public class JobApplication {
                 ));
             }
 
-            int applicationNr = 1;
-            List<ApplicationDTO> applications = new ArrayList<>();
-            for(Application application : person.getApplications()) {
-                String accepted = "Under consideration";
-                if(application.isAccepted() != null)
-                    accepted = application.isAccepted() ? "Accepted" : "Rejected";
+            Application application = person.getApplication();
+            String accepted = "Under consideration";
+            if(application.isAccepted() != null)
+                accepted = application.isAccepted() ? "Accepted" : "Rejected";
 
-                applications.add(new ApplicationDTO(
-                        applicationNr++,
-                        application.getAppDate(),
-                        accepted
-                ));
-            }
+            ApplicationDTO applicationDTO = new ApplicationDTO(
+                    application.getAppDate(),
+                    accepted
+            );
 
             PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
 
@@ -56,7 +52,7 @@ public class JobApplication {
                     personPublicDTO,
                     availabilities,
                     experiences,
-                    applications
+                    applicationDTO
             );
             jobApplications.add(jobApplicationDTO);
         }
@@ -68,10 +64,10 @@ public class JobApplication {
      * @param personDTO The DTO of the person to be the applicant.
      * @param experienceDTOs The list of experiences that the applicant has.
      * @param availabilityDTOs The list of dates that the applicant is available.
-     * @param applicationDTOs The dates of when the applicant registered the applications.
+     * @param applicationDTO The dates of when the applicant registered the applications.
      * @throws SystemException in case that there is an error when registering the application to the database.
      */
-    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, List<ApplicationDTO> applicationDTOs) throws SystemException {
+    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
         Person person = new Person(
                 personDTO.getName(),
                 personDTO.getSurname(),
@@ -93,13 +89,10 @@ public class JobApplication {
                     Date.valueOf(availabilityDTO.getToDate())
             ));
         }
-        List<Application> applications = new ArrayList<>();
-        for(ApplicationDTO applicationDTO : applicationDTOs) {
-            applications.add(new Application(
-                    Date.valueOf(applicationDTO.getDate())
-            ));
-        }
-        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities, applications);
+        Application application = new Application(
+                Date.valueOf(applicationDTO.getDate())
+        );
+        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities, application);
     }
 
     /**

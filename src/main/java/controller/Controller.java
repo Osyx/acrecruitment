@@ -2,7 +2,6 @@ package controller;
 
 import common.*;
 import integration.Integration;
-import integration.entity.*;
 import model.*;
 
 import java.util.List;
@@ -37,11 +36,11 @@ public class Controller {
      * @param personDTO The DTO of the person to be the applicant.
      * @param experienceDTOs The list of experiences that the applicant has.
      * @param availabilityDTOs The list of dates that the applicant is available.
-     * @param applicationDTOs The dates of when the applicant registered the applications.
+     * @param applicationDTO The dates of when the applicant registered the applications.
      * @throws SystemException in case that there is an error when registering the application to the database.
      */
-    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, List<ApplicationDTO> applicationDTOs) throws SystemException {
-        jobApplication.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTOs);
+    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        jobApplication.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
     }
 
     /**

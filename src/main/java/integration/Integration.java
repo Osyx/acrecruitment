@@ -107,7 +107,7 @@ public class Integration {
      * @param yearsOfExperiences The amount of years the applicant has in each <code>experience</code>.
      * @param availabilities The time slots where the applicant can work.
      */
-    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, List<Application> applications) throws SystemException {
+    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, Application application) throws SystemException {
         try {
             registerUser(person, null);
             Person savedPerson = getPerson(person.getSsn());
@@ -125,10 +125,8 @@ public class Integration {
                 PersonExperience personExperience = new PersonExperience(savedPerson, experience, yearsOfExperiences.get(yoei++));
                 session.save(personExperience);
             }
-            for (Application application : applications) {
-                application.setPerson(savedPerson);
-                session.save(application);
-            }
+            application.setPerson(savedPerson);
+            session.save(application);
             session.getTransaction().commit();
             createObject(new PersonRole(
                     person,
@@ -167,7 +165,7 @@ public class Integration {
         if(applicationDTO.getAccepted() != null)
             accepted = applicationDTO.getAccepted().equals("Accepted");
         query.setParameter("status", accepted);
-        query.setParameter("id", applicationDTO.getApplicationNr());
+        query.setParameter("id", "FIXA DET HÄR ------------------------------------------------------------------------------------------------------------------------------------------------------");
         query.executeUpdate();
         session.getTransaction().commit();
     }

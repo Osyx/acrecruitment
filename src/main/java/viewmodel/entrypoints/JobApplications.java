@@ -41,7 +41,7 @@ public class JobApplications {
                 jobApplicationRequest.getPerson(),
                 jobApplicationRequest.getExperiences(),
                 jobApplicationRequest.getAvailabilities(),
-                jobApplicationRequest.getApplications()
+                jobApplicationRequest.getApplication()
         );
         return new Message("SUCCESS", "Registered the job application.");
     }

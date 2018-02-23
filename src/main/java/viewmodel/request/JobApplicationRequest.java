@@ -13,7 +13,7 @@ public class JobApplicationRequest {
     private PersonDTO person;
     private List<AvailabilityDTO> availabilities;
     private List<ExperienceDTO> experiences;
-    private List<ApplicationDTO> applications;
+    private ApplicationDTO application;
 
     public JobApplicationRequest() {}
 
@@ -41,11 +41,11 @@ public class JobApplicationRequest {
         this.experiences = experiences;
     }
 
-    public List<ApplicationDTO> getApplications() {
-        return applications;
+    public ApplicationDTO getApplication() {
+        return application;
     }
 
-    public void setApplications(List<ApplicationDTO> applications) {
-        this.applications = applications;
+    public void setApplication(ApplicationDTO application) {
+        this.application = application;
     }
 }

@@ -18,7 +18,7 @@ public class Application implements Serializable {
     @Column(name = "accepted", nullable = false)
     private Boolean accepted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
