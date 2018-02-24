@@ -12,4 +12,9 @@ public class ExperienceDTO {
         this.name = json_experiences.getString("name");
         this.yearsOfExperience = json_experiences.getDouble("yearsOfExperience");
     }
+
+    public ExperienceDTO(String name, double yearsOfExperience) {
+        this.name = name;
+        this.yearsOfExperience = yearsOfExperience;
+    }
 }

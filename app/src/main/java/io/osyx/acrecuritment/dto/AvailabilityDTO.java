@@ -12,4 +12,9 @@ public class AvailabilityDTO {
         this.fromDate = json_availabilities.getString("fromDate");
         this.toDate = json_availabilities.getString("toDate");
     }
+
+    public AvailabilityDTO(String fromDate, String toDate) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+    }
 }

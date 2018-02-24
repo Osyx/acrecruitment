@@ -12,4 +12,8 @@ public class ApplicationDTO {
         this.date = json_application.getString("date");
         this.accepted = json_application.getString("accepted");
     }
+
+    public ApplicationDTO(String date) {
+        this.date = date;
+    }
 }
