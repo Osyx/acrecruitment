@@ -9,6 +9,8 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 import javax.inject.Singleton;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +29,6 @@ public class Integration {
             .addAnnotatedClass(JobApplication.class)
             .addAnnotatedClass(Person.class)
             .addAnnotatedClass(PersonExperience.class)
-            .addAnnotatedClass(PersonRole.class)
             .addAnnotatedClass(Role.class)
             .addAnnotatedClass(User.class)
             .buildSessionFactory();
@@ -39,103 +40,98 @@ public class Integration {
      * @return a boolean indicating whether it was the correct details or not.
      * <code>True</code> for correct, <code>false</code> for incorrect.
      */
-    public boolean login(String username, String password) {
+    public RoleDTO login(String username, String password) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
         Query query = session.createQuery("select u from user u where u.username = :username and u.password = :password");
         query.setParameter("username", username);
         query.setParameter("password", password);
-        boolean correctLogin = !query.getResultList().isEmpty();
-        session.getTransaction().commit();
-        return correctLogin;
-    }
-
-    /**
-     * Register a person (recruit) with a username and password.
-     * @param person The person to be added to the database.
-     * @param user The user details for the person to be added.
-     */
-    public void registerUser(PersonDTO person, UserDTO user) throws SystemException {
-        if(person != null && user != null)
-            registerUser(new Person(person), new User(user));
-        else if(person != null)
-            registerUser(new Person(person), null);
-        else
-            registerUser((Person) null, null);
-    }
-
-    /**
-     * Register a person (recruit) with a username and password.
-     * @param person The person to be added to the database.
-     * @param user The user details for the person to be added.
-     */
-    public void registerUser(Person person, User user) throws SystemException {
-        try {
-            if (user != null && person != null) {
-                user.setPerson(person);
-                if (getUser(user.getUsername()) == null) {
-                    if (personHasUser(person.getSsn()) == null) {
-                        Person regPerson = getPerson(person.getSsn());
-                        if (regPerson == null) {
-                            createObject(person, user);
-                        }
-                        user.setPerson(regPerson);
-                        createObject(user);
-                        createObject(new PersonRole(
-                                person,
-                                getRole("recruit")
-                        ));
-                    } else
-                        throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.REGISTER_USER_ERROR.getErrorMessage());
-                } else
-                    throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.REGISTER_USERNAME_ERROR.getErrorMessage());
-            } else if(person != null) {
-                createObject(person);
-            } else
-                throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.PERSON_MISSING.getErrorMessage());
-
-        } catch (SystemException exception) {
-            LOG.log(Level.SEVERE, exception.toString(), exception);
-            throw exception;
+        List fakeList = query.getResultList();
+        if(!fakeList.isEmpty()) {
+            Person person = ((User) fakeList.get(0)).getPerson();
+            Role role = person == null ? getRole("applicant") : person.getRole();
+            return new RoleDTO(role);
         }
+        session.getTransaction().commit();
+        return null;
     }
 
     /**
-     * Register a new job application.
-     * @param person The applicant that us applying for a job.
-     * @param experiences The previous experiences that the applicant has.
-     * @param yearsOfExperiences The amount of years the applicant has in each <code>experience</code>.
-     * @param availabilities The time slots where the applicant can work.
+     * Register a user with a username and password.
+     * @param user The user details for the user to be added.
      */
-    public void registerJobApplication(Person person, List<Experience> experiences, List<Double> yearsOfExperiences ,List<Availability> availabilities, Application application) throws SystemException {
+    public void registerUser(UserDTO user) throws SystemException {
+        registerUser(new User(
+                user.getUsername(),
+                user.getPassword()
+        ));
+    }
+    
+    /**
+     * Register a new job application if user is logged in.
+     * @param personDTO The applicant that is applying for a job.
+     * @param userDTO The user that the person has.
+     * @param experienceDTOs The previous experiences that the applicant has.
+     * @param availabilityDTOs The time slots where the applicant can work.
+     */
+    public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
         try {
-            registerUser(person, null);
-            Person savedPerson = getPerson(person.getSsn());
             Session session = factory.getCurrentSession();
             session.beginTransaction();
-            for (Availability availability : availabilities) {
-                availability.setPerson(savedPerson);
-                session.save(availability);
-            }
-            int yoei = 0;
-            for(Experience experience : experiences) {
-                Experience existingExperience = getExperience(experience.getName());
+            User user = getUser(userDTO.getUsername());
+            if(user == null || !user.getPassword().equals(userDTO.getPassword()))
+                throw new SystemException(Messages.USER_NOT_LOGGED_IN.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessage());
+            session.evict(user);
+            Person person;
+            Person oldPerson = getPerson(personDTO);
+            if(oldPerson != null) {
+                session.evict(oldPerson);
+                person = oldPerson;
+            } else
+                person = new Person(personDTO);
+            List<PersonExperience> personExperiences = new ArrayList<>();
+            for(ExperienceDTO experienceDTO : experienceDTOs) {
+                Experience experience;
+                Experience existingExperience = getExperience(experienceDTO.getName());
                 if(existingExperience != null)
                     experience = existingExperience;
-                PersonExperience personExperience = new PersonExperience(savedPerson, experience, yearsOfExperiences.get(yoei++));
-                session.save(personExperience);
+                else
+                    experience = new Experience(experienceDTO.getName());
+                personExperiences.add(
+                        new PersonExperience(
+                                person,
+                                experience,
+                                experienceDTO.getYearsOfExperience()
+                        )
+                );
             }
-            application.setPerson(savedPerson);
-            session.save(application);
-            session.getTransaction().commit();
-            createObject(new PersonRole(
+            List<Availability> availabilities = new ArrayList<>();
+            for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
+                availabilities.add(new Availability(
+                        person,
+                        Date.valueOf(availabilityDTO.getFromDate()),
+                        Date.valueOf(availabilityDTO.getToDate())
+                ));
+            }
+            Application application = new Application(
                     person,
-                    getRole("applicant")
-            ));
+                    Date.valueOf(applicationDTO.getDate())
+            );
+            person.setPersonExperiences(personExperiences);
+            person.setAvailabilities(availabilities);
+            person.setApplication(application);
+            user.setPerson(person);
+            session.merge(user);
+            session.getTransaction().commit();
+
         } catch (SystemException exception) {
             LOG.log(Level.SEVERE, exception.toString(), exception);
             throw exception;
+        } catch (Exception exception) {
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw new SystemException(Messages.SAVE_TO_DB_FAILED.name(), Messages.SAVE_TO_DB_FAILED.getErrorMessage());
         }
+
     }
 
     /**
@@ -146,7 +142,7 @@ public class Integration {
     public List<Person> getPersonsByRole(String role) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("select p from person p, role r, person_role pr where p.id = pr.person.id and r.id = pr.role.id and r.name = :role");
+        Query query = session.createQuery("select p from person p where p.role.name = :role");
         query.setParameter("role", role);
         List personList = query.getResultList();
         session.getTransaction().commit();
@@ -172,6 +168,23 @@ public class Integration {
 
     // Private functions
 
+    private void registerUser(User user) throws SystemException {
+        try {
+            if(user == null) throw new SystemException(
+                        Messages.REGISTER_USER_ERROR.name(),
+                        Messages.REGISTER_NO_USER_ERROR.getErrorMessage()
+                );
+            if(getUser(user.getUsername()) != null) throw new SystemException(
+                        Messages.REGISTER_USER_ERROR.name(),
+                        Messages.REGISTER_USERNAME_ERROR.getErrorMessage()
+                );
+            createObject(user);
+        } catch (SystemException exception) {
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw exception;
+        }
+    }
+
     private Role getRole(String type) {
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -190,26 +203,20 @@ public class Integration {
         return fakeList.isEmpty() ? null : (Experience) fakeList.get(0);
     }
 
-    private Person getPerson(String personSsn) {
+    private Person getPerson(PersonDTO personDTO) {
         Session session = factory.getCurrentSession();
-        session.beginTransaction();
         Query query = session.createQuery("select p from person p where p.ssn = :ssn");
-        query.setParameter("ssn", personSsn);
+        query.setParameter("ssn", personDTO.getSsn());
         List fakeList = query.getResultList();
-        Person person = fakeList.isEmpty() ? null : (Person) fakeList.get(0);
-        session.getTransaction().commit();
-        return person;
+        return fakeList.isEmpty() ? null : (Person) fakeList.get(0);
     }
 
     private User getUser(String username) {
         Session session = factory.getCurrentSession();
-        session.beginTransaction();
         Query query = session.createQuery("select u from user u where u.username = :username");
         query.setParameter("username", username);
         List fakeList = query.getResultList();
-        User user = fakeList.isEmpty() ? null : (User) fakeList.get(0);
-        session.getTransaction().commit();
-        return user;
+        return fakeList.isEmpty() ? null : (User) fakeList.get(0);
     }
 
     private User personHasUser(String personSsn) {

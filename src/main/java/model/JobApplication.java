@@ -67,32 +67,8 @@ public class JobApplication {
      * @param applicationDTO The dates of when the applicant registered the applications.
      * @throws SystemException in case that there is an error when registering the application to the database.
      */
-    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
-        Person person = new Person(
-                personDTO.getName(),
-                personDTO.getSurname(),
-                personDTO.getSsn(),
-                personDTO.getEmail()
-        );
-        List<Experience> experiences = new ArrayList<>();
-        List<Double> yearsOfExperiences = new ArrayList<>();
-        for(ExperienceDTO experienceDTO : experienceDTOs) {
-            experiences.add(new Experience(
-                    experienceDTO.getName()
-            ));
-            yearsOfExperiences.add(experienceDTO.getYearsOfExperience());
-        }
-        List<Availability> availabilities = new ArrayList<>();
-        for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
-            availabilities.add(new Availability(
-                    Date.valueOf(availabilityDTO.getFromDate()),
-                    Date.valueOf(availabilityDTO.getToDate())
-            ));
-        }
-        Application application = new Application(
-                Date.valueOf(applicationDTO.getDate())
-        );
-        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities, application);
+    public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        integration.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
     }
 
     /**

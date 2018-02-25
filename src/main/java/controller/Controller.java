@@ -18,17 +18,16 @@ public class Controller {
      * @return a boolean indicating whether it was the correct details or not.
      * <code>True</code> for correct, <code>false</code> for incorrect.
      */
-    public boolean login(String username, String password) {
+    public RoleDTO login(String username, String password) {
         return integration.login(username, password);
     }
 
     /**
      * Register a person with a username and password.
-     * @param person The person info to be added to the database.
-     * @param user The user details for the person to be added.
+     * @param user The user details to be added.
      */
-    public void registerUser(PersonDTO person, UserDTO user) throws SystemException {
-        integration.registerUser(person, user);
+    public void registerUser(UserDTO user) throws SystemException {
+        integration.registerUser(user);
     }
 
     /**
@@ -39,8 +38,8 @@ public class Controller {
      * @param applicationDTO The dates of when the applicant registered the applications.
      * @throws SystemException in case that there is an error when registering the application to the database.
      */
-    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
-        jobApplication.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+    public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        jobApplication.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
     }
 
     /**

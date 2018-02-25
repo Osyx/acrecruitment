@@ -12,9 +12,11 @@ public enum Messages {
     LOGIN_ERROR("There was an error when trying to log in"),
     SYSTEM_ERROR("There was an error during execute"),
     REGISTER_USERNAME_ERROR("Username already exists"),
+    REGISTER_NO_USER_ERROR("No user or faulty user details was sent to be registered."),
     REGISTER_USER_ERROR("You already have an user registered"),
     PERSON_MISSING("There is either no such person found or a person isn't given"),
-    SAVE_TO_DB_FAILED("Something went wrong during the save to the DB");
+    SAVE_TO_DB_FAILED("Something went wrong during the save to the DB"),
+    USER_NOT_LOGGED_IN("Cannot access this option when not logged in with a registered user");
 
     private String errorMessage;
 
