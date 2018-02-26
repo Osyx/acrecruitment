@@ -85,7 +85,7 @@ public class recruitmentHandler implements Serializable {
     public void regAvailability() {
         try {
             availabilityDTO = new AvailabilityDTO(fromDate, toDate);
-            availabilityDTOs.add(availabilityDTO):
+            availabilityDTOs.add(availabilityDTO);
         } catch (Exception registerAvailabilityException) {
             LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
         }
