@@ -37,7 +37,7 @@ public class JobApplications {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Message createJobApplication(JobApplicationRequest jobApplicationRequest) throws SystemException {
-        controller.registerJobApplication(
+        controller.registerRESTJobApplication(
                 jobApplicationRequest.getPerson(),
                 jobApplicationRequest.getExperiences(),
                 jobApplicationRequest.getAvailabilities(),

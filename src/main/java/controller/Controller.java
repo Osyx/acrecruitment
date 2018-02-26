@@ -8,8 +8,8 @@ import java.util.List;
 
 //@Transactional(Transactional.TxType.REQUIRES_NEW)
 public class Controller {
-    private final Integration integration = new Integration();
     private final JobApplication jobApplication = new JobApplication();
+    private final User user = new User();
 
     /**
      * Checks if the login details are correct.
@@ -19,15 +19,28 @@ public class Controller {
      * <code>True</code> for correct, <code>false</code> for incorrect.
      */
     public RoleDTO login(String username, String password) {
-        return integration.login(username, password);
+        return user.login(username, password);
     }
 
     /**
      * Register a person with a username and password.
-     * @param user The user details to be added.
+     * @param userDTO The user details to be added.
      */
-    public void registerUser(UserDTO user) throws SystemException {
-        integration.registerUser(user);
+    public void registerUser(UserDTO userDTO) throws SystemException {
+        user.registerUser(userDTO);
+    }
+
+    /**
+     * Registers a new job application.
+     * @param personDTO The DTO of the person to be the applicant.
+     * @param userDTO The DTO of the user registering.
+     * @param experienceDTOs The list of experiences that the applicant has.
+     * @param availabilityDTOs The list of dates that the applicant is available.
+     * @param applicationDTO The dates of when the applicant registered the applications.
+     * @throws SystemException in case that there is an error when registering the application to the database.
+     */
+    public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        jobApplication.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
     }
 
     /**
@@ -38,8 +51,8 @@ public class Controller {
      * @param applicationDTO The dates of when the applicant registered the applications.
      * @throws SystemException in case that there is an error when registering the application to the database.
      */
-    public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
-        jobApplication.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+    public void registerRESTJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        jobApplication.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
     }
 
     /**

@@ -42,6 +42,7 @@ public class JobApplication {
                 accepted = application.isAccepted() ? "Accepted" : "Rejected";
 
             ApplicationDTO applicationDTO = new ApplicationDTO(
+                    application.getApplicationId(),
                     application.getAppDate(),
                     accepted
             );
@@ -62,6 +63,7 @@ public class JobApplication {
     /**
      * Registers a new job application.
      * @param personDTO The DTO of the person to be the applicant.
+     * @param userDTO The DTO of the user registering.
      * @param experienceDTOs The list of experiences that the applicant has.
      * @param availabilityDTOs The list of dates that the applicant is available.
      * @param applicationDTO The dates of when the applicant registered the applications.
@@ -69,6 +71,18 @@ public class JobApplication {
      */
     public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
         integration.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+    }
+
+    /**
+     * Registers a new job application.
+     * @param personDTO The DTO of the person to be the applicant.
+     * @param experienceDTOs The list of experiences that the applicant has.
+     * @param availabilityDTOs The list of dates that the applicant is available.
+     * @param applicationDTO The dates of when the applicant registered the applications.
+     * @throws SystemException in case that there is an error when registering the application to the database.
+     */
+    public void registerRESTJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        integration.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
     }
 
     /**

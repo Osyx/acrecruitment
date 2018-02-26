@@ -2,6 +2,7 @@ package integration;
 
 import common.*;
 import integration.entity.*;
+import integration.entity.User;
 import model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -66,7 +67,7 @@ public class Integration {
                 user.getPassword()
         ));
     }
-    
+
     /**
      * Register a new job application if user is logged in.
      * @param personDTO The applicant that is applying for a job.
@@ -81,6 +82,8 @@ public class Integration {
             User user = getUser(userDTO.getUsername());
             if(user == null || !user.getPassword().equals(userDTO.getPassword()))
                 throw new SystemException(Messages.USER_NOT_LOGGED_IN.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessage());
+            if(personHasUser(personDTO.getSsn()) != null)
+                throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.REGISTER_USER_ERROR.getErrorMessage());
             session.evict(user);
             Person person;
             Person oldPerson = getPerson(personDTO);
@@ -90,33 +93,8 @@ public class Integration {
             } else
                 person = new Person(personDTO);
             List<PersonExperience> personExperiences = new ArrayList<>();
-            for(ExperienceDTO experienceDTO : experienceDTOs) {
-                Experience experience;
-                Experience existingExperience = getExperience(experienceDTO.getName());
-                if(existingExperience != null)
-                    experience = existingExperience;
-                else
-                    experience = new Experience(experienceDTO.getName());
-                personExperiences.add(
-                        new PersonExperience(
-                                person,
-                                experience,
-                                experienceDTO.getYearsOfExperience()
-                        )
-                );
-            }
             List<Availability> availabilities = new ArrayList<>();
-            for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
-                availabilities.add(new Availability(
-                        person,
-                        Date.valueOf(availabilityDTO.getFromDate()),
-                        Date.valueOf(availabilityDTO.getToDate())
-                ));
-            }
-            Application application = new Application(
-                    person,
-                    Date.valueOf(applicationDTO.getDate())
-            );
+            Application application = dtoIntoEntity(person, experienceDTOs, personExperiences, availabilityDTOs, applicationDTO, availabilities);
             person.setPersonExperiences(personExperiences);
             person.setAvailabilities(availabilities);
             person.setApplication(application);
@@ -129,9 +107,42 @@ public class Integration {
             throw exception;
         } catch (Exception exception) {
             LOG.log(Level.SEVERE, exception.toString(), exception);
-            throw new SystemException(Messages.SAVE_TO_DB_FAILED.name(), Messages.SAVE_TO_DB_FAILED.getErrorMessage());
+            throw new SystemException(Messages.SAVE_TO_DB_FAILED.name(), exception.getMessage());
         }
+    }
 
+    /**
+     * Register a new job application if user is logged in.
+     * @param personDTO The applicant that is applying for a job.
+     * @param experienceDTOs The previous experiences that the applicant has.
+     * @param availabilityDTOs The time slots where the applicant can work.
+     */
+    public void registerRESTJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        try {
+            Session session = factory.getCurrentSession();
+            session.beginTransaction();
+            Person person;
+            Person oldPerson = getPerson(personDTO);
+            if(oldPerson != null) {
+                session.evict(oldPerson);
+                person = oldPerson;
+            } else {
+                person = new Person(personDTO);
+                person.setRole(getRole(personDTO.getRole()));
+            }
+            List<PersonExperience> personExperiences = new ArrayList<>();
+            List<Availability> availabilities = new ArrayList<>();
+            Application application = dtoIntoEntity(person, experienceDTOs, personExperiences, availabilityDTOs, applicationDTO, availabilities);
+            person.setPersonExperiences(personExperiences);
+            person.setAvailabilities(availabilities);
+            person.setApplication(application);
+            session.merge(person);
+            session.getTransaction().commit();
+
+        } catch (Exception exception) {
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw new SystemException(Messages.SAVE_TO_DB_FAILED.name(), exception.getMessage());
+        }
     }
 
     /**
@@ -153,7 +164,7 @@ public class Integration {
      * Accept or decline a job application.
      * @param applicationDTO A DTO encapsulating the job application to be changed and has the <code>accepted</code> value changed to the new value.
      */
-    public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) {
+    public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) { ;
         Boolean accepted = null;
         Session session = factory.getCurrentSession();
         session.beginTransaction();
@@ -161,12 +172,42 @@ public class Integration {
         if(applicationDTO.getAccepted() != null)
             accepted = applicationDTO.getAccepted().equals("Accepted");
         query.setParameter("status", accepted);
-        query.setParameter("id", "FIXA DET HÄR ------------------------------------------------------------------------------------------------------------------------------------------------------");
+        query.setParameter("id", applicationDTO.getApplicationId());
         query.executeUpdate();
         session.getTransaction().commit();
     }
 
     // Private functions
+
+    private Application dtoIntoEntity(Person person, List<ExperienceDTO> experienceDTOs, List<PersonExperience> personExperiences,
+                                      List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO, List<Availability> availabilities) {
+        for(ExperienceDTO experienceDTO : experienceDTOs) {
+            Experience experience;
+            Experience existingExperience = getExperience(experienceDTO.getName());
+            if(existingExperience != null)
+                experience = existingExperience;
+            else
+                experience = new Experience(experienceDTO.getName());
+            personExperiences.add(
+                    new PersonExperience(
+                            person,
+                            experience,
+                            experienceDTO.getYearsOfExperience()
+                    )
+            );
+        }
+        for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
+            availabilities.add(new Availability(
+                    person,
+                    Date.valueOf(availabilityDTO.getFromDate()),
+                    Date.valueOf(availabilityDTO.getToDate())
+            ));
+        }
+        return new Application(
+                person,
+                Date.valueOf(applicationDTO.getDate())
+        );
+    }
 
     private void registerUser(User user) throws SystemException {
         try {

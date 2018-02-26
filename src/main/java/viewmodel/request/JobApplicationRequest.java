@@ -1,9 +1,6 @@
 package viewmodel.request;
 
-import common.ApplicationDTO;
-import common.AvailabilityDTO;
-import common.ExperienceDTO;
-import common.PersonDTO;
+import common.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;

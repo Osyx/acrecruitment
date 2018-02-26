@@ -70,7 +70,7 @@ public class recruitmentHandler implements Serializable {
         try {
             personDTO = new PersonDTO(firstName, lastName, ssn, email);
             userDTO = new UserDTO(username, password);
-            controller.registerUser(personDTO, userDTO);
+            //controller.registerUser(personDTO, userDTO);
             success = true;
         } catch (Exception registerPersonException) {
             LOG.log(Level.WARNING, regPersonError, registerPersonException);
@@ -138,7 +138,7 @@ public class recruitmentHandler implements Serializable {
      */
     public void login() {
         try {
-            boolean loginSuccess = controller.login(username, password);
+            //boolean loginSuccess = controller.login(username, password);
         } catch (Exception loginException) {
             LOG.log(Level.WARNING, loginError, loginException);
         }

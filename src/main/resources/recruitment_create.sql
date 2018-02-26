@@ -110,6 +110,9 @@ INSERT INTO user (person_id, username, password) VALUES (1, 'borg', 'wl9nk23a');
 -- Per Strand:
 INSERT INTO person (person_id, name, surname, ssn, email, role_id) VALUES (2, 'Per', 'Strand', '19671212-1211', 'per@strand.kth.se', 2);
 
+-- Need to insert application in order for current db to work
+INSERT INTO application(application_id, app_date, person_id, accepted) VALUES (1, '2014-06-10', 2, true);
+
 -- Insert the values for the AVAILABILITY:
 INSERT INTO availability (availability_id, person_id, from_date, to_date) VALUES (1, 2, '2014-02-23', '2014-05-25');
 INSERT INTO availability (availability_id, person_id, from_date, to_date) VALUES (2, 2, '2014-07-10', '2014-08-10');
