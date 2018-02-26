@@ -3,6 +3,7 @@ package view;
 import controller.Controller;
 import integration.entity.*;
 import common.*;
+import model.*;
 
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
@@ -17,6 +18,7 @@ public class recruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
     private PersonDTO personDTO;
+    private PersonPublicDTO personPublicDTO;
     private UserDTO userDTO;
     private AvailabilityDTO availabilityDTO;
     private ExperienceDTO experienceDTO;
@@ -45,7 +47,7 @@ public class recruitmentHandler implements Serializable {
     private final String regJobAppError = "There was an error when trying to register the job application";
     private final String regAvailabilityError = "There was an error when trying to register the availability";
     private final String regExperienceError = "There was an error when trying to register the experience";
-    private final String regPersonExpError = "There was an error when trying to register the PersonExperience";
+    private final String regApplicationError = "There was an error when trying to register the application";
     private final String loginError = "There was an error when trying to log in";
 
     private boolean success = false;
@@ -83,6 +85,7 @@ public class recruitmentHandler implements Serializable {
     public void regAvailability() {
         try {
             availabilityDTO = new AvailabilityDTO(fromDate, toDate);
+            availabilityDTOs.add(availabilityDTO):
         } catch (Exception registerAvailabilityException) {
             LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
         }
@@ -92,15 +95,19 @@ public class recruitmentHandler implements Serializable {
     /**
      * registers a persons experiences
      */
-    public ExperienceDTO regExperiences(String experienceName) {
+    public void regExperiences() {
         try {
-            experienceDTO = new ExperienceDTO(experienceName, yearsOfExperience);
-            return experienceDTO;
+            for (int i = 0; i < years.size(); i++) {
+                Double temp = Double.parseDouble(years.get(i));
+                ExperienceDTO TempExperienceDTO = new ExperienceDTO(experienceNames.get(i), temp);
+                experienceDTOs.add(TempExperienceDTO);
+            }
+
         } catch (Exception registerExperienceException) {
             LOG.log(Level.WARNING, regExperienceError, registerExperienceException);
         }
-        return experienceDTO;
     }
+
 
     /**
      *
@@ -108,13 +115,9 @@ public class recruitmentHandler implements Serializable {
     public void regApplication() {
         try {
 
-            for (int i = 0; i < experienceNames.size(); i++){
-                String temp = years.get(i);
-               // experience = regExperiences(experienceNames.get(i));
-                //controller.createPersonExperience(person, experience, Double.parseDouble(temp));
-            }
-        } catch (Exception registerPersonException) {
-            LOG.log(Level.WARNING, regPersonExpError, registerPersonException);
+
+        } catch (Exception registerApplicationException) {
+            LOG.log(Level.WARNING, regApplicationError, registerApplicationException);
         }
 
     }
@@ -125,8 +128,9 @@ public class recruitmentHandler implements Serializable {
     public void regJobApplication() {
         try {
             regPerson();
-            //regPersonExperiences();
+            regExperiences();
             regAvailability();
+            regApplication();
             controller.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTOs);
         } catch(Exception registerJobAppException) {
             LOG.log(Level.WARNING, regJobAppError, registerJobAppException);
