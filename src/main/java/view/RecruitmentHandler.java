@@ -2,8 +2,8 @@ package view;
 
 import controller.Controller;
 import integration.entity.*;
-import model.*;
 import common.*;
+import viewmodel.response.Message;
 
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ManagedBean(name = "recruitmentHandler")
-public class recruitmentHandler implements Serializable {
+public class RecruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
     private PersonDTO personDTO;
@@ -41,16 +41,10 @@ public class recruitmentHandler implements Serializable {
     private String searchRegDate = "date of registration";
     private String searchExperience = "experience";
     private String searchName = "name";
-    private final String regPersonError = "There was an error when trying to register";
-    private final String regJobAppError = "There was an error when trying to register the job application";
-    private final String regAvailabilityError = "There was an error when trying to register the availability";
-    private final String regExperienceError = "There was an error when trying to register the experience";
-    private final String regPersonExpError = "There was an error when trying to register the PersonExperience";
-    private final String loginError = "There was an error when trying to log in";
 
     private boolean success = false;
 
-    private static final Logger LOG = Logger.getLogger(recruitmentHandler.class.getName());
+    private static final Logger LOG = Logger.getLogger(RecruitmentHandler.class.getName());
 
 
     {
@@ -66,115 +60,50 @@ public class recruitmentHandler implements Serializable {
      * Creates a person and a user, connects the person
      * to the user and registers the user in the database
      */
-    public void regPerson(){
+    public void regUser(){
         try {
-            personDTO = new PersonDTO(firstName, lastName, ssn, email);
             userDTO = new UserDTO(username, password);
-            //controller.registerUser(personDTO, userDTO);
+            controller.registerUser(userDTO);
             success = true;
         } catch (Exception registerPersonException) {
-            LOG.log(Level.WARNING, regPersonError, registerPersonException);
+            LOG.log(Level.WARNING, Messages.REGISTER_USER_ERROR.name(), registerPersonException);
         }
     }
 
     /**
-     * registers a persons availabilities for a job application
-     */
-    public void regAvailabilities() {
-        try {
-
-        } catch (Exception registerAvailabilityException) {
-            LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
-        }
-
-    }
-
-    /**
-     * registers a persons experiences
-     */
-    public Experience regExperiences(String experienceName) { // Hur blir det här om vi får ett exception?
-        try {
-           // experience = controller.createExperience(experienceName);
-            return experience;
-        } catch (Exception registerExperienceException) {
-            LOG.log(Level.WARNING, regExperienceError, registerExperienceException);
-        }
-        return experience;
-    }
-
-    /**
-     *
-     */
-    public void regPersonExperiences() {
-        try {
-
-            for (int i = 0; i < experienceNames.size(); i++){
-                String temp = years.get(i);
-                experience = regExperiences(experienceNames.get(i));
-                //controller.createPersonExperience(person, experience, Double.parseDouble(temp));
-            }
-        } catch (Exception registerPersonException) {
-            LOG.log(Level.WARNING, regPersonExpError, registerPersonException);
-        }
-
-    }
-
-    /**
-     * registers a persons job application
+     * Registers a persons job application
      */
     public void regJobApplication() {
         try {
-            regPerson();
-            regPersonExperiences();
-            regAvailabilities();
             //controller.registerJobApplication(person, experiences, yearsOfExperiences, availabilities);
         } catch(Exception registerJobAppException) {
-            LOG.log(Level.WARNING, regJobAppError, registerJobAppException);
+            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
         }
     }
 
     /**
-     * will let a user log in
+     * Will let a user log in
      */
     public void login() {
         try {
             //boolean loginSuccess = controller.login(username, password);
         } catch (Exception loginException) {
-            LOG.log(Level.WARNING, loginError, loginException);
+            LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
         }
     }
 
     /**
-     * fetches a persons availabilities according to the ssn
-     */
-    public List<Availability> getAvailabilities(){
-        //availabilities = controller.fetchAvailabilities(ssn);
-        return availabilities;
-    }
-
-    /**
-     * fetches a persons experiences according to
-     */
-    /*public List<Experience> getExperiences(){
-        experiences = controller.fetchExperiences();
-        return experiences;
-    }*/
-
-    /**
-     * fetches a persons years of experience for all experiences according to the
-     */
-
-  /*  public List<Double> getYearsOfExperiences(){
-        yearsOfExperiences = controller.fetchYearsOfExperiences();
-        return yearsOfExperiences;
-    }
-  */
-    /**
-     * fetches job applications
+     *
+     * @return
      */
     public List<JobApplicationDTO> fetchJobApplications() {
-        jobApplications = controller.fetchJobApplications();
-        return jobApplications;
+        try {
+            jobApplications = controller.fetchJobApplications();
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
     }
 
 

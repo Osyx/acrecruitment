@@ -13,7 +13,7 @@ public class PersonDTO {
     private String email;
     private String role;
 
-    public PersonDTO() {    }
+    public PersonDTO() {}
 
     public PersonDTO(String name, String surname, String ssn, String email) {
         this.name = name;
