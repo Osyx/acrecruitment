@@ -10,7 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("/jobapplications")
+@Path("/jobApplications")
 public class JobApplications {
     private final Controller controller = new Controller();
 
@@ -21,7 +21,7 @@ public class JobApplications {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplications() {
+    public List<JobApplicationDTO> getJobApplications() throws SystemException {
         return controller.fetchJobApplications();
     }
 
@@ -37,11 +37,11 @@ public class JobApplications {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Message createJobApplication(JobApplicationRequest jobApplicationRequest) throws SystemException {
-        controller.registerJobApplication(
+        controller.registerRESTJobApplication(
                 jobApplicationRequest.getPerson(),
                 jobApplicationRequest.getExperiences(),
                 jobApplicationRequest.getAvailabilities(),
-                jobApplicationRequest.getApplications()
+                jobApplicationRequest.getApplication()
         );
         return new Message("SUCCESS", "Registered the job application.");
     }

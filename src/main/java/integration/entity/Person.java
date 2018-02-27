@@ -21,11 +21,15 @@ public class Person implements Serializable {
     @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Column(name = "ssn", nullable = false)
+    @Column(name = "ssn")
     private String ssn;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     private String email;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @Version
     @Column(name = "version", nullable = false)
@@ -39,9 +43,9 @@ public class Person implements Serializable {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Availability> availabilities;
 
-    @OneToMany(mappedBy="person", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy="person", cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<Application> applications;
+    private Application application;
 
 
     public Person() {}
@@ -64,40 +68,56 @@ public class Person implements Serializable {
         return personId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public String getSsn() {
-        return ssn;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     public void setPersonId(long personId) {
         this.personId = personId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getSsn() {
+        return ssn;
     }
 
     public void setSsn(String ssn) {
         this.ssn = ssn;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public List<PersonExperience> getPersonExperiences() {
@@ -116,12 +136,12 @@ public class Person implements Serializable {
         this.availabilities = availabilities;
     }
 
-    public List<Application> getApplications() {
-        return applications;
+    public Application getApplication() {
+        return application;
     }
 
-    public void setApplications(List<Application> applications) {
-        this.applications = applications;
+    public void setApplication(Application application) {
+        this.application = application;
     }
 
     @Override

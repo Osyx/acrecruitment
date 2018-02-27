@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ManagedBean(name = "recruitmentHandler")
-public class recruitmentHandler implements Serializable {
+public class RecruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
     private PersonDTO personDTO;
@@ -52,7 +52,7 @@ public class recruitmentHandler implements Serializable {
 
     private boolean success = false;
 
-    private static final Logger LOG = Logger.getLogger(recruitmentHandler.class.getName());
+    private static final Logger LOG = Logger.getLogger(RecruitmentHandler.class.getName());
 
 
     {
@@ -68,19 +68,18 @@ public class recruitmentHandler implements Serializable {
      * Creates a person and a user, connects the person
      * to the user and registers the user in the database
      */
-    public void regPerson(){
+    public void regUser(){
         try {
-            personDTO = new PersonDTO(firstName, lastName, ssn, email);
             userDTO = new UserDTO(username, password);
-            controller.registerUser(personDTO, userDTO);
+            controller.registerUser(userDTO);
             success = true;
         } catch (Exception registerPersonException) {
-            LOG.log(Level.WARNING, regPersonError, registerPersonException);
+            LOG.log(Level.WARNING, Messages.REGISTER_USER_ERROR.name(), registerPersonException);
         }
     }
 
     /**
-     * registers a persons availabilities for a job application
+     * Registers a persons job application
      */
     public void regAvailability() {
         try {
@@ -133,25 +132,26 @@ public class recruitmentHandler implements Serializable {
             regApplication();
             controller.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTOs);
         } catch(Exception registerJobAppException) {
-            LOG.log(Level.WARNING, regJobAppError, registerJobAppException);
+            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
         }
 
 
     }
 
     /**
-     * will let a user log in
+     * Will let a user log in
      */
     public void login() {
         try {
-            boolean loginSuccess = controller.login(username, password);
+            //boolean loginSuccess = controller.login(username, password);
         } catch (Exception loginException) {
-            LOG.log(Level.WARNING, loginError, loginException);
+            LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
         }
     }
 
     /**
-     * fetches a persons availabilities according to the ssn
+     *
+     * @return
      */
     /*public List<Availability> getAvailabilities(){
         //availabilities = controller.fetchAvailabilities(ssn);
@@ -179,8 +179,13 @@ public class recruitmentHandler implements Serializable {
      * fetches job applications
      */
     public List<JobApplicationDTO> fetchJobApplications() {
-        jobApplications = controller.fetchJobApplications();
-        return jobApplications;
+        try {
+            jobApplications = controller.fetchJobApplications();
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
     }
 
 

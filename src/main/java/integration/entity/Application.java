@@ -15,12 +15,12 @@ public class Application implements Serializable {
     @Column(name = "app_date", nullable = false)
     private Date appDate;
 
-    @Column(name = "accepted", nullable = false)
-    private Boolean accepted;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
+
+    @Column(name = "accepted", nullable = false)
+    private Boolean accepted;
 
     @Version
     @Column(name = "version", nullable = false)
@@ -28,7 +28,8 @@ public class Application implements Serializable {
 
     public Application() {  }
 
-    public Application(Date appDate) {
+    public Application(Person person, Date appDate) {
+        this.person = person;
         this.appDate = appDate;
     }
 

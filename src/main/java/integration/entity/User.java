@@ -20,7 +20,7 @@ public class User implements Serializable {
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "person_id")
     private Person person;
 
     @Version
@@ -59,13 +59,4 @@ public class User implements Serializable {
         this.person = person;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "user_id=" + user_id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", personId=" + person.getPersonId() +
-                '}';
-    }
 }

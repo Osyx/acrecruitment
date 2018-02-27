@@ -4,109 +4,103 @@ import common.*;
 import integration.Integration;
 import integration.entity.*;
 
-import java.sql.Date;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+@Transactional(value = Transactional.TxType.MANDATORY)
 public class JobApplication {
 
+    private static final Logger LOG = Logger.getLogger(Integration.class.getName());
     private final Integration integration = new Integration();
 
     /**
      * Fetches all job applications.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> getJobApplications() {
-        List<JobApplicationDTO> jobApplications = new ArrayList<>();
-        List<Person> personList = integration.getPersonsByRole("applicant");
-        for(Person person : personList) {
-            List<ExperienceDTO> experiences = new ArrayList<>();
-            for(PersonExperience personExperience : person.getPersonExperiences()) {
-                experiences.add(new ExperienceDTO(
-                        personExperience.getExperience().getName(),
-                        personExperience.getYearsOfExperience()
-                ));
+    public List<JobApplicationDTO> getJobApplications() throws SystemException {
+        try {
+            List<JobApplicationDTO> jobApplications = new ArrayList<>();
+            List<Person> personList = integration.getPersonsByRole("applicant");
+            for (Person person : personList) {
+                List<ExperienceDTO> experiences = new ArrayList<>();
+                for (PersonExperience personExperience : person.getPersonExperiences()) {
+                    experiences.add(new ExperienceDTO(
+                            personExperience.getExperience().getName(),
+                            personExperience.getYearsOfExperience()
+                    ));
                 }
 
-            List<AvailabilityDTO> availabilities = new ArrayList<>();
-            for(Availability availability : person.getAvailabilities()) {
-                availabilities.add(new AvailabilityDTO(
-                        availability.getFromDate(),
-                        availability.getToDate()
-                ));
-            }
+                List<AvailabilityDTO> availabilities = new ArrayList<>();
+                for (Availability availability : person.getAvailabilities()) {
+                    availabilities.add(new AvailabilityDTO(
+                            availability.getFromDate(),
+                            availability.getToDate()
+                    ));
+                }
 
-            int applicationNr = 1;
-            List<ApplicationDTO> applications = new ArrayList<>();
-            for(Application application : person.getApplications()) {
+                Application application = person.getApplication();
                 String accepted = "Under consideration";
-                if(application.isAccepted() != null)
+                if (application.isAccepted() != null)
                     accepted = application.isAccepted() ? "Accepted" : "Rejected";
 
-                applications.add(new ApplicationDTO(
-                        applicationNr++,
+                ApplicationDTO applicationDTO = new ApplicationDTO(
+                        application.getApplicationId(),
                         application.getAppDate(),
                         accepted
-                ));
+                );
+
+                PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
+
+                JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
+                        personPublicDTO,
+                        availabilities,
+                        experiences,
+                        applicationDTO
+                );
+                jobApplications.add(jobApplicationDTO);
             }
-
-            PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
-
-            JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
-                    personPublicDTO,
-                    availabilities,
-                    experiences,
-                    applications
-            );
-            jobApplications.add(jobApplicationDTO);
+            return jobApplications;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.toString(), e);
+            throw new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
         }
-        return jobApplications;
     }
 
     /**
      * Registers a new job application.
      * @param personDTO The DTO of the person to be the applicant.
+     * @param userDTO The DTO of the user registering.
      * @param experienceDTOs The list of experiences that the applicant has.
      * @param availabilityDTOs The list of dates that the applicant is available.
-     * @param applicationDTOs The dates of when the applicant registered the applications.
+     * @param applicationDTO The dates of when the applicant registered the applications.
      * @throws SystemException in case that there is an error when registering the application to the database.
      */
-    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, List<ApplicationDTO> applicationDTOs) throws SystemException {
-        Person person = new Person(
-                personDTO.getName(),
-                personDTO.getSurname(),
-                personDTO.getSsn(),
-                personDTO.getEmail()
-        );
-        List<Experience> experiences = new ArrayList<>();
-        List<Double> yearsOfExperiences = new ArrayList<>();
-        for(ExperienceDTO experienceDTO : experienceDTOs) {
-            experiences.add(new Experience(
-                    experienceDTO.getName()
-            ));
-            yearsOfExperiences.add(experienceDTO.getYearsOfExperience());
-        }
-        List<Availability> availabilities = new ArrayList<>();
-        for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
-            availabilities.add(new Availability(
-                    Date.valueOf(availabilityDTO.getFromDate()),
-                    Date.valueOf(availabilityDTO.getToDate())
-            ));
-        }
-        List<Application> applications = new ArrayList<>();
-        for(ApplicationDTO applicationDTO : applicationDTOs) {
-            applications.add(new Application(
-                    Date.valueOf(applicationDTO.getDate())
-            ));
-        }
-        integration.registerJobApplication(person, experiences, yearsOfExperiences, availabilities, applications);
+    public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        integration.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+    }
+
+    /**
+     * Register a new job application, made for the REST endpoints where a user isn't necessary.
+     * @param personDTO The applicant that is applying for a job.
+     * @param experienceDTOs The previous experiences that the applicant has.
+     * @param availabilityDTOs The time slots where the applicant can work.
+     * @param applicationDTO The details concerning this application, e.g. registration date.
+     * @throws SystemException in case of an error during registration.
+     */
+    public void registerRESTJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        integration.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
     }
 
     /**
      * Accept or decline a job application.
      * @param applicationDTO A DTO encapsulating the job application to be changed and has the <code>accepted</code> value changed to the new value.
+     * @throws SystemException in case of an error during update of the application status.
      */
-    public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) {
+    public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) throws SystemException {
         integration.acceptOrDeclineJobApplication(applicationDTO);
     }
 }

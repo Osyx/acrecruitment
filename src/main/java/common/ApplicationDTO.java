@@ -5,30 +5,42 @@ import java.sql.Date;
 
 @XmlRootElement
 public class ApplicationDTO {
-    private long applicationNr;
+    private long applicationId;
     private String date;
     private String accepted;
 
     public ApplicationDTO() {}
 
-    public ApplicationDTO(long applicationNr, String date, String accepted) {
-        this.applicationNr = applicationNr;
+    public ApplicationDTO(long id, String date) {
+        this.applicationId = id;
+        this.date = date;
+        this.accepted = "";
+    }
+
+    public ApplicationDTO(long id, Date date) {
+        this.applicationId = id;
+        this.date = date.toString();
+        this.accepted = "";
+    }
+
+    public ApplicationDTO(long id, String date, String accepted) {
+        this.applicationId = id;
         this.date = date;
         this.accepted = accepted;
     }
 
-    public ApplicationDTO(long applicationNr, Date date, String accepted) {
-        this.applicationNr = applicationNr;
+    public ApplicationDTO(long id, Date date, String accepted) {
+        this.applicationId = id;
         this.date = date.toString();
         this.accepted = accepted;
     }
 
-    public long getApplicationNr() {
-        return applicationNr;
+    public long getApplicationId() {
+        return applicationId;
     }
 
-    public void setApplicationNr(long applicationNr) {
-        this.applicationNr = applicationNr;
+    public void setApplicationId(long applicationId) {
+        this.applicationId = applicationId;
     }
 
     public String getDate() {

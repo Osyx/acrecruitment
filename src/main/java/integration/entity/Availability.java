@@ -27,7 +27,8 @@ public class Availability implements Serializable {
 
     public Availability() {    }
 
-    public Availability(Date fromDate, Date toDate) {
+    public Availability(Person person, Date fromDate, Date toDate) {
+        this.person = person;
         this.fromDate = fromDate;
         this.toDate = toDate;
     }
