@@ -42,9 +42,9 @@ public class Util {
      *         <code>null</code> if it wasn't a valid SSN.
      */
     public static String checkSsn(String ssn) {
-        if(ssn.matches("^[1-9][0-9]{7}[-][0-9]{4}$"))
+        if(ssn.matches("^[0-9]{8}[-][0-9]{4}$"))
             return ssn;
-        else if(ssn.matches("^[1-9][0-9]{11}$")) {
+        else if(ssn.matches("^[0-9]{12}$")) {
             return ssn.substring(0,8) + "-" + ssn.substring(8);
         }
         return null;

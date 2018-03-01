@@ -65,6 +65,46 @@ public class Controller {
     }
 
     /**
+     * Fetches all job applications submitted by persons with a certain name.
+     * @param personDTO A DTO containing the name that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByName(PersonDTO personDTO) throws SystemException {
+        return jobApplication.getJobApplicationsByName(personDTO);
+    }
+
+    /**
+     * Fetches all job applications that has a certain experience.
+     * @param experienceDTO An DTO containing the experience that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByExperience(ExperienceDTO experienceDTO) throws SystemException {
+        return jobApplication.getJobApplicationsByExperience(experienceDTO);
+    }
+
+    /**
+     * Fetches all job applications by the date the application was registered.
+     * @param applicationDTO an applicationDTO containing the date that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByAppDate(ApplicationDTO applicationDTO) throws SystemException {
+        return jobApplication.getJobApplicationsByAppDate(applicationDTO);
+    }
+
+    /**
+     * Fetches all job applications by availability.
+     * @param availabilityDTO the availability that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(AvailabilityDTO availabilityDTO) throws SystemException {
+        return jobApplication.getJobApplicationsByAvailability(availabilityDTO);
+    }
+
+    /**
      * Accept or decline a job application.
      * @param applicationDTO A DTO encapsulating the job application to be changed and has the <code>accepted</code> value changed to the new value.
      * @throws SystemException in case of an error during update of the application status.
