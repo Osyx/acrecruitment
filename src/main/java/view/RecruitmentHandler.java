@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,8 +21,12 @@ public class RecruitmentHandler implements Serializable {
     private PersonDTO personDTO;
     private PersonPublicDTO personPublicDTO;
     private UserDTO userDTO;
+    private RoleDTO roleDTO;
     private AvailabilityDTO availabilityDTO;
     private ExperienceDTO experienceDTO;
+    private ApplicationDTO applicationDTO;
+    private JobApplicationDTO jobApplicationDTO;
+
     private List <JobApplicationDTO> jobApplications;
     private List<ExperienceDTO> experienceDTOs;
     private List<AvailabilityDTO> availabilityDTOs;
@@ -42,9 +47,9 @@ public class RecruitmentHandler implements Serializable {
     private String email;
     private String ssn;
     private String conPassword;
+    private String statusApplication;
 
-    private final String regPersonError = "There was an error when trying to register";
-    private final String regJobAppError = "There was an error when trying to register the job application";
+    private final String regJobAppDTOError = "There was an error when trying to register the job application DTO";
     private final String regAvailabilityError = "There was an error when trying to register the availability";
     private final String regExperienceError = "There was an error when trying to register the experience";
     private final String regApplicationError = "There was an error when trying to register the application";
@@ -65,8 +70,7 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
-     * Creates a person and a user, connects the person
-     * to the user and registers the user in the database
+     * Registers a user in the database
      */
     public void regUser(){
         try {
@@ -79,7 +83,7 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
-     * Registers a persons job application
+     * Registers a persons availabilities
      */
     public void regAvailability() {
         try {
@@ -92,7 +96,7 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
-     * registers a persons experiences
+     * Registers a persons experiences
      */
     public void regExperiences() {
         try {
@@ -109,28 +113,42 @@ public class RecruitmentHandler implements Serializable {
 
 
     /**
-     *
+     * Registers the date of a new job application
      */
     public void regApplication() {
         try {
-
-
+            java.util.Date regDate = Calendar.getInstance().getTime();
+            Date regSQLDate = new java.sql.Date(regDate.getTime());
+            applicationDTO = new ApplicationDTO(applicationID, regSQLDate);  //Ska jag skicka med ett ID här? Borde inte det vara ett autoincrement?
         } catch (Exception registerApplicationException) {
             LOG.log(Level.WARNING, regApplicationError, registerApplicationException);
         }
+    }
+
+    /**
+     * Registers a job application DTO
+     */
+    public void regJobAppDTO() { // skapade denna om det behövs
+        try {
+            personPublicDTO = new PersonPublicDTO(firstName, lastName, email);
+            jobApplicationDTO = new JobApplicationDTO(personPublicDTO, availabilityDTOs, experienceDTOs, applicationDTO);
+        } catch(Exception registerJobAppDTOException) {
+            LOG.log(Level.WARNING, regJobAppDTOError, registerJobAppDTOException);
+        }
+
 
     }
 
     /**
-     * registers a persons job application
+     * Registers a job application
      */
     public void regJobApplication() {
         try {
-            regPerson();
+            personDTO = new PersonDTO(firstName, lastName, ssn, email);
             regExperiences();
             regAvailability();
             regApplication();
-            controller.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTOs);
+            controller.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
         } catch(Exception registerJobAppException) {
             LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
         }
@@ -139,44 +157,51 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
+     * Registers a job application (REST) without a user login
+     */
+    public void regRestJobApplication() { // Var det tillåtet att regga sig utan att logga in?
+        try {
+            personDTO = new PersonDTO(firstName, lastName, ssn, email);
+            regExperiences();
+            regAvailability();
+            regApplication();
+            controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+        } catch(Exception registerRestJobAppException) {
+            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerRestJobAppException);
+        }
+
+
+    }
+
+    /**
+     * Accepts or declines a jobb application
+     */
+    public void acceptOrDeclineApplication(){  // bör eventuellt delas upp i två metoder?
+        try {
+            if(statusApplication == "accepted") {
+                applicationDTO.setAccepted("accepted");
+            }else if(statusApplication == "declined"){
+                applicationDTO.setAccepted("declined");
+            }
+            controller.acceptOrDeclineJobApplication(applicationDTO);
+        }catch (Exception acceptDeclieAppException){
+            LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclieAppException);
+        }
+    }
+
+    /**
      * Will let a user log in
      */
     public void login() {
         try {
-            //boolean loginSuccess = controller.login(username, password);
+            roleDTO = controller.login(username, password);
         } catch (Exception loginException) {
             LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
         }
     }
 
     /**
-     *
-     * @return
-     */
-    /*public List<Availability> getAvailabilities(){
-        //availabilities = controller.fetchAvailabilities(ssn);
-        //return availabilities;
-    }*/
-
-    /**
-     * fetches a persons experiences according to
-     */
-    /*public List<Experience> getExperiences(){
-        experiences = controller.fetchExperiences();
-        return experiences;
-    }*/
-
-    /**
-     * fetches a persons years of experience for all experiences according to the
-     */
-
-  /*  public List<Double> getYearsOfExperiences(){
-        yearsOfExperiences = controller.fetchYearsOfExperiences();
-        return yearsOfExperiences;
-    }
-  */
-    /**
-     * fetches job applications
+     * Fetches job applications
      */
     public List<JobApplicationDTO> fetchJobApplications() {
         try {
@@ -187,7 +212,6 @@ public class RecruitmentHandler implements Serializable {
         }
         return null;
     }
-
 
 
     public Date getFromDate() {
