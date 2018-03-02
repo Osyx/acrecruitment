@@ -63,9 +63,11 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regUser(){
         try {
-            userDTO = new UserDTO(username, password);
-            controller.registerUser(userDTO);
-            success = true;
+            if(conPassword == password){
+                userDTO = new UserDTO(username, password);
+                controller.registerUser(userDTO);
+                success = true;
+            }
         } catch (Exception registerPersonException) {
             LOG.log(Level.WARNING, Messages.REGISTER_USER_ERROR.name(), registerPersonException);
         }
@@ -90,8 +92,8 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regExperiences() {
         try {
-            for (int i = 0; i < years.length; i++) {
-                if(years[i] != null) {
+            for (int i = 0; i < experienceNames.length; i++) {
+                if(years[i] != null & experienceNames[i] != null) {
                     ExperienceDTO TempExperienceDTO = new ExperienceDTO(experienceNames[i], years[i]);
                     experienceDTOs.add(TempExperienceDTO);
                 }
