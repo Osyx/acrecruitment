@@ -65,7 +65,7 @@ public class Util {
      * @throws SystemException if the <code>String</code> didn't contain a valid date.
      */
     public static String checkDate(String date) throws SystemException {
-        if(DateValidator.getInstance().isValid(date, "yyyy-MM-dd"))
+        if(!DateValidator.getInstance().isValid(date, "yyyy-MM-dd"))
             throw new SystemException(
                     Messages.WRONG_INPUT.name(),
                     Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid date: " + date)
