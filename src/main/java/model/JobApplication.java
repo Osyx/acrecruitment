@@ -297,7 +297,7 @@ public class JobApplication {
      * Fetches the available experiences from the database.
      * @return A list of experienceDTOs containing all experiences available.
      */
-    public List<ExperienceDTO> getExperiences() {
-        return integration.getExperiences();
+    public List<String> getExperiences(String lang) {
+        return integration.getExperiences(lang);
     }
 }

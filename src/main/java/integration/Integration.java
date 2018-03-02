@@ -200,10 +200,22 @@ public class Integration {
      * @return A list of experienceDTOs containing all experiences available.
      */
     @SuppressWarnings("unchecked")
-    public List<ExperienceDTO> getExperiences() {
+    public List<String> getExperiences(String lang) {
         Session session = factory.getCurrentSession();
         Query query = session.createQuery("from experience");
-        return query.getResultList();
+        List<Experience> experiences = query.getResultList();
+        List<String> experienceNames = new ArrayList<>();
+        switch(lang) {
+            case "sv":
+                for (Experience experience : experiences)
+                    experienceNames.add(experience.getName_sv());
+                break;
+            case "en":
+                for (Experience experience : experiences)
+                    experienceNames.add(experience.getName_en());
+                break;
+        }
+        return experienceNames;
     }
 
     // Private functions

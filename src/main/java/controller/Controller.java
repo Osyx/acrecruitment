@@ -48,15 +48,15 @@ public class Controller {
      * Fetches the available experiences from the database.
      * @return A list of experienceDTOs containing all experiences available.
      */
-    public List<ExperienceDTO> getExperiences() {
-        List<ExperienceDTO> experienceDTOs;
+    public List<String> getExperiences(String lang) {
+        List<String> experienceStrings;
         factory.getCurrentSession().beginTransaction();
         try {
-            experienceDTOs = jobApplication.getExperiences();
+            experienceStrings = jobApplication.getExperiences(lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
-        return experienceDTOs;
+        return experienceStrings;
     }
 
     /**
