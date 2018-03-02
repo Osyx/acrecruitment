@@ -195,6 +195,17 @@ public class Integration {
         return factory;
     }
 
+    /**
+     * Fetches the available experiences from the database.
+     * @return A list of experienceDTOs containing all experiences available.
+     */
+    @SuppressWarnings("unchecked")
+    public List<ExperienceDTO> getExperiences() {
+        Session session = factory.getCurrentSession();
+        Query query = session.createQuery("from experience");
+        return query.getResultList();
+    }
+
     // Private functions
 
     private void dtoIntoEntity(Person person, List<ExperienceDTO> experienceDTOs, List<PersonExperience> personExperiences,

@@ -45,6 +45,21 @@ public class Controller {
     }
 
     /**
+     * Fetches the available experiences from the database.
+     * @return A list of experienceDTOs containing all experiences available.
+     */
+    public List<ExperienceDTO> getExperiences() {
+        List<ExperienceDTO> experienceDTOs;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            experienceDTOs = jobApplication.getExperiences();
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return experienceDTOs;
+    }
+
+    /**
      * Registers a new job application.
      * @param personDTO The DTO of the person to be the applicant.
      * @param userDTO The DTO of the user registering.
