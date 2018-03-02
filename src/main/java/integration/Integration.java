@@ -229,10 +229,13 @@ public class Integration {
                 String experienceName = capitalize(experienceDTO.getName());
                 Experience existingExperience = getExperience(experienceName);
                 if (existingExperience != null) {
-                    for (PersonExperience personExperience : person.getPersonExperiences()) {
-                        if (personExperience.getExperience().getName_sv().equals(experienceName)) {
-                            skip = true;
-                            break;
+                    if(person.getPersonExperiences() != null) {
+                        for (PersonExperience personExperience : person.getPersonExperiences()) {
+                            if (personExperience.getExperience().getName_sv().equals(existingExperience.getName_sv()) ||
+                                    personExperience.getExperience().getName_en().equals(existingExperience.getName_en())) {
+                                skip = true;
+                                break;
+                            }
                         }
                     }
                     if (skip) {
