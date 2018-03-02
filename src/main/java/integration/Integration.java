@@ -187,6 +187,10 @@ public class Integration {
         }
     }
 
+    /**
+     * Fetches the hibernate factory for the program.
+     * @return the hibernate factory.
+     */
     public static SessionFactory getFactory() {
         return factory;
     }
@@ -195,83 +199,111 @@ public class Integration {
 
     private void dtoIntoEntity(Person person, List<ExperienceDTO> experienceDTOs, List<PersonExperience> personExperiences,
                                       List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO, List<Availability> availabilities) throws SystemException {
-        Boolean skip = false;
-        for(ExperienceDTO experienceDTO : experienceDTOs) {
-            Experience experience;
-            String experienceName = capitalize(experienceDTO.getName());
-            Experience existingExperience = getExperience(experienceName);
-            if(existingExperience != null) {
-                for(PersonExperience personExperience : person.getPersonExperiences()) {
-                    if(personExperience.getExperience().getName().equals(experienceName)) {
-                        skip = true;
-                        break;
+        try {
+            Boolean skip = false;
+            for (ExperienceDTO experienceDTO : experienceDTOs) {
+                Experience experience;
+                String experienceName = capitalize(experienceDTO.getName());
+                Experience existingExperience = getExperience(experienceName);
+                if (existingExperience != null) {
+                    for (PersonExperience personExperience : person.getPersonExperiences()) {
+                        if (personExperience.getExperience().getName_sv().equals(experienceName)) {
+                            skip = true;
+                            break;
+                        }
                     }
-                }
-                if(skip) {
-                    skip = false;
-                    continue;
-                }
-                experience = existingExperience;
-            } else
-                experience = new Experience(experienceName);
-            personExperiences.add(
-                    new PersonExperience(
-                            person,
-                            experience,
-                            experienceDTO.getYearsOfExperience()
-                    )
-            );
-        }
-        person.setPersonExperiences(personExperiences);
-
-        for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
-            Availability newAvailability = new Availability(
-                    person,
-                    Date.valueOf(checkDate(availabilityDTO.getFromDate())),
-                    Date.valueOf(checkDate(availabilityDTO.getToDate()))
-            );
-            if(person.getAvailabilities() != null) {
-                for (Availability availability : person.getAvailabilities()) {
-                    if (availability.getFromDate().equals(newAvailability.getFromDate()) && availability.getToDate().equals(newAvailability.getToDate())) {
-                        skip = true;
-                        break;
+                    if (skip) {
+                        skip = false;
+                        continue;
                     }
-                }
-                if (skip) {
-                    skip = false;
-                    continue;
-                }
+                    experience = existingExperience;
+                } else
+                    experience = new Experience(experienceName, "English for " + experienceName);
+                personExperiences.add(
+                        new PersonExperience(
+                                person,
+                                experience,
+                                experienceDTO.getYearsOfExperience()
+                        )
+                );
             }
-            availabilities.add(newAvailability);
-        }
-        person.setAvailabilities(availabilities);
+            person.setPersonExperiences(personExperiences);
 
-        if(person.getApplication() != null) {
-            Application application = person.getApplication();
-            application.setAppDate(Date.valueOf(checkDate(applicationDTO.getDate())));
-            person.setApplication(application);
-        } else {
-            person.setApplication(new Application(
-                    person,
-                    Date.valueOf(checkDate(applicationDTO.getDate()))
-            ));
+            for (AvailabilityDTO availabilityDTO : availabilityDTOs) {
+                Availability newAvailability;
+                if(availabilityDTO.getToDate() == null) {
+                    newAvailability = new Availability(
+                            person,
+                            Date.valueOf(checkDate(availabilityDTO.getFromDate())),
+                            null
+                    );
+                } else {
+                    newAvailability = new Availability(
+                            person,
+                            Date.valueOf(checkDate(availabilityDTO.getFromDate())),
+                            Date.valueOf(checkDate(availabilityDTO.getToDate()))
+                    );
+                }
+                if (person.getAvailabilities() != null) {
+                    for (Availability availability : person.getAvailabilities()) {
+                        if(availability.getToDate() == null) {
+                            if (availability.getFromDate().equals(newAvailability.getFromDate()) && newAvailability.getToDate() == null) {
+                                skip = true;
+                                break;
+                            }
+                        } else {
+                            if (availability.getFromDate().equals(newAvailability.getFromDate()) && availability.getToDate().equals(newAvailability.getToDate())) {
+                                skip = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (skip) {
+                        skip = false;
+                        continue;
+                    }
+                }
+                availabilities.add(newAvailability);
+            }
+            person.setAvailabilities(availabilities);
+
+            if (person.getApplication() != null) {
+                Application application = person.getApplication();
+                application.setAppDate(Date.valueOf(checkDate(applicationDTO.getDate())));
+                person.setApplication(application);
+            } else {
+                person.setApplication(new Application(
+                        person,
+                        Date.valueOf(checkDate(applicationDTO.getDate()))
+                ));
+            }
+        } catch (Exception e) {
+            SystemException exception = new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw exception;
         }
     }
 
     private Person getAvailablePerson(PersonDTO personDTO, Session session) throws SystemException {
-        personDTO = checkPerson(personDTO);
-        Person person;
-        Person oldPerson = getPerson(personDTO);
-        if(oldPerson != null) {
-            session.evict(oldPerson);
-            person = oldPerson;
-        } else {
-            person = new Person(personDTO);
-            Role role = getRole(personDTO.getRole());
-            person.setRole(role);
-        }
+        try {
+            personDTO = checkPerson(personDTO);
+            Person person;
+            Person oldPerson = getPerson(personDTO);
+            if (oldPerson != null) {
+                session.evict(oldPerson);
+                person = oldPerson;
+            } else {
+                person = new Person(personDTO);
+                Role role = getRole(personDTO.getRole());
+                person.setRole(role);
+            }
 
-        return person;
+            return person;
+        } catch (Exception e) {
+            SystemException exception = new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
+            LOG.log(Level.SEVERE, exception.toString(), exception);
+            throw exception;
+        }
     }
 
     private void registerUser(User user) throws SystemException {
@@ -296,7 +328,7 @@ public class Integration {
 
     private Experience getExperience(String experienceName) {
         Session session = factory.getCurrentSession();
-        Query query = session.createQuery("select e from experience e where e.name = :name");
+        Query query = session.createQuery("select e from experience e where e.name_sv = :name");
         query.setParameter("name", experienceName);
         List fakeList = query.getResultList();
         return fakeList.isEmpty() ? null : (Experience) fakeList.get(0);

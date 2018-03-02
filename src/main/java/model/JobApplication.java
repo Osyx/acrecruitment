@@ -103,10 +103,10 @@ public class JobApplication {
                 boolean hasExperience = false;
                 List<ExperienceDTO> experiences = new ArrayList<>();
                 for (PersonExperience personExperience : person.getPersonExperiences()) {
-                    if(personExperience.getExperience().getName().equals(experienceDTO.getName()))
+                    if(personExperience.getExperience().getName_sv().equals(experienceDTO.getName()))
                         hasExperience = true;
                     experiences.add(new ExperienceDTO(
-                            personExperience.getExperience().getName(),
+                            personExperience.getExperience().getName_sv(),
                             personExperience.getYearsOfExperience()
                     ));
                 }
@@ -269,7 +269,7 @@ public class JobApplication {
         List<ExperienceDTO> experiences = new ArrayList<>();
         for (PersonExperience personExperience : person.getPersonExperiences()) {
             experiences.add(new ExperienceDTO(
-                    personExperience.getExperience().getName(),
+                    personExperience.getExperience().getName_sv(),
                     personExperience.getYearsOfExperience()
             ));
         }
@@ -279,10 +279,16 @@ public class JobApplication {
     private List<AvailabilityDTO> createAvailabilityDTOs(Person person) {
         List<AvailabilityDTO> availabilities = new ArrayList<>();
         for (Availability availability : person.getAvailabilities()) {
-            availabilities.add(new AvailabilityDTO(
-                    availability.getFromDate(),
-                    availability.getToDate()
-            ));
+            if(availability.getToDate() == null) {
+                availabilities.add(new AvailabilityDTO(
+                        availability.getFromDate()
+                ));
+            } else {
+                availabilities.add(new AvailabilityDTO(
+                        availability.getFromDate(),
+                        availability.getToDate()
+                ));
+            }
         }
         return availabilities;
     }
