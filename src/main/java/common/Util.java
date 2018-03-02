@@ -45,15 +45,20 @@ public class Util {
      *         <code>null</code> if it wasn't a valid SSN.
      */
     public static String checkSsn(String ssn) {
-        if(ssn.matches("^[1-9][0-9]{7}[-][0-9]{4}$"))
+        if(ssn.matches("^[1-9][0-9]{3}[0-1][1-9][0-3][0-9][-][0-9]{4}$"))
             return ssn;
-        else if(ssn.matches("^[1-9][0-9]{11}$")) {
+        else if(ssn.matches("^[1-9][0-9]{3}[0-1][1-9][0-3][0-9][0-9]{4}$")) {
             return ssn.substring(0,8) + "-" + ssn.substring(8);
-        } else if(ssn.matches("^[0-9]{10}$")) {
+        } else if(ssn.matches("^[0-9]{2}[0-1][1-9][0-3][0-9][0-9]{4}$")) {
             if(Integer.parseInt(ssn.substring(0,2)) > Integer.parseInt(String.valueOf(Year.now().getValue()).substring(2)))
                 return "19" + ssn.substring(0,6)  + "-" + ssn.substring(6);
             else
                 return "20" + ssn.substring(0, 6)  + "-" + ssn.substring(6);
+        } else if(ssn.matches("^[0-9]{2}[0-1][1-9][0-3][0-9][-][0-9]{4}$")) {
+            if(Integer.parseInt(ssn.substring(0,2)) > Integer.parseInt(String.valueOf(Year.now().getValue()).substring(2)))
+                return "19" + ssn;
+            else
+                return "20" + ssn;
         }
         return null;
     }
