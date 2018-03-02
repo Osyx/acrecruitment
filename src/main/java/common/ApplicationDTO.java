@@ -23,6 +23,11 @@ public class ApplicationDTO {
         this.accepted = "";
     }
 
+    public ApplicationDTO(Date date) {
+        this.date = date.toString();
+        this.accepted = "";
+    }
+
     public ApplicationDTO(long id, String date, String accepted) {
         this.applicationId = id;
         this.date = date;
