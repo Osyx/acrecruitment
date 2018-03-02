@@ -3,6 +3,9 @@ package common;
 import org.apache.commons.validator.routines.DateValidator;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.time.Year;
+import java.util.Calendar;
+
 public class Util {
 
     /**
@@ -46,6 +49,11 @@ public class Util {
             return ssn;
         else if(ssn.matches("^[1-9][0-9]{11}$")) {
             return ssn.substring(0,8) + "-" + ssn.substring(8);
+        } else if(ssn.matches("^[0-9]{10}$")) {
+            if(Integer.parseInt(ssn.substring(0,2)) > Integer.parseInt(String.valueOf(Year.now().getValue()).substring(2)))
+                return "19" + ssn.substring(0,6)  + "-" + ssn.substring(6);
+            else
+                return "20" + ssn.substring(0, 6)  + "-" + ssn.substring(6);
         }
         return null;
     }
@@ -57,7 +65,7 @@ public class Util {
      * @throws SystemException if the <code>String</code> didn't contain a valid date.
      */
     public static String checkDate(String date) throws SystemException {
-        if(DateValidator.getInstance().isValid(date, "yyyy-mm-dd"))
+        if(DateValidator.getInstance().isValid(date, "yyyy-MM-dd"))
             throw new SystemException(
                     Messages.WRONG_INPUT.name(),
                     Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid date: " + date)

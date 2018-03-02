@@ -27,7 +27,7 @@ public class Integration {
 
     private static final Logger LOG = Logger.getLogger(Integration.class.getName());
 
-    private final SessionFactory factory = new Configuration()
+    private static final SessionFactory factory = new Configuration()
             .configure("hibernate.cfg.xml")
             .addAnnotatedClass(Application.class)
             .addAnnotatedClass(Availability.class)
@@ -187,6 +187,10 @@ public class Integration {
             LOG.log(Level.SEVERE, e.toString(), e);
             throw new SystemException(Messages.SAVE_TO_DB_FAILED.name(), e.getMessage());
         }
+    }
+
+    public static SessionFactory getFactory() {
+        return factory;
     }
 
     // Private functions

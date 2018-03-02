@@ -22,39 +22,16 @@ public class JobApplication {
      * @throws SystemException in case something goes from when fetching from the database.
      */
     public List<JobApplicationDTO> getJobApplications() throws SystemException {
+        int numberOfApplications = 0;
         try {
             List<JobApplicationDTO> jobApplications = new ArrayList<>();
             List<Person> personList = integration.getPersonsByRole("applicant");
             for (Person person : personList) {
-                List<ExperienceDTO> experiences = new ArrayList<>();
-                for (PersonExperience personExperience : person.getPersonExperiences()) {
-                    experiences.add(new ExperienceDTO(
-                            personExperience.getExperience().getName(),
-                            personExperience.getYearsOfExperience()
-                    ));
-                }
-
-                List<AvailabilityDTO> availabilities = new ArrayList<>();
-                for (Availability availability : person.getAvailabilities()) {
-                    availabilities.add(new AvailabilityDTO(
-                            availability.getFromDate(),
-                            availability.getToDate()
-                    ));
-                }
-
+                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
                 Application application = person.getApplication();
-                String accepted = "Under consideration";
-                if (application.isAccepted() != null)
-                    accepted = application.isAccepted() ? "Accepted" : "Rejected";
-
-                ApplicationDTO applicationDTO = new ApplicationDTO(
-                        application.getApplicationId(),
-                        application.getAppDate(),
-                        accepted
-                );
-
+                ApplicationDTO applicationDTO = createApplicationDTO(application);
                 PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
-
                 JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
                         personPublicDTO,
                         availabilities,
@@ -62,6 +39,176 @@ public class JobApplication {
                         applicationDTO
                 );
                 jobApplications.add(jobApplicationDTO);
+                if(numberOfApplications++ >= 1000)
+                    return jobApplications;
+            }
+            return jobApplications;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.toString(), e);
+            throw new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
+        }
+    }
+
+    /**
+     * Fetches all job applications submitted by persons with a certain name.
+     * @param personDTO A DTO containing the name that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> getJobApplicationsByName(PersonDTO personDTO) throws SystemException {
+        int numberOfApplications = 0;
+        try {
+            List<JobApplicationDTO> jobApplications = new ArrayList<>();
+            List<Person> personList = integration.getPersonsByRole("applicant");
+            for (Person person : personList) {
+                if(!personDTO.getName().equals(person.getName()))
+                    continue;
+                else
+                if(personDTO.getSurname() != null && !personDTO.getSurname().equals(person.getName()))
+                    continue;
+                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
+                Application application = person.getApplication();
+                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
+                JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
+                        personPublicDTO,
+                        availabilities,
+                        experiences,
+                        applicationDTO
+                );
+                jobApplications.add(jobApplicationDTO);
+                if(numberOfApplications++ >= 1000)
+                    return jobApplications;
+            }
+            return jobApplications;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.toString(), e);
+            throw new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
+        }
+    }
+
+    /**
+     * Fetches all job applications that has a certain experience.
+     * @param experienceDTO An DTO containing the experience that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> getJobApplicationsByExperience(ExperienceDTO experienceDTO) throws SystemException {
+        int numberOfApplications = 0;
+        try {
+            List<JobApplicationDTO> jobApplications = new ArrayList<>();
+            List<Person> personList = integration.getPersonsByRole("applicant");
+            for (Person person : personList) {
+                boolean hasExperience = false;
+                List<ExperienceDTO> experiences = new ArrayList<>();
+                for (PersonExperience personExperience : person.getPersonExperiences()) {
+                    if(personExperience.getExperience().getName().equals(experienceDTO.getName()))
+                        hasExperience = true;
+                    experiences.add(new ExperienceDTO(
+                            personExperience.getExperience().getName(),
+                            personExperience.getYearsOfExperience()
+                    ));
+                }
+                if(!hasExperience)
+                    continue;
+
+                List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
+                Application application = person.getApplication();
+                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
+                JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
+                        personPublicDTO,
+                        availabilities,
+                        experiences,
+                        applicationDTO
+                );
+                jobApplications.add(jobApplicationDTO);
+                if(numberOfApplications++ >= 1000)
+                    return jobApplications;
+            }
+            return jobApplications;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.toString(), e);
+            throw new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
+        }
+    }
+
+    /**
+     * Fetches all job applications by the date the application was registered.
+     * @param appDTO an applicationDTO containing the date that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> getJobApplicationsByAppDate(ApplicationDTO appDTO) throws SystemException {
+        int numberOfApplications = 0;
+        try {
+            List<JobApplicationDTO> jobApplications = new ArrayList<>();
+            List<Person> personList = integration.getPersonsByRole("applicant");
+            for (Person person : personList) {
+                Application application = person.getApplication();
+                if(!application.getAppDate().toString().equals(appDTO.getDate()))
+                    continue;
+                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
+                PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
+                JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
+                        personPublicDTO,
+                        availabilities,
+                        experiences,
+                        applicationDTO
+                );
+                jobApplications.add(jobApplicationDTO);
+                if(numberOfApplications++ >= 1000)
+                    return jobApplications;
+            }
+            return jobApplications;
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.toString(), e);
+            throw new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
+        }
+    }
+
+    /**
+     * Fetches all job applications by availability.
+     * @param availabilityDTO the availability that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
+     */
+    public List<JobApplicationDTO> getJobApplicationsByAvailability(AvailabilityDTO availabilityDTO) throws SystemException {
+        int numberOfApplications = 0;
+        try {
+            List<JobApplicationDTO> jobApplications = new ArrayList<>();
+            List<Person> personList = integration.getPersonsByRole("applicant");
+            for (Person person : personList) {
+                boolean isAvailable = false;
+                List<AvailabilityDTO> availabilities = new ArrayList<>();
+                for (Availability availability : person.getAvailabilities()) {
+                    if(availability.getToDate().toString().equals(availabilityDTO.getToDate())
+                            && availability.getFromDate().toString().equals(availabilityDTO.getFromDate()))
+                        isAvailable = true;
+                    availabilities.add(new AvailabilityDTO(
+                            availability.getFromDate(),
+                            availability.getToDate()
+                    ));
+                }
+                if(!isAvailable)
+                    continue;
+
+                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                Application application = person.getApplication();
+                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
+                JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
+                        personPublicDTO,
+                        availabilities,
+                        experiences,
+                        applicationDTO
+                );
+                jobApplications.add(jobApplicationDTO);
+                if(numberOfApplications++ >= 1000)
+                    return jobApplications;
             }
             return jobApplications;
         } catch (Exception e) {
@@ -102,5 +249,41 @@ public class JobApplication {
      */
     public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) throws SystemException {
         integration.acceptOrDeclineJobApplication(applicationDTO);
+    }
+
+    // Private helper functions
+
+    private ApplicationDTO createApplicationDTO(Application application) {
+        String accepted = "Under consideration";
+        if (application.isAccepted() != null)
+            accepted = application.isAccepted() ? "Accepted" : "Rejected";
+
+        return new ApplicationDTO(
+                application.getApplicationId(),
+                application.getAppDate(),
+                accepted
+        );
+    }
+
+    private List<ExperienceDTO> createExperienceDTOs(Person person) {
+        List<ExperienceDTO> experiences = new ArrayList<>();
+        for (PersonExperience personExperience : person.getPersonExperiences()) {
+            experiences.add(new ExperienceDTO(
+                    personExperience.getExperience().getName(),
+                    personExperience.getYearsOfExperience()
+            ));
+        }
+        return experiences;
+    }
+
+    private List<AvailabilityDTO> createAvailabilityDTOs(Person person) {
+        List<AvailabilityDTO> availabilities = new ArrayList<>();
+        for (Availability availability : person.getAvailabilities()) {
+            availabilities.add(new AvailabilityDTO(
+                    availability.getFromDate(),
+                    availability.getToDate()
+            ));
+        }
+        return availabilities;
     }
 }
