@@ -13,26 +13,27 @@
         <title>Register</title>
         <h:outputScript src="https://www.w3schools.com/lib/w3.js"></h:outputScript>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="res/style.css" />
     </h:head>
     <h:body>
         <ui:include src="navbar.xhtml"/>
         <b:container>
 
             <h:form>
-                <div class="form-group">
-                    <div class="col-md-4 col-md-offset-4">
+                <div class="form-group row">
+                    <div class="col-md-4">
                         <h:outputLabel for="usernameInput">Username</h:outputLabel>
                         <h:inputText value="#{recruitmentHandler.username}" type="text" class="form-control" id="usernameInput" a:placeholder="Enter username"/>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-4 col-md-offset-4">
+                <div class="form-group row">
+                    <div class="col-md-4">
                         <h:outputLabel for="passwordInput">Password</h:outputLabel>
                         <h:inputText value="#{recruitmentHandler.password}" type="password" class="form-control" id="passwordInput" a:placeholder="Enter password"/>
                     </div>
                 </div>
-                <h:commandButton action="#{recruitmentHandler.login}" class="btn btn-primary">Login</h:commandButton>
+
+                <h:commandButton value="Login" action="#{recruitmentHandler.login}" class="btn btn-primary"></h:commandButton>
 
             </h:form>
 
