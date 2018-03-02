@@ -2,6 +2,7 @@ package controller;
 
 import common.*;
 import model.*;
+import org.hibernate.SessionFactory;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 public class Controller {
     private final JobApplication jobApplication = new JobApplication();
     private final User user = new User();
+    private final SessionFactory factory = Factory.getFactory();
 
     /**
      * Checks if the login details are correct.
@@ -19,7 +21,14 @@ public class Controller {
      * @throws SystemException if the wrong login details are given.
      */
     public RoleDTO login(String username, String password) throws SystemException {
-        return user.login(username, password);
+        RoleDTO login;
+        factory.getCurrentSession().beginTransaction();
+        try {
+             login = user.login(username, password);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return login;
     }
 
     /**
@@ -27,7 +36,12 @@ public class Controller {
      * @param userDTO The user details for the user to be added.
      */
     public void registerUser(UserDTO userDTO) throws SystemException {
-        user.registerUser(userDTO);
+        factory.getCurrentSession().beginTransaction();
+        try {
+            user.registerUser(userDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
     /**
@@ -40,7 +54,12 @@ public class Controller {
      * @throws SystemException in case that there is an error when registering the application to the database.
      */
     public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
-        jobApplication.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplication.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
     /**
@@ -52,7 +71,12 @@ public class Controller {
      * @throws SystemException in case of an error during registration.
      */
     public void registerRESTJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
-        jobApplication.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplication.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
     /**
@@ -61,7 +85,15 @@ public class Controller {
      * @throws SystemException in case something goes from when fetching from the database.
      */
     public List<JobApplicationDTO> fetchJobApplications() throws SystemException {
-        return jobApplication.getJobApplications();
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+             jobApplications = jobApplication.getJobApplications();
+        }
+        finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
