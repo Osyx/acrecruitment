@@ -103,7 +103,14 @@ public class Controller {
      * @throws SystemException in case something goes from when fetching from the database.
      */
     public List<JobApplicationDTO> fetchJobApplicationsByName(PersonDTO personDTO) throws SystemException {
-        return jobApplication.getJobApplicationsByName(personDTO);
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByName(personDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
@@ -113,7 +120,14 @@ public class Controller {
      * @throws SystemException in case something goes from when fetching from the database.
      */
     public List<JobApplicationDTO> fetchJobApplicationsByExperience(ExperienceDTO experienceDTO) throws SystemException {
-        return jobApplication.getJobApplicationsByExperience(experienceDTO);
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByExperience(experienceDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
@@ -123,7 +137,14 @@ public class Controller {
      * @throws SystemException in case something goes from when fetching from the database.
      */
     public List<JobApplicationDTO> fetchJobApplicationsByAppDate(ApplicationDTO applicationDTO) throws SystemException {
-        return jobApplication.getJobApplicationsByAppDate(applicationDTO);
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByAppDate(applicationDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
@@ -133,7 +154,14 @@ public class Controller {
      * @throws SystemException in case something goes from when fetching from the database.
      */
     public List<JobApplicationDTO> fetchJobApplicationsByAvailability(AvailabilityDTO availabilityDTO) throws SystemException {
-        return jobApplication.getJobApplicationsByAvailability(availabilityDTO);
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByAvailability(availabilityDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
@@ -142,7 +170,12 @@ public class Controller {
      * @throws SystemException in case of an error during update of the application status.
      */
     public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) throws SystemException {
-        jobApplication.acceptOrDeclineJobApplication(applicationDTO);
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplication.acceptOrDeclineJobApplication(applicationDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
 }
