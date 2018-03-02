@@ -18,6 +18,11 @@ public class AvailabilityDTO {
         this.toDate = toDate.toString();
     }
 
+    public AvailabilityDTO(Date fromDate) {
+        this.fromDate = fromDate.toString();
+        this.toDate = null;
+    }
+
     public String getFromDate() {
         return fromDate;
     }

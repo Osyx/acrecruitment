@@ -12,35 +12,36 @@ public class Experience implements Serializable {
     @Column(name = "experience_id", nullable = false)
     private long experienceId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "name_sv", nullable = false)
+    private String name_sv;
+
+    @Column(name = "name_en", nullable = false)
+    private String name_en;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
 
     public Experience() {   }
 
-    public Experience(String name) {
-        this.name = name;
+    public Experience(String name_sv, String name_en) {
+        this.name_sv = name_sv;
+        this.name_en = name_en;
     }
 
     public long getExperienceId() {
         return experienceId;
     }
 
-    public String getName() {
-        return name;
+    public String getName_sv() {
+        return name_sv;
+    }
+
+    public String getName_en() {
+        return name_en;
     }
 
     @OneToMany(mappedBy = "experience")
     private List<PersonExperience> personExperiences;
 
-    public void addPersonExperiences(PersonExperience personExperience) {
-        this.personExperiences.add(personExperience);
-    }
-
-    @Override
-    public String toString() {
-        return "Experience{" +
-                "experienceId=" + experienceId +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

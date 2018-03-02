@@ -1,195 +1,196 @@
 package controller;
 
 import common.*;
-import integration.Integration;
-import integration.entity.*;
 import model.*;
+import org.hibernate.SessionFactory;
 
 import javax.transaction.Transactional;
-import java.sql.Date;
 import java.util.List;
 
-//@Transactional(Transactional.TxType.REQUIRES_NEW)
+@Transactional(Transactional.TxType.REQUIRES_NEW)
 public class Controller {
-    private final Integration integration = new Integration();
     private final JobApplication jobApplication = new JobApplication();
+    private final User user = new User();
+    private final SessionFactory factory = Factory.getFactory();
 
     /**
-     * Creates and saves a person in the database with the given info.
-     * @param firstName The first name.
-     * @param lastName The last name.
-     * @param personSsn The social security number.
-     * @param emailAdress The email adress.
-     * @return The person object that was created and saved.
+     * Checks if the login details are correct.
+     * @param username The username of the user to be logged in.
+     * @param password  The password of the user to be logged in.
+     * @return the role the user has.
+     * @throws SystemException if the wrong login details are given.
      */
-    public Person createPerson(String firstName, String lastName, String personSsn, String emailAdress) {
-        Person person = new Person(firstName, lastName, personSsn, emailAdress);
-        integration.createObject(person);
-        return person;
-    }
-
-    /**
-     * Creates and saves a person in the database with the given info in a PersonDTO.
-     * @param personDTO A personDTO object encapsulating the info for the new person.
-     * @return The person object that was created and saved.
-     */
-    public Person createPerson(PersonDTO personDTO) {
-        Person person = new Person(personDTO.getName(), personDTO.getSurname(), personDTO.getSsn(), personDTO.getEmail());
-        integration.createObject(person);
-        return person;
+    public RoleDTO login(String username, String password) throws SystemException {
+        RoleDTO login;
+        factory.getCurrentSession().beginTransaction();
+        try {
+             login = user.login(username, password);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return login;
     }
 
     /**
-     * Creates a user with the given info.
-     * @param userName The username for the user,
-     * @param password The password for the user.
-     * @param person The person who owns this user,
-     * @return The created and saved User object.
+     * Register a user with a username and password.
+     * @param userDTO The user details for the user to be added.
      */
-    public User createUser(String userName, String password, Person person) {
-        User user = new User(userName, password);
-        user.setPerson(person);
-        integration.createObject(user);
-        return user;
+    public void registerUser(UserDTO userDTO) throws SystemException {
+        factory.getCurrentSession().beginTransaction();
+        try {
+            user.registerUser(userDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
     /**
-     *
-     * @param person
-     * @param fromDate
-     * @param toDate
+     * Fetches the available experiences from the database.
+     * @return A list of experienceDTOs containing all experiences available.
      */
-    public void createAvailability(Person person, Date fromDate, Date toDate) {
-        Availability availability = new Availability(fromDate, toDate);
-        availability.setPerson(person);
-        integration.createObject(availability);
+    public List<String> getExperiences(String lang) {
+        List<String> experienceStrings;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            experienceStrings = jobApplication.getExperiences(lang);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return experienceStrings;
     }
 
     /**
-     *
-     * @param experienceName
-     * @return
+     * Registers a new job application.
+     * @param personDTO The DTO of the person to be the applicant.
+     * @param userDTO The DTO of the user registering.
+     * @param experienceDTOs The list of experiences that the applicant has.
+     * @param availabilityDTOs The list of dates that the applicant is available.
+     * @param applicationDTO The dates of when the applicant registered the applications.
+     * @throws SystemException in case that there is an error when registering the application to the database.
      */
-    public Experience createExperience(String experienceName) {
-        Experience experience = new Experience(experienceName);
-        integration.createObject(experience);
-        return experience;
+    public void registerJobApplication(PersonDTO personDTO, UserDTO userDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplication.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
     /**
-     *
-     * @param person
-     * @param experience
-     * @param yearsOfExperience
+     * Register a new job application, made for the REST endpoints where a user isn't necessary.
+     * @param personDTO The applicant that is applying for a job.
+     * @param experienceDTOs The previous experiences that the applicant has.
+     * @param availabilityDTOs The time slots where the applicant can work.
+     * @param applicationDTO The details concerning this application, e.g. registration date.
+     * @throws SystemException in case of an error during registration.
      */
-    public void createPersonExperience(Person person, Experience experience, double yearsOfExperience){
-        PersonExperience personExperience = new PersonExperience(person, experience, yearsOfExperience);
-        integration.createObject(personExperience);
-    }
-
-    public void createPersonRole(Person person, Role role){
-        PersonRole personRole = new PersonRole(person, role);
-        integration.createObject(personRole);
+    public void registerRESTJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO) throws SystemException {
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplication.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
     /**
-     *
-     * @param object
+     * Fetches all job applications.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
      */
-    public void removeObject(Object object) {
-        integration.removeObject(object);
+    public List<JobApplicationDTO> fetchJobApplications(String lang) throws SystemException {
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+             jobApplications = jobApplication.getJobApplications(lang);
+        }
+        finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
-     *
-     * @param personPublicDTO
+     * Fetches all job applications submitted by persons with a certain name.
+     * @param personDTO A DTO containing the name that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
      */
-    public void updatePerson(PersonDTO personPublicDTO) {
-        integration.updatePerson(personPublicDTO);
+    public List<JobApplicationDTO> fetchJobApplicationsByName(PersonDTO personDTO, String lang) throws SystemException {
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByName(personDTO, lang);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
-     *
-     * @param personSsn
-     * @return
+     * Fetches all job applications that has a certain experience.
+     * @param experienceDTO An DTO containing the experience that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
      */
-    public Person getPerson(String personSsn) {
-        return integration.getPerson(personSsn);
+    public List<JobApplicationDTO> fetchJobApplicationsByExperience(ExperienceDTO experienceDTO, String lang) throws SystemException {
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByExperience(experienceDTO, lang);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
-     *
-     * @param id
-     * @return
+     * Fetches all job applications by the date the application was registered.
+     * @param applicationDTO an applicationDTO containing the date that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
      */
-    public PersonDTO getPersonByID(long id) {
-        return integration.getPersonById(id);
+    public List<JobApplicationDTO> fetchJobApplicationsByAppDate(ApplicationDTO applicationDTO, String lang) throws SystemException {
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByAppDate(applicationDTO, lang);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
-     *
-     * @return
+     * Fetches all job applications by availability.
+     * @param availabilityDTO the availability that we want the applicants to have.
+     * @return All job applications in a <code>List</code> of JobApplicationDTOs.
+     * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<PersonPublicDTO> getPersons() {
-        return integration.getPersons();
+    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(AvailabilityDTO availabilityDTO, String lang) throws SystemException {
+        List<JobApplicationDTO> jobApplications;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplications = jobApplication.getJobApplicationsByAvailability(availabilityDTO, lang);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return jobApplications;
     }
 
     /**
-     *
-     * @param personSsn
-     * @return
+     * Accept or decline a job application.
+     * @param applicationDTO A DTO encapsulating the job application to be changed and has the <code>accepted</code> value changed to the new value.
+     * @throws SystemException in case of an error during update of the application status.
      */
-    public List<Availability> fetchAvailabilities(String personSsn) {
-        return integration.fetchAvailabilities(personSsn);
-    }
-
-    /*
-    public List<Experience> fetchExperiences() {
-        return integration.fetchExperiences();
-    }
-
-    public List<Double> fetchYearsOfExperiences() {
-        return integration.fetchYearsOfExperiences();
-    }
-    */
-
-    /**
-     *
-     * @param username
-     * @param password
-     * @return
-     */
-    public boolean login(String username, String password) {
-        return integration.login(username, password);
-    }
-
-    /**
-     *
-     * @param person
-     * @param user
-     * @return
-     */
-    public boolean registerUser(Person person, User user) {
-        return integration.userRegister(person, user);
-    }
-
-    /**
-     *
-     * @param personDTO
-     * @param experienceDTOs
-     * @param availabilityDTOs
-     * @param applicationDateDTOs
-     */
-    public void registerJobApplication(PersonDTO personDTO, List<ExperienceDTO> experienceDTOs, List<AvailabilityDTO> availabilityDTOs, List<ApplicationDateDTO> applicationDateDTOs) {
-        jobApplication.registerJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDateDTOs);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<JobApplicationDTO> fetchJobApplications() {
-        return jobApplication.getJobApplications();
+    public void acceptOrDeclineJobApplication(ApplicationDTO applicationDTO) throws SystemException {
+        factory.getCurrentSession().beginTransaction();
+        try {
+            jobApplication.acceptOrDeclineJobApplication(applicationDTO);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
     }
 
 }

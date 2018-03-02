@@ -1,5 +1,7 @@
 package integration.entity;
 
+import common.UserDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -18,14 +20,23 @@ public class User implements Serializable {
     private String password;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "person_id")
     private Person person;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
 
     public User() {    }
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public User(UserDTO userDTO) {
+        this.username = userDTO.getUsername();
+        this.password = userDTO.getPassword();
     }
 
     public long getUser_id() {
@@ -48,13 +59,4 @@ public class User implements Serializable {
         this.person = person;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "user_id=" + user_id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", personId=" + person.getPersonId() +
-                '}';
-    }
 }

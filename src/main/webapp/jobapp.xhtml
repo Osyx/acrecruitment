@@ -13,7 +13,7 @@
         <title>Job Application</title>
         <h:outputScript src="https://www.w3schools.com/lib/w3.js"></h:outputScript>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-        <link rel="stylesheet" type="text/css" href="style.css" />
+        <link rel="stylesheet" type="text/css" href="res/style.css" />
     </h:head>
 
     <h:body>
@@ -26,60 +26,73 @@
             <h2>Personal info</h2>
             <div class="form-group row">
                 <div class="col-md-5">
-                    <h:outputLabel for="firstNameInput">First name</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name"/>
+                    <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name" required="true" requiredMessage="Please enter your first name"/>
                 </div>
                 <div class="col-md-5">
-                    <h:outputLabel for="lastNameInput">Last name</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name"/>
+                    <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name" required="true" requiredMessage="Please enter your last name"/>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-md-5">
-                    <h:outputLabel for="ssnInput">Social security number</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.ssn}" type="text" class="form-control" id="ssnInput" a:placeholder="Enter social security number"/>
+                    <h:outputLabel for="ssnInput">Social security number *</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.ssn}" type="text" class="form-control" id="ssnInput" a:placeholder="Enter social security number" required="true" requiredMessage="Please enter your social security number"/>
                     <small id="ssnHelp" class="form-text text-muted">&nbsp;e.g. "9212012406"</small>
                 </div>
                 <div class="col-md-5">
-                    <h:outputLabel for="emailInput">Email address</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.email}" type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" a:placeholder="Enter email address"/>
+                    <h:outputLabel for="emailInput">Email address *</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.email}" type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" a:placeholder="Enter email address" required="true" requiredMessage="Please enter your email address"/>
                     <small id="emailHelp" class="form-text text-muted">&nbsp;We'll never share your email with anyone else.</small>
                 </div>
             </div>
             <h2>Availability</h2>
             <div class="form-group row">
                 <div class="col-md-5">
-                    <h:outputLabel for="AvailableFromInput">Available from</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true"/>
+                    <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true" requiredMessage="Please choose a date"/>
                 </div>
                 <div class="col-md-5">
                     <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
                     <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
-                        <f:convertDateTime type="date" dateStyle="full" pattern="dd/MM/yyyy" />
+                        <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
                     </h:inputText>
                 </div>
             </div>
             <h2>Experience</h2>
             <div class="form-group row">
                 <div class="col-md-5">
-                    <h:outputLabel for="experienceTypeInfo1">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceTypeInfo1" a:placeholder="Enter type of experience" required="true"/>
+                    <h:outputLabel for="experienceTypeInfo1">Name of experience *</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceTypeInfo0" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
                 </div>
                 <div class="col-md-5">
-                    <h:outputLabel for="experienceYearsInfo1">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[0]}" class="form-control" id="experienceYearsInfo1">
+                    <h:outputLabel for="experienceYearsInfo1">Years of experience *</h:outputLabel>
+                    <b:selectOneMenu value="#{recruitmentHandler.years[0]}" class="form-control" id="experienceYearsInfo0" required="true" requiredMessage="Please enter the years of experience">
                         <ui:include src="selectItems.xhtml"/>
                     </b:selectOneMenu>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-md-5">
-                    <h:outputLabel for="experienceTypeInfo2">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[1]}" type="text" class="form-control" id="experienceTypeInfo2" a:placeholder="Enter type of experience" required="true"/>
+                    <h:outputLabel for="experienceTypeInfo2">Name of experience *</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[1]}" type="text" class="form-control" id="experienceTypeInfo1" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
                 </div>
                 <div class="col-md-5">
-                    <h:outputLabel for="experienceYearsInfo2">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[1]" class="form-control" id="experienceYearsInfo2">
+                    <h:outputLabel for="experienceYearsInfo2">Years of experience *</h:outputLabel>
+                    <b:selectOneMenu value="#{recruitmentHandler.years[1]}" class="form-control" id="experienceYearsInfo1" required="true" requiredMessage="Please enter the years of experience">
+                        <ui:include src="selectItems.xhtml"/>
+                    </b:selectOneMenu>
+                </div>
+
+            </div>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[2]}" type="text" class="form-control" id="experienceTypeInfo2" a:placeholder="Enter type of experience"/>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
+                    <b:selectOneMenu value="#{recruitmentHandler.years[2]}" class="form-control" id="experienceYearsInfo2">
                         <ui:include src="selectItems.xhtml"/>
                     </b:selectOneMenu>
                 </div>
@@ -87,19 +100,31 @@
             <div class="form-group row">
                 <div class="col-md-5">
                     <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[2]}" type="text" class="form-control" id="experienceTypeInfo3" a:placeholder="Enter type of experience" required="true"/>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[3]}" type="text" class="form-control" id="experienceTypeInfo3" a:placeholder="Enter type of experience"/>
                 </div>
                 <div class="col-md-5">
                     <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[2]}" class="form-control" id="experienceYearsInfo3">
+                    <b:selectOneMenu value="#{recruitmentHandler.years[3]}" class="form-control" id="experienceYearsInfo3">
                         <ui:include src="selectItems.xhtml"/>
                     </b:selectOneMenu>
                 </div>
             </div>
+            <div class="form-group row">
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.experienceNames[4]}" type="text" class="form-control" id="experienceTypeInfo4" a:placeholder="Enter type of experience"/>
+                </div>
+                <div class="col-md-5">
+                    <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
+                    <b:selectOneMenu value="#{recruitmentHandler.years[4]}" class="form-control" id="experienceYearsInfo4">
+                        <ui:include src="selectItems.xhtml"/>
+                    </b:selectOneMenu>
+                </div>
+            </div>
+            <small id="formRequiredFieldsHelp" class="form-text text-muted">&nbsp;All required fields are marked with *</small>
 
-            <h:commandButton action="#{recruitmentHandler.regJobApplication}" class="btn btn-primary">
-                Register
-            </h:commandButton>
+            <h:commandButton value="Register" action="#{recruitmentHandler.regJobApplication}" class="btn btn-primary"></h:commandButton>
+
         </h:form>
 
         </b:container>

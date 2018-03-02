@@ -11,8 +11,12 @@ public class Role implements Serializable {
     @Column(name = "role_id", nullable = false)
     private float roleId;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
 
     public Role() {    }
 

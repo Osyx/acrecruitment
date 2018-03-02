@@ -4,27 +4,37 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 
-@Entity(name = "application_date")
+@Entity(name = "application")
 public class Application implements Serializable {
 
     @Id
     @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-    @Column(name = "application_date_id", nullable = false)
-    private long applicationDateId;
+    @Column(name = "application_id", nullable = false)
+    private long applicationId;
 
     @Column(name = "app_date", nullable = false)
     private Date appDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
-    //private boolean accepted;
+    @Column(name = "accepted", nullable = false)
+    private Boolean accepted;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
 
     public Application() {  }
 
-    public Application(Date appDate) {
+    public Application(Person person, Date appDate) {
+        this.person = person;
         this.appDate = appDate;
+    }
+
+    public long getApplicationId() {
+        return applicationId;
     }
 
     public Date getAppDate() {
@@ -42,13 +52,12 @@ public class Application implements Serializable {
     public void setPerson(Person person) {
         this.person = person;
     }
-/*
-    public boolean isAccepted() {
+
+    public Boolean isAccepted() {
         return accepted;
     }
 
-    public void setAccepted(boolean accepted) {
+    public void setAccepted(Boolean accepted) {
         this.accepted = accepted;
     }
-    */
 }

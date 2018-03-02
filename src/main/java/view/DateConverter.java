@@ -10,7 +10,7 @@ import javax.faces.convert.FacesConverter;
 public class DateConverter extends DateTimeConverter {
 
     public DateConverter() {
-        setPattern("dd/mm/yyyy");
+        setPattern("yyyy-mm-dd");
     }
 
     @Override

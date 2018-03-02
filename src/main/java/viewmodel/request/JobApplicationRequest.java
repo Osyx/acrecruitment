@@ -1,9 +1,6 @@
 package viewmodel.request;
 
-import common.ApplicationDTO;
-import common.AvailabilityDTO;
-import common.ExperienceDTO;
-import common.PersonDTO;
+import common.*;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
@@ -13,7 +10,7 @@ public class JobApplicationRequest {
     private PersonDTO person;
     private List<AvailabilityDTO> availabilities;
     private List<ExperienceDTO> experiences;
-    private List<ApplicationDTO> applicationDates;
+    private ApplicationDTO application;
 
     public JobApplicationRequest() {}
 
@@ -41,11 +38,11 @@ public class JobApplicationRequest {
         this.experiences = experiences;
     }
 
-    public List<ApplicationDTO> getApplicationDates() {
-        return applicationDates;
+    public ApplicationDTO getApplication() {
+        return application;
     }
 
-    public void setApplicationDates(List<ApplicationDTO> applicationDates) {
-        this.applicationDates = applicationDates;
+    public void setApplication(ApplicationDTO application) {
+        this.application = application;
     }
 }

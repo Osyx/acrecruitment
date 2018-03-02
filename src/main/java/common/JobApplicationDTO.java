@@ -8,15 +8,15 @@ public class JobApplicationDTO {
     private PersonPublicDTO person;
     private List<AvailabilityDTO> availabilities;
     private List<ExperienceDTO> experiences;
-    private List<ApplicationDTO> applicationDates;
+    private ApplicationDTO application;
 
     public JobApplicationDTO() {}
 
-    public JobApplicationDTO(PersonPublicDTO person, List<AvailabilityDTO> availabilities, List<ExperienceDTO> experiences, List<ApplicationDTO> applicationDates) {
+    public JobApplicationDTO(PersonPublicDTO person, List<AvailabilityDTO> availabilities, List<ExperienceDTO> experiences, ApplicationDTO application) {
         this.person = person;
         this.availabilities = availabilities;
         this.experiences = experiences;
-        this.applicationDates = applicationDates;
+        this.application = application;
     }
 
     public PersonPublicDTO getPerson() {
@@ -43,11 +43,11 @@ public class JobApplicationDTO {
         this.experiences = experiences;
     }
 
-    public List<ApplicationDTO> getApplicationDates() {
-        return applicationDates;
+    public ApplicationDTO getApplication() {
+        return application;
     }
 
-    public void setApplicationDates(List<ApplicationDTO> applicationDates) {
-        this.applicationDates = applicationDates;
+    public void setApplication(ApplicationDTO application) {
+        this.application = application;
     }
 }
