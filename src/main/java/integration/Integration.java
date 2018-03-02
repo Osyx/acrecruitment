@@ -106,10 +106,9 @@ public class Integration {
             Person person = getAvailablePerson(personDTO, session);
             List<PersonExperience> personExperiences = new ArrayList<>();
             List<Availability> availabilities = new ArrayList<>();
-            Application application = dtoIntoEntity(person, experienceDTOs, personExperiences, availabilityDTOs, applicationDTO, availabilities);
-            person.setPersonExperiences(personExperiences);
-            person.setAvailabilities(availabilities);
-            person.setApplication(application);
+            dtoIntoEntity(person, experienceDTOs, personExperiences, availabilityDTOs, applicationDTO, availabilities);
+            person.setName(personDTO.getName());
+            person.setSurname(personDTO.getSurname());
             user.setPerson(person);
             session.merge(user);
 
@@ -136,10 +135,9 @@ public class Integration {
             Person person = getAvailablePerson(personDTO, session);
             List<PersonExperience> personExperiences = new ArrayList<>();
             List<Availability> availabilities = new ArrayList<>();
-            Application application = dtoIntoEntity(person, experienceDTOs, personExperiences, availabilityDTOs, applicationDTO, availabilities);
-            person.setPersonExperiences(personExperiences);
-            person.setAvailabilities(availabilities);
-            person.setApplication(application);
+            dtoIntoEntity(person, experienceDTOs, personExperiences, availabilityDTOs, applicationDTO, availabilities);
+            person.setName(personDTO.getName());
+            person.setSurname(personDTO.getSurname());
             session.merge(person);
 
         } catch (Exception e) {
@@ -195,15 +193,26 @@ public class Integration {
 
     // Private functions
 
-    private Application dtoIntoEntity(Person person, List<ExperienceDTO> experienceDTOs, List<PersonExperience> personExperiences,
+    private void dtoIntoEntity(Person person, List<ExperienceDTO> experienceDTOs, List<PersonExperience> personExperiences,
                                       List<AvailabilityDTO> availabilityDTOs, ApplicationDTO applicationDTO, List<Availability> availabilities) throws SystemException {
+        Boolean skip = false;
         for(ExperienceDTO experienceDTO : experienceDTOs) {
             Experience experience;
             String experienceName = capitalize(experienceDTO.getName());
             Experience existingExperience = getExperience(experienceName);
-            if(existingExperience != null)
+            if(existingExperience != null) {
+                for(PersonExperience personExperience : person.getPersonExperiences()) {
+                    if(personExperience.getExperience().getName().equals(experienceName)) {
+                        skip = true;
+                        break;
+                    }
+                }
+                if(skip) {
+                    skip = false;
+                    continue;
+                }
                 experience = existingExperience;
-            else
+            } else
                 experience = new Experience(experienceName);
             personExperiences.add(
                     new PersonExperience(
@@ -213,17 +222,40 @@ public class Integration {
                     )
             );
         }
+        person.setPersonExperiences(personExperiences);
+
         for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
-            availabilities.add(new Availability(
+            Availability newAvailability = new Availability(
                     person,
                     Date.valueOf(checkDate(availabilityDTO.getFromDate())),
                     Date.valueOf(checkDate(availabilityDTO.getToDate()))
+            );
+            if(person.getAvailabilities() != null) {
+                for (Availability availability : person.getAvailabilities()) {
+                    if (availability.getFromDate().equals(newAvailability.getFromDate()) && availability.getToDate().equals(newAvailability.getToDate())) {
+                        skip = true;
+                        break;
+                    }
+                }
+                if (skip) {
+                    skip = false;
+                    continue;
+                }
+            }
+            availabilities.add(newAvailability);
+        }
+        person.setAvailabilities(availabilities);
+
+        if(person.getApplication() != null) {
+            Application application = person.getApplication();
+            application.setAppDate(Date.valueOf(checkDate(applicationDTO.getDate())));
+            person.setApplication(application);
+        } else {
+            person.setApplication(new Application(
+                    person,
+                    Date.valueOf(checkDate(applicationDTO.getDate()))
             ));
         }
-        return new Application(
-                person,
-                Date.valueOf(checkDate(applicationDTO.getDate()))
-        );
     }
 
     private Person getAvailablePerson(PersonDTO personDTO, Session session) throws SystemException {
