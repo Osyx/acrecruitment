@@ -99,11 +99,11 @@ public class Controller {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplications() throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplications(String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-             jobApplications = jobApplication.getJobApplications();
+             jobApplications = jobApplication.getJobApplications(lang);
         }
         finally {
             factory.getCurrentSession().getTransaction().commit();
@@ -117,11 +117,11 @@ public class Controller {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByName(PersonDTO personDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByName(PersonDTO personDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByName(personDTO);
+            jobApplications = jobApplication.getJobApplicationsByName(personDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
@@ -134,11 +134,11 @@ public class Controller {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByExperience(ExperienceDTO experienceDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByExperience(ExperienceDTO experienceDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByExperience(experienceDTO);
+            jobApplications = jobApplication.getJobApplicationsByExperience(experienceDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
@@ -151,11 +151,11 @@ public class Controller {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByAppDate(ApplicationDTO applicationDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByAppDate(ApplicationDTO applicationDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByAppDate(applicationDTO);
+            jobApplications = jobApplication.getJobApplicationsByAppDate(applicationDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
@@ -168,11 +168,11 @@ public class Controller {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(AvailabilityDTO availabilityDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(AvailabilityDTO availabilityDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByAvailability(availabilityDTO);
+            jobApplications = jobApplication.getJobApplicationsByAvailability(availabilityDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }

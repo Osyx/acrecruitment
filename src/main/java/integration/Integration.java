@@ -177,7 +177,7 @@ public class Integration {
             Session session = factory.getCurrentSession();
             Query query = session.createQuery("update application a set a.accepted = :status where a.applicationId = :id");
             if (applicationDTO.getAccepted() != null)
-                accepted = applicationDTO.getAccepted().toLowerCase().equals("accepted");
+                accepted = applicationDTO.getAccepted().toLowerCase().equals("accepted") || applicationDTO.getAccepted().toLowerCase().equals("accepterad");
             query.setParameter("status", accepted);
             query.setParameter("id", applicationDTO.getApplicationId());
             query.executeUpdate();
@@ -210,7 +210,7 @@ public class Integration {
                 for (Experience experience : experiences)
                     experienceNames.add(experience.getName_sv());
                 break;
-            case "en":
+            default:
                 for (Experience experience : experiences)
                     experienceNames.add(experience.getName_en());
                 break;
@@ -240,8 +240,11 @@ public class Integration {
                         continue;
                     }
                     experience = existingExperience;
-                } else
-                    experience = new Experience(experienceName, "English for " + experienceName);
+                } else {
+                    SystemException exception = new SystemException(Messages.SAVE_TO_DB_FAILED.name(), Messages.WRONG_INPUT.getErrorMessageWithArg(experienceName));
+                    LOG.log(Level.SEVERE, exception.toString(), exception);
+                    throw exception;
+                }
                 personExperiences.add(
                         new PersonExperience(
                                 person,
@@ -351,9 +354,14 @@ public class Integration {
 
     private Experience getExperience(String experienceName) {
         Session session = factory.getCurrentSession();
-        Query query = session.createQuery("select e from experience e where e.name_sv = :name");
+        Query query = session.createQuery("select e from experience e where e.name_en = :name");
         query.setParameter("name", experienceName);
         List fakeList = query.getResultList();
+        if(fakeList.isEmpty()) {
+            query = session.createQuery("select e from experience e where e.name_sv = :name");
+            query.setParameter("name", experienceName);
+            fakeList = query.getResultList();
+        }
         return fakeList.isEmpty() ? null : (Experience) fakeList.get(0);
     }
 

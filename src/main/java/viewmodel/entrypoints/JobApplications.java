@@ -20,9 +20,10 @@ public class JobApplications {
      * is converted to a JSON object if asked for by REST.
      */
     @GET
+    @Path("/{lang}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<JobApplicationDTO> getJobApplications() throws SystemException {
-        return controller.fetchJobApplications();
+    public List<JobApplicationDTO> getJobApplications(@PathParam("lang") String lang) throws SystemException {
+        return controller.fetchJobApplications(lang);
     }
 
     /**

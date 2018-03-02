@@ -21,16 +21,16 @@ public class JobApplication {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> getJobApplications() throws SystemException {
+    public List<JobApplicationDTO> getJobApplications(String lang) throws SystemException {
         int numberOfApplications = 0;
         try {
             List<JobApplicationDTO> jobApplications = new ArrayList<>();
             List<Person> personList = integration.getPersonsByRole("applicant");
             for (Person person : personList) {
-                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                List<ExperienceDTO> experiences = createExperienceDTOs(person, lang);
                 List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
                 Application application = person.getApplication();
-                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                ApplicationDTO applicationDTO = createApplicationDTO(application, lang);
                 PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
                 JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
                         personPublicDTO,
@@ -55,7 +55,7 @@ public class JobApplication {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> getJobApplicationsByName(PersonDTO personDTO) throws SystemException {
+    public List<JobApplicationDTO> getJobApplicationsByName(PersonDTO personDTO, String lang) throws SystemException {
         int numberOfApplications = 0;
         try {
             List<JobApplicationDTO> jobApplications = new ArrayList<>();
@@ -66,10 +66,10 @@ public class JobApplication {
                 else
                 if(personDTO.getSurname() != null && !personDTO.getSurname().equals(person.getName()))
                     continue;
-                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                List<ExperienceDTO> experiences = createExperienceDTOs(person, lang);
                 List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
                 Application application = person.getApplication();
-                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                ApplicationDTO applicationDTO = createApplicationDTO(application, lang);
                 PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
                 JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
                         personPublicDTO,
@@ -94,7 +94,7 @@ public class JobApplication {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> getJobApplicationsByExperience(ExperienceDTO experienceDTO) throws SystemException {
+    public List<JobApplicationDTO> getJobApplicationsByExperience(ExperienceDTO experienceDTO, String lang) throws SystemException {
         int numberOfApplications = 0;
         try {
             List<JobApplicationDTO> jobApplications = new ArrayList<>();
@@ -102,20 +102,34 @@ public class JobApplication {
             for (Person person : personList) {
                 boolean hasExperience = false;
                 List<ExperienceDTO> experiences = new ArrayList<>();
-                for (PersonExperience personExperience : person.getPersonExperiences()) {
-                    if(personExperience.getExperience().getName_sv().equals(experienceDTO.getName()))
-                        hasExperience = true;
-                    experiences.add(new ExperienceDTO(
-                            personExperience.getExperience().getName_sv(),
-                            personExperience.getYearsOfExperience()
-                    ));
+                switch(lang) {
+                    case "sv":
+                        for (PersonExperience personExperience : person.getPersonExperiences()) {
+                            if(personExperience.getExperience().getName_sv().equals(experienceDTO.getName()))
+                                hasExperience = true;
+                            experiences.add(new ExperienceDTO(
+                                    personExperience.getExperience().getName_sv(),
+                                    personExperience.getYearsOfExperience()
+                            ));
+                        }
+                        break;
+                    default:
+                        for (PersonExperience personExperience : person.getPersonExperiences()) {
+                            if(personExperience.getExperience().getName_en().equals(experienceDTO.getName()))
+                                hasExperience = true;
+                            experiences.add(new ExperienceDTO(
+                                    personExperience.getExperience().getName_en(),
+                                    personExperience.getYearsOfExperience()
+                            ));
+                        }
+                        break;
                 }
                 if(!hasExperience)
                     continue;
 
                 List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
                 Application application = person.getApplication();
-                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                ApplicationDTO applicationDTO = createApplicationDTO(application, lang);
                 PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
                 JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
                         personPublicDTO,
@@ -140,7 +154,7 @@ public class JobApplication {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> getJobApplicationsByAppDate(ApplicationDTO appDTO) throws SystemException {
+    public List<JobApplicationDTO> getJobApplicationsByAppDate(ApplicationDTO appDTO, String lang) throws SystemException {
         int numberOfApplications = 0;
         try {
             List<JobApplicationDTO> jobApplications = new ArrayList<>();
@@ -149,8 +163,8 @@ public class JobApplication {
                 Application application = person.getApplication();
                 if(!application.getAppDate().toString().equals(appDTO.getDate()))
                     continue;
-                ApplicationDTO applicationDTO = createApplicationDTO(application);
-                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                ApplicationDTO applicationDTO = createApplicationDTO(application, lang);
+                List<ExperienceDTO> experiences = createExperienceDTOs(person, lang);
                 List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
                 PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
                 JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
@@ -176,7 +190,7 @@ public class JobApplication {
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> getJobApplicationsByAvailability(AvailabilityDTO availabilityDTO) throws SystemException {
+    public List<JobApplicationDTO> getJobApplicationsByAvailability(AvailabilityDTO availabilityDTO, String lang) throws SystemException {
         int numberOfApplications = 0;
         try {
             List<JobApplicationDTO> jobApplications = new ArrayList<>();
@@ -196,9 +210,9 @@ public class JobApplication {
                 if(!isAvailable)
                     continue;
 
-                List<ExperienceDTO> experiences = createExperienceDTOs(person);
+                List<ExperienceDTO> experiences = createExperienceDTOs(person, lang);
                 Application application = person.getApplication();
-                ApplicationDTO applicationDTO = createApplicationDTO(application);
+                ApplicationDTO applicationDTO = createApplicationDTO(application, lang);
                 PersonPublicDTO personPublicDTO = new PersonPublicDTO(person);
                 JobApplicationDTO jobApplicationDTO = new JobApplicationDTO(
                         personPublicDTO,
@@ -253,25 +267,25 @@ public class JobApplication {
 
     // Private helper functions
 
-    private ApplicationDTO createApplicationDTO(Application application) {
-        String accepted = "Under consideration";
-        if (application.isAccepted() != null)
-            accepted = application.isAccepted() ? "Accepted" : "Rejected";
-
-        return new ApplicationDTO(
-                application.getApplicationId(),
-                application.getAppDate(),
-                accepted
-        );
-    }
-
-    private List<ExperienceDTO> createExperienceDTOs(Person person) {
+    private List<ExperienceDTO> createExperienceDTOs(Person person, String lang) {
         List<ExperienceDTO> experiences = new ArrayList<>();
-        for (PersonExperience personExperience : person.getPersonExperiences()) {
-            experiences.add(new ExperienceDTO(
-                    personExperience.getExperience().getName_sv(),
-                    personExperience.getYearsOfExperience()
-            ));
+        switch(lang) {
+            case "sv":
+                for (PersonExperience personExperience : person.getPersonExperiences()) {
+                    experiences.add(new ExperienceDTO(
+                            personExperience.getExperience().getName_sv(),
+                            personExperience.getYearsOfExperience()
+                    ));
+                }
+                break;
+            default:
+                for (PersonExperience personExperience : person.getPersonExperiences()) {
+                    experiences.add(new ExperienceDTO(
+                            personExperience.getExperience().getName_en(),
+                            personExperience.getYearsOfExperience()
+                    ));
+                }
+                break;
         }
         return experiences;
     }
@@ -291,6 +305,27 @@ public class JobApplication {
             }
         }
         return availabilities;
+    }
+
+    private ApplicationDTO createApplicationDTO(Application application, String lang) {
+        String accepted;
+        switch(lang) {
+            case "sv":
+                accepted = "Under övervägande";
+                if (application.isAccepted() != null)
+                    accepted = application.isAccepted() ? "Accepterad" : "Avvisad";
+                break;
+            default:
+                accepted = "Under consideration";
+                if (application.isAccepted() != null)
+                    accepted = application.isAccepted() ? "Accepted" : "Rejected";
+                break;
+        }
+        return new ApplicationDTO(
+                application.getApplicationId(),
+                application.getAppDate(),
+                accepted
+        );
     }
 
     /**
