@@ -145,6 +145,7 @@ public class RecruitmentHandler implements Serializable {
     public void regJobApplication() {
         try {
             personDTO = new PersonDTO(firstName, lastName, ssn, email);
+            personDTO.setRole("applicant");
             regExperiences();
             regAvailability();
             regApplication();
