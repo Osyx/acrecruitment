@@ -8,9 +8,7 @@ import model.*;
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,19 +25,19 @@ public class RecruitmentHandler implements Serializable {
     private ApplicationDTO applicationDTO;
     private JobApplicationDTO jobApplicationDTO;
 
-    private List <JobApplicationDTO> jobApplications;
-    private List<ExperienceDTO> experienceDTOs;
-    private List<AvailabilityDTO> availabilityDTOs;
-    private List<ApplicationDTO> applicationDTOs;
+    private List <JobApplicationDTO> jobApplications = new ArrayList<>();
+    private List<ExperienceDTO> experienceDTOs = new ArrayList<>();
+    private List<AvailabilityDTO> availabilityDTOs = new ArrayList<>();
+    private List<ApplicationDTO> applicationDTOs = new ArrayList<>();
 
     private Experience experience;
-    private List <String> experienceNames;
-    private List <String> years;
-    private List<Double> yearsOfExperiences;
-    private double yearsOfExperience;
+    private String[] experienceNames = new String[5];
+    private Double[] years = new Double[5];
 
-    private Date fromDate;
-    private Date toDate;
+    private java.util.Date fromDate;
+    private java.util.Date toDate;
+    private java.sql.Date fromSQLDate;
+    private java.sql.Date toSQLDate;
     private String username;
     private String password;
     private String firstName;
@@ -60,15 +58,6 @@ public class RecruitmentHandler implements Serializable {
     private static final Logger LOG = Logger.getLogger(RecruitmentHandler.class.getName());
 
 
-    {
-        experienceNames = new ArrayList<>();
-        years = new ArrayList<>();
-        for(int i = 1; i<=10; i++) {
-            experienceNames.add("");
-            years.add("");
-        }
-    }
-
     /**
      * Registers a user in the database
      */
@@ -87,7 +76,8 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regAvailability() {
         try {
-            availabilityDTO = new AvailabilityDTO(fromDate, toDate);
+            dateConverter();
+            availabilityDTO = new AvailabilityDTO(fromSQLDate, toSQLDate);
             availabilityDTOs.add(availabilityDTO);
         } catch (Exception registerAvailabilityException) {
             LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
@@ -100,10 +90,11 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regExperiences() {
         try {
-            for (int i = 0; i < years.size(); i++) {
-                Double temp = Double.parseDouble(years.get(i));
-                ExperienceDTO TempExperienceDTO = new ExperienceDTO(experienceNames.get(i), temp);
-                experienceDTOs.add(TempExperienceDTO);
+            for (int i = 0; i < years.length; i++) {
+                if(years[i] != null) {
+                    ExperienceDTO TempExperienceDTO = new ExperienceDTO(experienceNames[i], years[i]);
+                    experienceDTOs.add(TempExperienceDTO);
+                }
             }
 
         } catch (Exception registerExperienceException) {
@@ -111,6 +102,13 @@ public class RecruitmentHandler implements Serializable {
         }
     }
 
+    /**
+     * Converts a java.util.Date to java.sql.Date
+     */
+    public void dateConverter(){
+        fromSQLDate = new java.sql.Date(fromDate.getTime());
+        toSQLDate = new java.sql.Date(toDate.getTime());
+    }
 
     /**
      * Registers the date of a new job application
@@ -119,7 +117,7 @@ public class RecruitmentHandler implements Serializable {
         try {
             java.util.Date regDate = Calendar.getInstance().getTime();
             Date regSQLDate = new java.sql.Date(regDate.getTime());
-            applicationDTO = new ApplicationDTO(applicationID, regSQLDate);  //Ska jag skicka med ett ID här? Borde inte det vara ett autoincrement?
+            applicationDTO = new ApplicationDTO(regSQLDate);
         } catch (Exception registerApplicationException) {
             LOG.log(Level.WARNING, regApplicationError, registerApplicationException);
         }
@@ -148,7 +146,7 @@ public class RecruitmentHandler implements Serializable {
             regExperiences();
             regAvailability();
             regApplication();
-            controller.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+            controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
         } catch(Exception registerJobAppException) {
             LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
         }
@@ -185,7 +183,7 @@ public class RecruitmentHandler implements Serializable {
             }
             controller.acceptOrDeclineJobApplication(applicationDTO);
         }catch (Exception acceptDeclieAppException){
-            LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclieAppException);
+           // LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclieAppException);
         }
     }
 
@@ -213,36 +211,51 @@ public class RecruitmentHandler implements Serializable {
         return null;
     }
 
-
-    public Date getFromDate() {
+    public java.util.Date getFromDate() {
         return fromDate;
     }
 
-    public void setFromDate(Date fromDate) {
+    public void setFromDate(java.util.Date fromDate) {
         this.fromDate = fromDate;
     }
 
-    public Date getToDate() {
+    public java.util.Date getToDate() {
         return toDate;
     }
 
-    public void setToDate(Date toDate) {
+    public void setToDate(java.util.Date toDate) {
         this.toDate = toDate;
     }
 
-    public List<String> getExperienceNames() {
+    public Date getFromSQLDate() {
+        return fromSQLDate;
+    }
+
+    public void setFromSQLDate(Date fromSQLDate) {
+        this.fromSQLDate = fromSQLDate;
+    }
+
+    public Date getToSQLDate() {
+        return toSQLDate;
+    }
+
+    public void setToSQLDate(Date toSQLDate) {
+        this.toSQLDate = toSQLDate;
+    }
+
+    public String[] getExperienceNames() {
         return experienceNames;
     }
 
-    public void setExperienceNames(List<String> experienceNames) {
+    public void setExperienceNames(String[] experienceNames) {
         this.experienceNames = experienceNames;
     }
 
-    public List<String> getYears() {
+    public Double[] getYears() {
         return years;
     }
 
-    public void setYears(List<String> years) {
+    public void setYears(Double[] years) {
         this.years = years;
     }
 
