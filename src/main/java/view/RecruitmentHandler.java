@@ -68,7 +68,7 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regUser(){
         try {
-            if(conPassword == password){
+            if(conPassword.equals(password)){
                 userDTO = new UserDTO(username, password);
                 controller.registerUser(userDTO);
                 success = true;
