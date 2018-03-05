@@ -6,6 +6,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+/**
+ * Maps the <code>SystemException</code> to a JSON/XML compatible class,
+ * so that errors are displayable through the REST API.
+ */
 @Provider
 public class SystemExceptionMapper implements ExceptionMapper<SystemException> {
 

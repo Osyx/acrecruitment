@@ -3,6 +3,9 @@ package integration.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * The entity for the role a person has.
+ */
 @Entity(name = "role")
 public class Role implements Serializable {
 

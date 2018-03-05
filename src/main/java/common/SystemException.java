@@ -1,5 +1,8 @@
 package common;
 
+/**
+ * The app specific exception that is used when throwing errors in this application.
+ */
 public class SystemException extends Exception {
     private final String messageKey;
     private final String message;

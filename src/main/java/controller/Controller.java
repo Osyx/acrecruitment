@@ -7,6 +7,9 @@ import org.hibernate.SessionFactory;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * The controller of the project, this is also where the transactions begin.
+ */
 @Transactional(Transactional.TxType.REQUIRES_NEW)
 public class Controller {
     private final JobApplication jobApplication = new JobApplication();
@@ -34,6 +37,7 @@ public class Controller {
     /**
      * Register a user with a username and password.
      * @param userDTO The user details for the user to be added.
+     * @throws SystemException if an error occurs when trying to register a user.
      */
     public void registerUser(UserDTO userDTO) throws SystemException {
         factory.getCurrentSession().beginTransaction();
@@ -46,9 +50,11 @@ public class Controller {
 
     /**
      * Fetches the available experiences from the database.
+     * @param lang the language for which we want the return values in.
      * @return A list of experienceDTOs containing all experiences available.
+     * @throws SystemException if an error occurs when fetching the experiences.
      */
-    public List<String> getExperiences(String lang) {
+    public List<String> getExperiences(String lang) throws SystemException {
         List<String> experienceStrings;
         factory.getCurrentSession().beginTransaction();
         try {
@@ -96,6 +102,7 @@ public class Controller {
 
     /**
      * Fetches all job applications.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -114,6 +121,7 @@ public class Controller {
     /**
      * Fetches all job applications submitted by persons with a certain name.
      * @param personDTO A DTO containing the name that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -131,6 +139,7 @@ public class Controller {
     /**
      * Fetches all job applications that has a certain experience.
      * @param experienceDTO An DTO containing the experience that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -148,6 +157,7 @@ public class Controller {
     /**
      * Fetches all job applications by the date the application was registered.
      * @param applicationDTO an applicationDTO containing the date that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -165,6 +175,7 @@ public class Controller {
     /**
      * Fetches all job applications by availability.
      * @param availabilityDTO the availability that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */

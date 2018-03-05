@@ -5,6 +5,9 @@ import common.UserDTO;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * The entity for the users.
+ */
 @Entity(name = "user")
 public class User implements Serializable {
 
