@@ -38,6 +38,7 @@ public class RecruitmentHandler implements Serializable {
     private java.util.Date toDate;
     private java.sql.Date fromSQLDate;
     private java.sql.Date toSQLDate;
+    private int searchSelection;
     private String username;
     private String password;
     private String firstName;
@@ -251,6 +252,14 @@ public class RecruitmentHandler implements Serializable {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
         return null;
+    }
+
+    public int getSearchSelection() {
+        return searchSelection;
+    }
+
+    public void setSearchSelection(int searchSelection) {
+        this.searchSelection = searchSelection;
     }
 
     public java.util.Date getFromDate() {

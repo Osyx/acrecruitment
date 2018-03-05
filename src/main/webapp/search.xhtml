@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:b="http://bootsfaces.net/ui">
+
+<h:head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>Job Application</title>
+    <h:outputScript src="https://www.w3schools.com/lib/w3.js"></h:outputScript>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="res/style.css" />
+</h:head>
+
+<h:body>
+    <ui:include src="navbar.xhtml"/>
+    <b:container>
+
+
+        <h:form styleClass="formID">
+
+            <b:row styleClass="rows">
+                <b:column col-sm="5" offset="1">
+                    <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
+                        <ui:include src="selectSearch.xhtml"/>
+                        <f:ajax render="@form"/>
+                    </b:selectOneMenu>
+                </b:column>
+            </b:row>
+
+
+            <b:row styleClass="rows" id="allApplications" rendered="#{recruitmentHandler.searchSelection == 1}">
+                <b:column col-sm="5" offset="1">
+                    <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplications}" class="btn btn-primary"></h:commandButton>
+                </b:column>
+            </b:row>
+
+            <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 2}">
+                <b:row styleClass="rows" id="name">
+                    <b:column col-sm="5" offset="1">
+                        <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name" required="true" requiredMessage="Please enter your first name"/>
+                        <h:message for="firstNameInput"/>
+                    </b:column>
+                    <b:column col-sm="5">
+                        <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name" required="true" requiredMessage="Please enter your last name"/>
+                        <h:message for="lastNameInput"/>
+                    </b:column>
+                </b:row>
+                <b:row styleClass="rows">
+                    <b:column col-sm="5" offset="1">
+                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" class="btn btn-primary"></h:commandButton>
+                    </b:column>
+                </b:row>
+            </h:form>
+
+            <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 3}">
+                <b:row styleClass="rows" id="experience">
+                    <b:column col-sm="5" offset="1">
+                        <h:outputLabel for="experienceType">Name of experience *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceType" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
+                        <h:message for="experienceType"/>
+                    </b:column>
+                </b:row>
+                <b:row styleClass="rows">
+                    <b:column col-sm="5" offset="1">
+                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" class="btn btn-primary"></h:commandButton>
+                    </b:column>
+                </b:row>
+            </h:form>
+
+            <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 4}">
+                <b:row styleClass="rows" id="availability">
+                    <b:column col-sm="5" offset="1">
+                        <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true" requiredMessage="Please choose a date"/>
+                        <h:message for="AvailableFromInput"/>
+                    </b:column>
+                    <b:column col-sm="5">
+                        <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
+                            <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                    </b:column>
+                </b:row>
+                <b:row styleClass="rows">
+                    <b:column col-sm="5" offset="1">
+                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" class="btn btn-primary"></h:commandButton>
+                    </b:column>
+                </b:row>
+            </h:form>
+
+
+        </h:form>
+
+    </b:container>
+
+
+
+    <!-- the scripts that need to be present -->
+    <h:outputScript src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></h:outputScript>
+    <h:outputScript src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></h:outputScript>
+    <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></h:outputScript>
+
+</h:body>
+
+</html>
