@@ -7,6 +7,9 @@ import org.hibernate.SessionFactory;
 import javax.transaction.Transactional;
 import java.util.List;
 
+/**
+ * The controller of the project, this is also where the transactions begin.
+ */
 @Transactional(Transactional.TxType.REQUIRES_NEW)
 public class Controller {
     private final JobApplication jobApplication = new JobApplication();
@@ -34,6 +37,7 @@ public class Controller {
     /**
      * Register a user with a username and password.
      * @param userDTO The user details for the user to be added.
+     * @throws SystemException if an error occurs when trying to register a user.
      */
     public void registerUser(UserDTO userDTO) throws SystemException {
         factory.getCurrentSession().beginTransaction();
@@ -42,6 +46,23 @@ public class Controller {
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
+    }
+
+    /**
+     * Fetches the available experiences from the database.
+     * @param lang the language for which we want the return values in.
+     * @return A list of experienceDTOs containing all experiences available.
+     * @throws SystemException if an error occurs when fetching the experiences.
+     */
+    public List<String> getExperiences(String lang) throws SystemException {
+        List<String> experienceStrings;
+        factory.getCurrentSession().beginTransaction();
+        try {
+            experienceStrings = jobApplication.getExperiences(lang);
+        } finally {
+            factory.getCurrentSession().getTransaction().commit();
+        }
+        return experienceStrings;
     }
 
     /**
@@ -81,14 +102,15 @@ public class Controller {
 
     /**
      * Fetches all job applications.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplications() throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplications(String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-             jobApplications = jobApplication.getJobApplications();
+             jobApplications = jobApplication.getJobApplications(lang);
         }
         finally {
             factory.getCurrentSession().getTransaction().commit();
@@ -99,14 +121,15 @@ public class Controller {
     /**
      * Fetches all job applications submitted by persons with a certain name.
      * @param personDTO A DTO containing the name that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByName(PersonDTO personDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByName(PersonDTO personDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByName(personDTO);
+            jobApplications = jobApplication.getJobApplicationsByName(personDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
@@ -116,14 +139,15 @@ public class Controller {
     /**
      * Fetches all job applications that has a certain experience.
      * @param experienceDTO An DTO containing the experience that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByExperience(ExperienceDTO experienceDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByExperience(ExperienceDTO experienceDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByExperience(experienceDTO);
+            jobApplications = jobApplication.getJobApplicationsByExperience(experienceDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
@@ -133,14 +157,15 @@ public class Controller {
     /**
      * Fetches all job applications by the date the application was registered.
      * @param applicationDTO an applicationDTO containing the date that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByAppDate(ApplicationDTO applicationDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByAppDate(ApplicationDTO applicationDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByAppDate(applicationDTO);
+            jobApplications = jobApplication.getJobApplicationsByAppDate(applicationDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }
@@ -150,14 +175,15 @@ public class Controller {
     /**
      * Fetches all job applications by availability.
      * @param availabilityDTO the availability that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(AvailabilityDTO availabilityDTO) throws SystemException {
+    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(AvailabilityDTO availabilityDTO, String lang) throws SystemException {
         List<JobApplicationDTO> jobApplications;
         factory.getCurrentSession().beginTransaction();
         try {
-            jobApplications = jobApplication.getJobApplicationsByAvailability(availabilityDTO);
+            jobApplications = jobApplication.getJobApplicationsByAvailability(availabilityDTO, lang);
         } finally {
             factory.getCurrentSession().getTransaction().commit();
         }

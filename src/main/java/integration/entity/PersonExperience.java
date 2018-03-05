@@ -3,6 +3,9 @@ package integration.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/**
+ * The entity for the table which maps the persons and their experiences.
+ */
 @Entity(name = "person_experience")
 public class PersonExperience implements Serializable {
 

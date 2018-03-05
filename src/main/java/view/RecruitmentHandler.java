@@ -1,14 +1,15 @@
 package view;
 
-import controller.Controller;
-import integration.entity.*;
 import common.*;
-import model.*;
+import controller.Controller;
+import integration.entity.Experience;
 
 import javax.faces.bean.ManagedBean;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -207,7 +208,7 @@ public class RecruitmentHandler implements Serializable {
      */
     public List<JobApplicationDTO> fetchJobApplications() {
         try {
-            jobApplications = controller.fetchJobApplications();
+            //jobApplications = controller.fetchJobApplications();
             return jobApplications;
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);

@@ -4,8 +4,10 @@ import org.apache.commons.validator.routines.DateValidator;
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.time.Year;
-import java.util.Calendar;
 
+/**
+ * A helper class containing methods for checking for input errors, thus used for validation.
+ */
 public class Util {
 
     /**

@@ -7,7 +7,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
-
+/**
+ * The entity containing the information about a person.
+ */
 @Entity(name = "person")
 public class Person implements Serializable {
     @Id

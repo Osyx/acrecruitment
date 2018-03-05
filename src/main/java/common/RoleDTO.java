@@ -2,6 +2,9 @@ package common;
 
 import integration.entity.Role;
 
+/**
+ * A DTO containing a role name.
+ */
 public class RoleDTO {
     private String role;
 

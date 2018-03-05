@@ -18,3 +18,5 @@ target/
 \.idea/azureSettings\.xml
 
 acrecruitment\.iml
+
+*.iml
