@@ -4,10 +4,12 @@ import common.JobApplicationDTO;
 import common.SystemException;
 import controller.Controller;
 import viewmodel.request.JobApplicationRequest;
+import viewmodel.response.Experience;
 import viewmodel.response.Message;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,5 +52,25 @@ public class JobApplications {
                 jobApplicationRequest.getApplication()
         );
         return new Message("SUCCESS", "Registered the job application.");
+    }
+
+    /**
+     * Fetches the available experiences.
+     * @param lang The language to have the experiences in.
+     * @return A list of experience names.
+     * @throws SystemException in case an error occurs during the fetch.
+     */
+    @GET
+    @Path("/experiences/{lang}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Experience> getExperiences(@PathParam("lang") String lang) throws SystemException {
+        List<String> experiences = controller.getExperiences(lang);
+        List<Experience> experienceResponse = new ArrayList<>();
+        for (String experience : experiences) {
+            experienceResponse.add(
+                    new Experience(experience)
+            );
+        }
+        return experienceResponse;
     }
 }
