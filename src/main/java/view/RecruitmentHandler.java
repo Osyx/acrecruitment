@@ -202,11 +202,50 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
-     * Fetches job applications
+     * Fetches all job applications
      */
     public List<JobApplicationDTO> fetchJobApplications() {
         try {
             jobApplications = controller.fetchJobApplications();
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
+    }
+
+    /**
+     * Fetches job applications by name of person
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByName(){
+        try {
+            jobApplications = controller.fetchJobApplicationsByName(personDTO);
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
+    }
+
+    /**
+     * Fetches job applications by experience
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByExperience(){
+        try {
+            jobApplications = controller.fetchJobApplicationsByExperience(experienceDTO);
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
+    }
+
+    /**
+     * Fetches job applications by availability
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(){
+        try {
+            jobApplications = controller.fetchJobApplicationsByAvailability(availabilityDTO);
             return jobApplications;
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
