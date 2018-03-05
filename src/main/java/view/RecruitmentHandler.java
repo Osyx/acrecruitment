@@ -4,7 +4,9 @@ import common.*;
 import controller.Controller;
 import integration.entity.Experience;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ public class RecruitmentHandler implements Serializable {
     private java.util.Date toDate;
     private java.sql.Date fromSQLDate;
     private java.sql.Date toSQLDate;
+    private int searchSelection;
     private String username;
     private String password;
     private String firstName;
@@ -47,6 +50,7 @@ public class RecruitmentHandler implements Serializable {
     private String ssn;
     private String conPassword;
     private String statusApplication;
+    private String errorMessage;
 
     private final String regJobAppDTOError = "There was an error when trying to register the job application DTO";
     private final String regAvailabilityError = "There was an error when trying to register the availability";
@@ -64,7 +68,7 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regUser(){
         try {
-            if(conPassword == password){
+            if(conPassword.equals(password)){
                 userDTO = new UserDTO(username, password);
                 controller.registerUser(userDTO);
                 success = true;
@@ -145,6 +149,7 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regJobApplication() {
         try {
+            success = true;
             personDTO = new PersonDTO(firstName, lastName, ssn, email);
             personDTO.setRole("applicant");
             regExperiences();
@@ -152,6 +157,9 @@ public class RecruitmentHandler implements Serializable {
             regApplication();
             controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
         } catch(Exception registerJobAppException) {
+            FacesMessage message = new FacesMessage(registerJobAppException.getMessage());
+            FacesContext context = FacesContext.getCurrentInstance();
+            //context.addMessage(mybutton.getClientId(context), message);
             LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
         }
 
@@ -203,7 +211,7 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
-     * Fetches job applications
+     * Fetches all job applications
      */
     public List<JobApplicationDTO> fetchJobApplications() {
         try {
@@ -213,6 +221,53 @@ public class RecruitmentHandler implements Serializable {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
         return null;
+    }
+
+    /**
+     * Fetches job applications by name of person
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByName(){
+        try {
+            jobApplications = controller.fetchJobApplicationsByName(personDTO, "en");
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
+    }
+
+    /**
+     * Fetches job applications by experience
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByExperience(){
+        try {
+            jobApplications = controller.fetchJobApplicationsByExperience(experienceDTO, "en");
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
+    }
+
+    /**
+     * Fetches job applications by availability
+     */
+    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(){
+        try {
+            jobApplications = controller.fetchJobApplicationsByAvailability(availabilityDTO, "en");
+            return jobApplications;
+        } catch (Exception fetchException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+        return null;
+    }
+
+    public int getSearchSelection() {
+        return searchSelection;
+    }
+
+    public void setSearchSelection(int searchSelection) {
+        this.searchSelection = searchSelection;
     }
 
     public java.util.Date getFromDate() {
