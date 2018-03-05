@@ -4,6 +4,9 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 
+/**
+ * The entity used for storing the dates between which the applicant is available.
+ */
 @Entity(name = "availability")
 public class Availability implements Serializable {
     @Id

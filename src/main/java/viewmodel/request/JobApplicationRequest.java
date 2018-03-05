@@ -5,6 +5,10 @@ import common.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
+/**
+ * A JSON/XML compatible class which encapsulates all the info which is required
+ * from a request to create a new job application.
+ */
 @XmlRootElement
 public class JobApplicationRequest {
     private PersonDTO person;

@@ -2,6 +2,9 @@ package common;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * A DTO containing an experience and the years the applicant has in it.
+ */
 @XmlRootElement
 public class ExperienceDTO {
     private String name;

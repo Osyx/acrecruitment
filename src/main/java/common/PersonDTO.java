@@ -4,6 +4,9 @@ import integration.entity.Person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * A DTO containing the information about a person, including its ssn.
+ */
 @XmlRootElement
 public class PersonDTO {
     private long id;

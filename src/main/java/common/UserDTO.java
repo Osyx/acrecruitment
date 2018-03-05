@@ -1,5 +1,8 @@
 package common;
 
+/**
+ * A DTO containing a users information.
+ */
 public class UserDTO {
     private String username;
     private String password;

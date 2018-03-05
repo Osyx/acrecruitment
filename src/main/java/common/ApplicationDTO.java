@@ -3,6 +3,10 @@ package common;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
 
+/**
+ * A DTO for info about the job applications.
+ * Contains info about when it was registered and what status the application has.
+ */
 @XmlRootElement
 public class ApplicationDTO {
     private long applicationId;

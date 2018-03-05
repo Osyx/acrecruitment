@@ -1,5 +1,9 @@
 package common;
 
+/**
+ * A class containing the error messages used in this application.
+ * This classed is used to standardize the error management in the app.
+ */
 public enum Messages {
     MISSING_REQUIRED_FIELD("Missing required field(s). Please check that you have included them all."),
     RECORD_ALREADY_EXISTS("Record already exists."),

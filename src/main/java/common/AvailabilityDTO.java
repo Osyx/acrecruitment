@@ -1,7 +1,12 @@
 package common;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.sql.Date;
 
+/**
+ * A DTO containing the dates between which the applicant is available.
+ */
+@XmlRootElement
 public class AvailabilityDTO {
     private String fromDate;
     private String toDate;
@@ -16,6 +21,11 @@ public class AvailabilityDTO {
     public AvailabilityDTO(Date fromDate, Date toDate) {
         this.fromDate = fromDate.toString();
         this.toDate = toDate.toString();
+    }
+
+    public AvailabilityDTO(Date fromDate) {
+        this.fromDate = fromDate.toString();
+        this.toDate = null;
     }
 
     public String getFromDate() {

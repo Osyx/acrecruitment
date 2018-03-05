@@ -3,6 +3,10 @@ package common;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
+/**
+ * The DTO containing a job application.
+ * Simply a DTO containing DTOs that are linked together as an job application.
+ */
 @XmlRootElement
 public class JobApplicationDTO {
     private PersonPublicDTO person;

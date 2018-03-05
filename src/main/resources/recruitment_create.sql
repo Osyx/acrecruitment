@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS availability (
 -- Table: experience
 CREATE TABLE IF NOT EXISTS experience (
     experience_id bigint NOT NULL auto_increment,
-    name varchar(40) NOT NULL UNIQUE,
+    name_sv varchar(40) NOT NULL UNIQUE,
+    name_en varchar(40) NOT NULL UNIQUE,
     version int NOT NULL DEFAULT 1,
     CONSTRAINT experience_pk PRIMARY KEY (experience_id)
 );
@@ -120,10 +121,10 @@ INSERT INTO availability (availability_id, person_id, from_date, to_date) VALUES
 -- Insert the values for competence, now called EXPERIENCE for more cohesion:
 -- Original statement:
 -- INSERT INTO competence (competence_id, name) VALUES (1, 'Korvgrillning');
-INSERT INTO experience (experience_id, name) VALUES (1, 'Korvgrillning');
+INSERT INTO experience (experience_id, name_sv, name_en) VALUES (1, 'Korvgrillning', 'Sausage barbecuing');
 -- Original statement:
 -- INSERT INTO competence (competence_id, name) VALUES (2, 'Karuselldrift');
-INSERT INTO experience (experience_id, name) VALUES (2, 'Karuselldrift');
+INSERT INTO experience (experience_id, name_sv, name_en) VALUES (2, 'Karuselldrift', 'Merry-go-round operator');
 
 -- Insert the values for competence_profile, now called PERSON_EXPERIENCE for more obvious function and cohesion:
 -- Original statement:
@@ -132,5 +133,10 @@ INSERT INTO person_experience (person_experience_id, person_id, experience_id, y
 -- Original statement:
 -- INSERT INTO competence_profile (competence_profile_id, person_id,competence_id, years_of_experience) VALUES (2, 2, 2, 2.0);
 INSERT INTO person_experience (person_experience_id, person_id,experience_id, years_of_experience) VALUES (2, 2, 2, 2.0);
+
+-- INSERT NEW DATA
+INSERT INTO experience (name_sv, name_en) VALUES ('Sockervaddskonstnär', 'Candy-floss artist');
+INSERT INTO experience (name_sv, name_en) VALUES ('Mästare lyckohjulssnurrare', 'Master pinwheel spinner');
+INSERT INTO experience (name_sv, name_en) VALUES ('Aktivitetsskapare', 'Activity creator');
 
 -- End of file.
