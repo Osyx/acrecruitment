@@ -94,7 +94,7 @@ public class RecruitmentHandler implements Serializable {
     public void regExperiences() {
         try {
             for (int i = 0; i < experienceNames.length; i++) {
-                if(years[i] != null & experienceNames[i] != null) {
+                if(years[i] != null & experienceNames[i] != null & experienceNames[i].trim().length() > 2) {
                     ExperienceDTO TempExperienceDTO = new ExperienceDTO(experienceNames[i], years[i]);
                     experienceDTOs.add(TempExperienceDTO);
                 }

@@ -1,0 +1,20 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:b="http://bootsfaces.net/ui">
+    <b:navBar brand="A Company" brandHref="index.xhtml" inverse="true" fluid="true">
+        <b:navbarLinks>
+            <b:navLink value="Register" href="register.xhtml"></b:navLink>
+            <b:navLink value="Job Applications" href="jobapp.xhtml"></b:navLink>
+            <b:navLink value="Search Job Applications" href="#"></b:navLink>
+        </b:navbarLinks>
+        <b:navbarLinks pull="right">
+            <b:navLink value="Default" outcome="navbar"></b:navLink>
+            <b:navLink value="Static top" outcome="navbar-static-top"></b:navLink>
+            <b:navLink value="Fixed top" outcome="navbar-fixed-top"></b:navLink>
+        </b:navbarLinks>
+    </b:navBar>
+
+</ui:composition>
