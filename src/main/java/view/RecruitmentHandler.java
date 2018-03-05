@@ -7,11 +7,15 @@ import integration.entity.Experience;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +23,7 @@ import java.util.logging.Logger;
 public class RecruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
+    private final CookieHelper cookieHelper = new CookieHelper();
     private PersonDTO personDTO;
     private PersonPublicDTO personPublicDTO;
     private UserDTO userDTO;
@@ -149,13 +154,17 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regJobApplication() {
         try {
-            success = true;
-            personDTO = new PersonDTO(firstName, lastName, ssn, email);
-            personDTO.setRole("applicant");
-            regExperiences();
-            regAvailability();
-            regApplication();
-            controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+            if (roleDTO != null && roleDTO.getRole().equals("recruit")) {
+                success = true;
+                personDTO = new PersonDTO(firstName, lastName, ssn, email);
+                personDTO.setRole("applicant");
+                regExperiences();
+                regAvailability();
+                regApplication();
+                controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+            } else {
+                throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg("with recruit status."));
+            }
         } catch(Exception registerJobAppException) {
             FacesMessage message = new FacesMessage(registerJobAppException.getMessage());
             FacesContext context = FacesContext.getCurrentInstance();
@@ -188,14 +197,14 @@ public class RecruitmentHandler implements Serializable {
      */
     public void acceptOrDeclineApplication(){  // bör eventuellt delas upp i två metoder?
         try {
-            if(statusApplication == "accepted") {
+            if(Objects.equals(statusApplication, "accepted")) {
                 applicationDTO.setAccepted("accepted");
-            }else if(statusApplication == "declined"){
+            }else if(Objects.equals(statusApplication, "declined")){
                 applicationDTO.setAccepted("declined");
             }
             controller.acceptOrDeclineJobApplication(applicationDTO);
-        }catch (Exception acceptDeclieAppException){
-           // LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclieAppException);
+        }catch (Exception acceptDeclineAppException){
+           // LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclineAppException);
         }
     }
 
@@ -205,6 +214,7 @@ public class RecruitmentHandler implements Serializable {
     public void login() {
         try {
             roleDTO = controller.login(username, password);
+            cookieHelper.setCookie("role", roleDTO.getRole(), 3600);
         } catch (Exception loginException) {
             LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
         }
@@ -268,6 +278,16 @@ public class RecruitmentHandler implements Serializable {
 
     public void setSearchSelection(int searchSelection) {
         this.searchSelection = searchSelection;
+    }
+
+    public boolean isApplicant() {
+        Cookie role = cookieHelper.getCookie("role");
+        return role != null && role.getValue().equals("applicant");
+    }
+
+    public boolean isRecruit() {
+        Cookie role = cookieHelper.getCookie("role");
+        return role != null && role.getValue().equals("recruit");
     }
 
     public java.util.Date getFromDate() {
@@ -380,5 +400,61 @@ public class RecruitmentHandler implements Serializable {
         return tempSuccess;
     }
 
+    public RoleDTO getRoleDTO() {
+        return roleDTO;
+    }
 
+    public void setRoleDTO(RoleDTO roleDTO) {
+        this.roleDTO = roleDTO;
+    }
+
+    public class CookieHelper {
+
+        public void setCookie(String name, String value, int expiry) {
+
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+
+            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+            Cookie cookie = null;
+
+            Cookie[] userCookies = request.getCookies();
+            if (userCookies != null && userCookies.length > 0 ) {
+                for (Cookie userCookie : userCookies) {
+                    if (userCookie.getName().equals(name)) {
+                        cookie = userCookie;
+                        break;
+                    }
+                }
+            }
+
+            if (cookie != null) {
+                cookie.setValue(value);
+            } else {
+                cookie = new Cookie(name, value);
+                cookie.setPath(request.getContextPath());
+            }
+
+            cookie.setMaxAge(expiry);
+
+            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
+            response.addCookie(cookie);
+        }
+
+        public Cookie getCookie(String name) {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
+            Cookie cookie;
+
+            Cookie[] userCookies = request.getCookies();
+            if (userCookies != null && userCookies.length > 0 ) {
+                for (Cookie userCookie : userCookies) {
+                    if (userCookie.getName().equals(name)) {
+                        cookie = userCookie;
+                        return cookie;
+                    }
+                }
+            }
+            return null;
+        }
+    }
 }
