@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ import io.osyx.acrecuritment.helpers.JobApplicationAdapter;
 public class ListJobAppsFragment extends Fragment{
     public static final int CONNECTION_TIMEOUT = 10000;
     public static final int READ_TIMEOUT = 15000;
-    private String HOST = "http://192.168.10.218:8080";
+    private String HOST = "http://130.229.189.200:8080";
 
     public ListJobAppsFragment() {}
 
@@ -80,7 +81,7 @@ public class ListJobAppsFragment extends Fragment{
         @Override
         protected String doInBackground(String... params) {
             try {
-                url = new URL(HOST + "/acrecruitment/api/jobapplications/");
+                url = new URL(HOST + "/acrecruitment/api/jobApplications/en");
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -130,7 +131,7 @@ public class ListJobAppsFragment extends Fragment{
         protected void onPostExecute(String result) {
 
             pdLoading.dismiss();
-            List<JobApplication> data=new ArrayList<>();
+            List<JobApplication> data = new ArrayList<>();
 
             pdLoading.dismiss();
             try {
@@ -163,7 +164,8 @@ public class ListJobAppsFragment extends Fragment{
                 mRVJobApps.setLayoutManager(new LinearLayoutManager(getView().getContext()));
 
             } catch (JSONException e) {
-                Toast.makeText(getView().getContext(), e.toString(), Toast.LENGTH_LONG).show();
+                Log.e("LIST_JOB", e.getMessage() , e);
+                Toast.makeText(getView().getContext(), "Error when fetching the job applications. Try again later.", Toast.LENGTH_LONG).show();
             }
 
         }

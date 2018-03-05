@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import io.osyx.acrecuritment.helpers.HostnameDialog;
 
 public class MainActivity extends AppCompatActivity implements HostnameDialog.DialogListener {
-    private String HOST_URL = "http://192.168.10.218:8080";
+    private String HOST_URL = "http://130.229.189.200:8080";
     ListJobAppsFragment listJobAppsFragment;
     CreateJobAppFragment createJobAppFragment;
 

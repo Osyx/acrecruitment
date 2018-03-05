@@ -8,13 +8,15 @@ public class PersonDTO {
     public String surname;
     public String ssn;
     public String email;
+    public String role;
 
     public PersonDTO() {}
 
-    public PersonDTO(String name, String surname, String ssn, String email) {
+    public PersonDTO(String name, String surname, String ssn, String email, String role) {
         this.name = name;
         this.surname = surname;
         this.ssn = ssn;
         this.email = email;
+        this.role = role;
     }
 }

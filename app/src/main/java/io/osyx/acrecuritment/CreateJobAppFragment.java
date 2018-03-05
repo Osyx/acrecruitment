@@ -35,7 +35,7 @@ import io.osyx.acrecuritment.dto.PersonDTO;
 public class CreateJobAppFragment extends Fragment {
 
     public CreateJobAppFragment() {}
-    private String HOST = "http://192.168.10.218:8080";
+    private String HOST = "http://130.229.189.200:8080";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -75,7 +75,8 @@ public class CreateJobAppFragment extends Fragment {
                 firstName.getText().toString(),
                 surname.getText().toString(),
                 ssn.getText().toString(),
-                email.getText().toString()
+                email.getText().toString(),
+                "applicant"
         );
         List<AvailabilityDTO> availabilityDTOs = new ArrayList<>();
         EditText availableFrom = getView().findViewById(R.id.availableFrom);
@@ -119,7 +120,7 @@ public class CreateJobAppFragment extends Fragment {
 
     private void sendPost(JSONObject data) {
         RequestQueue queue = Volley.newRequestQueue(getView().getContext());
-        String url = HOST + "/acrecruitment/api/jobapplications/";
+        String url = HOST + "/acrecruitment/api/jobApplications/";
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, data,
                 new Response.Listener<JSONObject>() {
