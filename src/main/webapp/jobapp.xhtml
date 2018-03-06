@@ -157,10 +157,10 @@
                     <b:row styleClass="rows">
                         <b:column col-sm="5" offset="1">
                             <small id="formRequiredFieldsHelp" class="form-text text-muted">&nbsp;All required fields are marked with *</small>
-                            <h:commandButton value="Register" action="#{recruitmentHandler.regJobApplication}" class="btn btn-primary" />
+                            <h:commandButton id="registerAppButton" value="Register" action="#{recruitmentHandler.regJobApplication}" class="btn btn-primary" binding="#{recruitmentHandler.registerAppButton}" />
+                            <h:message for="registerAppButton"/>
                         </b:column>
                     </b:row>
-
                 </h:form>
             </h:panelGroup>
         </b:container>
