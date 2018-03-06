@@ -2,6 +2,7 @@ package view;
 
 import common.*;
 import controller.Controller;
+import integration.entity.Availability;
 import integration.entity.Experience;
 
 import javax.annotation.PostConstruct;
@@ -52,6 +53,14 @@ public class RecruitmentHandler implements Serializable {
     private String conPassword;
     private String statusApplication;
     private String errorMessage;
+
+    private String searchName;
+    private String searchLastName;
+    private String searchExp;
+    private java.util.Date searchFromDate;
+    private java.util.Date searchToDate;
+    private java.sql.Date searchFromSQLDate;
+    private java.sql.Date searchToSQLDate;
 
     private boolean success = false;
 
@@ -108,8 +117,16 @@ public class RecruitmentHandler implements Serializable {
      * Converts a java.util.Date to java.sql.Date
      */
     public void dateConverter(){
-        fromSQLDate = new java.sql.Date(fromDate.getTime());
-        toSQLDate = new java.sql.Date(toDate.getTime());
+        fromSQLDate = fromDate != null ? new java.sql.Date(fromDate.getTime()) : null;
+        toSQLDate = toDate != null ? new java.sql.Date(toDate.getTime()) : null;
+    }
+
+    /**
+     * Converts a java.util.Date to java.sql.Date
+     */
+    public void dateConverterSearch(){
+        searchFromDate = searchFromDate != null ? new java.sql.Date(searchFromDate.getTime()): null;
+        searchToDate = searchToDate != null ? new java.sql.Date(searchToDate.getTime()): null;
     }
 
     /**
@@ -209,12 +226,18 @@ public class RecruitmentHandler implements Serializable {
      * Fetches all job applications
      */
     public void fetchJobApplications() {
+        LOG.severe("hej");
         try {
+            LOG.severe("hej");
             jobApplications = controller.fetchJobApplications("en");
-            convertList();
+            LOG.severe(jobApplications.get(0).getPerson().getName());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
+    }
+
+    public void hej(){
+        LOG.severe("hej");
     }
 
     /**
@@ -222,8 +245,11 @@ public class RecruitmentHandler implements Serializable {
      */
     public void fetchJobApplicationsByName(){
         try {
-            jobApplications = controller.fetchJobApplicationsByName(personDTO, "en");
-            convertList();
+            PersonDTO person = new PersonDTO();
+            person.setName(searchName);
+            person.setSurname(searchLastName);
+            LOG.warning(person.toString());
+            jobApplications = controller.fetchJobApplicationsByName(person, "en");
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -233,9 +259,12 @@ public class RecruitmentHandler implements Serializable {
      * Fetches job applications by experience
      */
     public void fetchJobApplicationsByExperience(){
+        LOG.warning("hejhej");
         try {
-            jobApplications = controller.fetchJobApplicationsByExperience(experienceDTO, "en");
-            convertList();
+            ExperienceDTO exp = new ExperienceDTO();
+            exp.setName(searchExp);
+            jobApplications = controller.fetchJobApplicationsByExperience(exp, "sv");
+            System.out.println("");
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -246,8 +275,11 @@ public class RecruitmentHandler implements Serializable {
      */
     public void fetchJobApplicationsByAvailability(){
         try {
-            jobApplications = controller.fetchJobApplicationsByAvailability(availabilityDTO, "en");
-            convertList();
+            dateConverterSearch();
+            AvailabilityDTO availability = new AvailabilityDTO();
+            availability.setFromDate(searchFromSQLDate);
+            availability.setToDate(searchToSQLDate);
+            jobApplications = controller.fetchJobApplicationsByAvailability(availability, "en");
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -280,6 +312,62 @@ public class RecruitmentHandler implements Serializable {
         }catch(Exception conversionException){
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), conversionException);
         }
+    }
+
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
+
+    public String getSearchLastName() {
+        return searchLastName;
+    }
+
+    public void setSearchLastName(String searchLastName) {
+        this.searchLastName = searchLastName;
+    }
+
+    public String getSearchExp() {
+        return searchExp;
+    }
+
+    public void setSearchExp(String searchExp) {
+        this.searchExp = searchExp;
+    }
+
+    public java.util.Date getSearchFromDate() {
+        return searchFromDate;
+    }
+
+    public void setSearchFromDate(java.util.Date searchFromDate) {
+        this.searchFromDate = searchFromDate;
+    }
+
+    public java.util.Date getSearchToDate() {
+        return searchToDate;
+    }
+
+    public void setSearchToDate(java.util.Date searchToDate) {
+        this.searchToDate = searchToDate;
+    }
+
+    public Date getSearchFromSQLDate() {
+        return searchFromSQLDate;
+    }
+
+    public void setSearchFromSQLDate(Date searchFromSQLDate) {
+        this.searchFromSQLDate = searchFromSQLDate;
+    }
+
+    public Date getSearchToSQLDate() {
+        return searchToSQLDate;
+    }
+
+    public void setSearchToSQLDate(Date searchToSQLDate) {
+        this.searchToSQLDate = searchToSQLDate;
     }
 
     public List<JobApp> getJobApplicationsNew() {
