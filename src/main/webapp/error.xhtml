@@ -2,11 +2,25 @@
 <!DOCTYPE html
         PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:b="http://bootsfaces.net/ui">
 <head>
     <title>Error</title>
+    <h:outputScript src="https://www.w3schools.com/lib/w3.js" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="res/style.css" />
 </head>
 <body>
-
+    <b:container>
+        <div id="info">
+            <h1>An error occured :(</h1>
+            <p>The error given was:</p>
+            <p>#{recruitmentHandler.errorMessage}</p>
+        </div>
+    </b:container>
 </body>
 </html>

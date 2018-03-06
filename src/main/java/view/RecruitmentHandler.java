@@ -78,7 +78,23 @@ public class RecruitmentHandler implements Serializable {
                 success = true;
             }
         } catch (Exception registerPersonException) {
+            errorMessage = registerPersonException.getMessage();
             LOG.log(Level.WARNING, Messages.REGISTER_USER_ERROR.name(), registerPersonException);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/error.xhtml");
+            } catch (IOException e) {
+                LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
+            }
+        }
+        try {
+            if(success) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
+            }
+            else {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/register.xhtml");
+            }
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
         }
     }
 
@@ -211,11 +227,9 @@ public class RecruitmentHandler implements Serializable {
      * Will let a user log in
      */
     public void login(String from) {
-        LOG.severe("HELLO THERE");
         try {
             roleDTO = controller.login(username, password);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("role", roleDTO.getRole());
-            //cookieHelper.setCookie("role", roleDTO.getRole(), 3600, "/acrecruitment/");
             if(from.isEmpty() || from.equals("%20failed") || from.equals(" failed"))
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
             else if (from.contains("failed")) {
@@ -241,7 +255,6 @@ public class RecruitmentHandler implements Serializable {
     }
 
     public void logout() {
-        LOG.warning("Hello I'm logout");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("role");
         try {
             roleDTO = null;
@@ -445,5 +458,13 @@ public class RecruitmentHandler implements Serializable {
 
     public void setFailedLogin(boolean failedLogin) {
         this.failedLogin = failedLogin;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }

@@ -69,6 +69,8 @@ body{
 }
 
 #info {
+    max-width: 25%;
+    max-height: 25%;
     padding: 20px;
     font-size: 1.2em;
     border-radius: 10px;
