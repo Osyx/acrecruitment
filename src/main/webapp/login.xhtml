@@ -10,7 +10,7 @@
 
     <h:head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>Register</title>
+        <title>Login</title>
         <h:outputScript src="https://www.w3schools.com/lib/w3.js" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="res/style.css" />
@@ -20,11 +20,6 @@
         <f:metadata>
             <f:viewParam name="from" />
         </f:metadata>
-        <h:panelGroup rendered="#{from.contains('failed')}">
-            <div>
-                <h1 id="info">LOGIN FAILED</h1>
-            </div>
-        </h:panelGroup>
         <b:container>
             <h:form styleClass="formID">
                 <b:row styleClass="rows">
@@ -44,8 +39,9 @@
 
                 <b:row styleClass="rows">
                     <b:column col-md="4" offset="4">
-                        <h:commandButton value="Login" class="btn btn-primary"
-                                         action="#{recruitmentHandler.login(from)}"/>
+                        <h:commandButton id="loginButton" value="Login" class="btn btn-primary"
+                                         action="#{recruitmentHandler.login(from)}" binding="#{recruitmentHandler.loginButton}" />
+                        <h:message for="loginButton"/>
                     </b:column>
                 </b:row>
             </h:form>
