@@ -18,9 +18,6 @@
 
 <h:body>
     <ui:include src="navbar.xhtml"/>
-
-
-
     <b:container>
         <h:panelGroup rendered="#{!recruitmentHandler.isRecruit()}">
             <div id="info">
@@ -36,129 +33,6 @@
         </h:panelGroup>
         <h:panelGroup rendered="#{recruitmentHandler.isRecruit()}">
             <h:form styleClass="formID">
-
-
-
-
-            <h:form styleClass="formID">
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <h:outputLabel>Name of experience *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.searchExp}"  type="text" class="form-control" a:placeholder="Enter type of experience"  />
-                    </b:column>
-                </b:row>
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" update="repeater" class="btn btn-primary"/>
-                    </b:column>
-                </b:row>
-            </h:form>
-
-
-
-        <h:form styleClass="formID">
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
-                        <ui:include src="selectSearch.xhtml"/>
-                        <f:ajax render="@form"/>
-                    </b:selectOneMenu>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows" id="allApplications">
-                <b:column col-sm="5" offset="1">
-                    <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplications}" update="repeater" class="btn btn-primary">
-                    </h:commandButton>
-                </b:column>
-            </b:row>
-        </h:form>
-
-        <h:form styleClass="formID">
-            <b:row styleClass="rows" id="name">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.searchName}" type="text" class="form-control" id="first" a:placeholder="Enter first name"  requiredMessage="Please enter your first name"/>
-                    <h:message for="firstNameInput"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.searchLastName}" type="text" class="form-control" id="last" a:placeholder="Enter last name"  requiredMessage="Please enter your last name"/>
-                    <h:message for="lastNameInput"/>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" update="repeater" class="btn btn-primary"/>
-                </b:column>
-            </b:row>
-        </h:form>
-
-        <h:form styleClass="formID">
-            <b:row styleClass="rows" id="availability">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.searchFromDate}" type="date" class="form-control" id="FromInput" a:placeholder="Enter from-date" requiredMessage="Please choose a date">
-                        <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
-                    </h:inputText>
-                    <h:message for="AvailableFromInput"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.searchToDate}" type="date" class="form-control" id="ToInput" a:placeholder="Enter to-date">
-                        <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
-                    </h:inputText>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" update="repeater" class="btn btn-primary"/>
-                </b:column>
-            </b:row>
-        </h:form>
-
-
-        <h:panelGroup id="repeater">
-            <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
-                <b:row styleClass="rows">
-                    <b:column col-sm="5">
-                        <h:outputText value="#{app.person.name}"></h:outputText>
-                    </b:column>
-                </b:row>
-            </ui:repeat>
-        </h:panelGroup>
-
-
-        <h:form styleClass="formID">
-
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
-                        <ui:include src="selectSearch.xhtml"/>
-                        <f:ajax render="@form"/>
-                    </b:selectOneMenu>
-                </b:column>
-            </b:row>
-
-            <b:row styleClass="rows" id="allApplications" rendered="#{recruitmentHandler.searchSelection == 1}">
-                <b:column col-sm="5" offset="1">
-                    <h:commandButton value="Search" style="background-color: red"  action="#{recruitmentHandler.hej()}" class="btn btn-primary">
-                    </h:commandButton>
-                </b:column>
-            </b:row>
-
-            <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 2}">
-                <b:row styleClass="rows" id="name">
-                    <b:column col-sm="5" offset="1">
-                        <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name" required="true" requiredMessage="Please enter your first name"/>
-                        <h:message for="firstNameInput"/>
-                    </b:column>
-                    <b:column col-sm="5">
-                        <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name" required="true" requiredMessage="Please enter your last name"/>
-                        <h:message for="lastNameInput"/>
-                    </b:column>
-                </b:row>
                 <b:row styleClass="rows">
                     <b:column col-sm="5" offset="1">
                         <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
@@ -167,87 +41,90 @@
                         </b:selectOneMenu>
                     </b:column>
                 </b:row>
-
-
                 <b:row styleClass="rows" id="allApplications" rendered="#{recruitmentHandler.searchSelection == 1}">
                     <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplications}" class="btn btn-primary"></h:commandButton>
+                        <h:commandButton value="Search" style="background-color: red" action="#{recruitmentHandler.fetchJobApplications}" update="repeater" class="btn btn-primary">
+                        </h:commandButton>
                     </b:column>
                 </b:row>
 
-                <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 2}">
-                    <b:row styleClass="rows" id="name">
-                        <b:column col-sm="5" offset="1">
-                            <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
-                            <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name" required="true" requiredMessage="Please enter your first name"/>
-                            <h:message for="firstNameInput"/>
-                        </b:column>
-                        <b:column col-sm="5">
-                            <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
-                            <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name" required="true" requiredMessage="Please enter your last name"/>
-                            <h:message for="lastNameInput"/>
-                        </b:column>
-                    </b:row>
-                    <b:row styleClass="rows">
-                        <b:column col-sm="5" offset="1">
-                            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" class="btn btn-primary"></h:commandButton>
-                        </b:column>
-                    </b:row>
-                </h:form>
+                <b:row styleClass="rows" id="name" rendered="#{recruitmentHandler.searchSelection == 2}">
+                    <b:column col-sm="5" offset="1">
+                        <h:outputLabel for="firstNameSearch">First name *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.searchName}" type="text" class="form-control" id="firstNameSearch" a:placeholder="Enter first name"  requiredMessage="Please enter your first name"/>
+                        <h:message for="firstNameSearch"/>
+                    </b:column>
+                    <b:column col-sm="5">
+                        <h:outputLabel for="lastNameSearch">Last name *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.searchLastName}" type="text" class="form-control" id="lastNameSearch" a:placeholder="Enter last name"  requiredMessage="Please enter your last name"/>
+                        <h:message for="lastNameSearch"/>
+                    </b:column>
+                </b:row>
+                <b:row styleClass="rows" rendered="#{recruitmentHandler.searchSelection == 2}">
+                    <b:column col-sm="5" offset="1">
+                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" update="repeater" class="btn btn-primary"/>
+                    </b:column>
+                </b:row>
 
-                <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 3}">
-                    <b:row styleClass="rows" id="experience">
-                        <b:column col-sm="5" offset="1">
-                            <h:outputLabel for="experienceType">Name of experience *</h:outputLabel>
-                            <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceType" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
-                            <h:message for="experienceType"/>
-                        </b:column>
-                    </b:row>
-                    <b:row styleClass="rows">
-                        <b:column col-sm="5" offset="1">
-                            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" class="btn btn-primary"></h:commandButton>
-                        </b:column>
-                    </b:row>
-                </h:form>
+                <b:row styleClass="rows" id="experience" rendered="#{recruitmentHandler.searchSelection == 3}">
+                    <b:column col-sm="5" offset="1">
+                        <h:outputLabel for="expSearch">Name of experience *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.searchExp}"  type="text" class="form-control" id="expSearch" a:placeholder="Enter type of experience" requiredMessage="Please enter an experience"/>
+                        <h:message for="expSearch"/>
+                    </b:column>
+                </b:row>
+                <b:row styleClass="rows" rendered="#{recruitmentHandler.searchSelection == 3}">
+                    <b:column col-sm="5" offset="1">
+                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" update="repeater" class="btn btn-primary"/>
+                    </b:column>
+                </b:row>
 
-                <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 4}">
-                    <b:row styleClass="rows" id="availability">
-                        <b:column col-sm="5" offset="1">
-                            <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
-                            <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true" requiredMessage="Please choose a date"/>
-                            <h:message for="AvailableFromInput"/>
-                        </b:column>
-                        <b:column col-sm="5">
-                            <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
-                            <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
-                                <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
-                            </h:inputText>
-                        </b:column>
-                    </b:row>
-                    <b:row styleClass="rows">
-                        <b:column col-sm="5" offset="1">
-                            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" class="btn btn-primary"></h:commandButton>
-                        </b:column>
-                    </b:row>
-                </h:form>
+                <b:row styleClass="rows" id="availability" rendered="#{recruitmentHandler.searchSelection == 4}">
+                    <b:column col-sm="5" offset="1">
+                        <h:outputLabel for="searchFromInput">Available from *</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.searchFromDate}" type="date" class="form-control" id="searchFromInput" a:placeholder="Enter from-date" requiredMessage="Please choose a date">
+                            <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                        <h:message for="searchFromInput"/>
+                    </b:column>
+                    <b:column col-sm="5">
+                        <h:outputLabel for="searchToInput">Available to</h:outputLabel>
+                        <h:inputText value="#{recruitmentHandler.searchToDate}" type="date" class="form-control" id="searchToInput" a:placeholder="Enter to-date">
+                            <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
+                        </h:inputText>
+                        <h:message for="searchToInput"/>
+                    </b:column>
+                </b:row>
+                <b:row styleClass="rows" rendered="#{recruitmentHandler.searchSelection == 4}">
+                    <b:column col-sm="5" offset="1">
+                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" update="repeater" class="btn btn-primary"/>
+                    </b:column>
+                </b:row>
+            </h:form>
 
 
-            <div class="list-group-item list-group-item-action flex-column align-items-start">
+
+            <h:panelGroup id="repeater">
                 <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
                     <b:row styleClass="rows">
-                        <div class="d-flex w-100 justify-content-between">
+                        <b:column col-sm="5">
                             <h:outputText value="#{app.person.name}"></h:outputText>
-                            <small>#{app.application.date}</small>
-                        </div>
+                        </b:column>
                     </b:row>
                 </ui:repeat>
-            </div>
+            </h:panelGroup>
 
-            <ui:repeat value="RecruitmentHandler.jobApplications" var="app">
+        </h:panelGroup>
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
                 <b:row styleClass="rows">
-                    <b:column col-sm="6">
-
-
+                    <div class="d-flex w-100 justify-content-between">
+                        <h:outputText value="#{app.person.name}"></h:outputText>
+                        <small>#{app.application.date}</small>
+                    </div>
+                </b:row>
+            </ui:repeat>
+        </div>
 
     </b:container>
 

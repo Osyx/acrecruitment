@@ -45,7 +45,6 @@ public class RecruitmentHandler implements Serializable {
     private java.util.Date toDate;
     private java.sql.Date fromSQLDate;
     private java.sql.Date toSQLDate;
-    private int searchSelection;
     private String username;
     private String password;
     private String firstName;
@@ -56,6 +55,7 @@ public class RecruitmentHandler implements Serializable {
     private String statusApplication;
     private String errorMessage;
 
+    private int searchSelection;
     private String searchName;
     private String searchLastName;
     private String searchExp;
@@ -65,6 +65,7 @@ public class RecruitmentHandler implements Serializable {
     private java.sql.Date searchToSQLDate;
 
     private boolean success = false;
+    private boolean failedLogin;
 
     private static final Logger LOG = Logger.getLogger(RecruitmentHandler.class.getName());
 
