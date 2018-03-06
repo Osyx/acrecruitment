@@ -70,7 +70,7 @@ public class JobApplication {
                 if(!personDTO.getName().equals(person.getName()))
                     continue;
                 else
-                if(personDTO.getSurname() != null && !personDTO.getSurname().equals(person.getName()))
+                if(personDTO.getSurname() != null && !personDTO.getSurname().equals(person.getSurname()))
                     continue;
                 List<ExperienceDTO> experiences = createExperienceDTOs(person, lang);
                 List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
@@ -112,7 +112,7 @@ public class JobApplication {
                 switch(lang) {
                     case "sv":
                         for (PersonExperience personExperience : person.getPersonExperiences()) {
-                            if(personExperience.getExperience().getName_sv().equals(experienceDTO.getName()))
+                            if(personExperience.getExperience().getName_sv().equals(Util.capitalize(experienceDTO.getName())))
                                 hasExperience = true;
                             experiences.add(new ExperienceDTO(
                                     personExperience.getExperience().getName_sv(),
