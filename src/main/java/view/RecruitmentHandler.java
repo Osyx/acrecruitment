@@ -3,12 +3,10 @@ package view;
 import common.*;
 import controller.Controller;
 import integration.entity.Experience;
-import viewmodel.CookieHelper;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
@@ -23,7 +21,6 @@ import java.util.logging.Logger;
 public class RecruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
-    private final CookieHelper cookieHelper = new CookieHelper();
     private PersonDTO personDTO;
     private PersonPublicDTO personPublicDTO;
     private UserDTO userDTO;
@@ -214,9 +211,11 @@ public class RecruitmentHandler implements Serializable {
      * Will let a user log in
      */
     public void login(String from) {
+        LOG.severe("HELLO THERE");
         try {
             roleDTO = controller.login(username, password);
-            cookieHelper.setCookie("role", roleDTO.getRole(), 3600);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("role", roleDTO.getRole());
+            //cookieHelper.setCookie("role", roleDTO.getRole(), 3600, "/acrecruitment/");
             if(from.isEmpty() || from.equals("%20failed") || from.equals(" failed"))
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
             else if (from.contains("failed")) {
@@ -238,6 +237,17 @@ public class RecruitmentHandler implements Serializable {
             } catch (IOException redirectException) {
                 LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), redirectException);
             }
+        }
+    }
+
+    public void logout() {
+        LOG.warning("Hello I'm logout");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("role");
+        try {
+            roleDTO = null;
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
         }
     }
 
@@ -302,13 +312,13 @@ public class RecruitmentHandler implements Serializable {
     }
 
     public boolean isApplicant() {
-        Cookie role = cookieHelper.getCookie("role");
-        return role != null && role.getValue().equals("applicant");
+        String role = (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("role");
+        return role != null && role.equals("applicant");
     }
 
     public boolean isRecruit() {
-        Cookie role = cookieHelper.getCookie("role");
-        return role != null && role.getValue().equals("recruit");
+        String role = (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("role");
+        return role != null && role.equals("recruit");
     }
 
     public java.util.Date getFromDate() {

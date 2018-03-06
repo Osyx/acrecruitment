@@ -34,6 +34,13 @@
                     <a class="nav-link" href="login.xhtml">Login</a>
                 </li>
             </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isApplicant() or recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <h:form styleClass="navbar-form">
+                        <h:commandButton action="#{recruitmentHandler.logout()}" value="Logout" styleClass="btn btn-link nav-link" />
+                    </h:form>
+                </li>
+            </h:panelGroup>
         </ul>
     </div>
 </nav>
