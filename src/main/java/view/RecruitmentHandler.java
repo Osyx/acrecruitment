@@ -44,7 +44,6 @@ public class RecruitmentHandler implements Serializable {
     private java.util.Date toDate;
     private java.sql.Date fromSQLDate;
     private java.sql.Date toSQLDate;
-    private int searchSelection;
     private String username;
     private String password;
     private String firstName;
@@ -54,6 +53,7 @@ public class RecruitmentHandler implements Serializable {
     private String conPassword;
     private String statusApplication;
 
+    private int searchSelection;
     private String searchName;
     private String searchLastName;
     private String searchExp;
