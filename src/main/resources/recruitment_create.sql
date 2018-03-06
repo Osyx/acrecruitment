@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS role (
 -- Table: user
 CREATE TABLE IF NOT EXISTS user (
     user_id bigint NOT NULL auto_increment,
-    person_id bigint NOT NULL,
+    person_id bigint,
     username varchar(40) NOT NULL UNIQUE,
     password varchar(40) NOT NULL,
     version int NOT NULL DEFAULT 1,

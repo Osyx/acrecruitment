@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * The class which takes the calls from the controller regarding the job applications and then
+ * handles the logic to convert this to a format that the integration layer can understand.
+ */
 @Transactional(value = Transactional.TxType.MANDATORY)
 public class JobApplication {
 
@@ -18,6 +22,7 @@ public class JobApplication {
 
     /**
      * Fetches all job applications.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -52,6 +57,7 @@ public class JobApplication {
     /**
      * Fetches all job applications submitted by persons with a certain name.
      * @param personDTO A DTO containing the name that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -64,7 +70,7 @@ public class JobApplication {
                 if(!personDTO.getName().equals(person.getName()))
                     continue;
                 else
-                if(personDTO.getSurname() != null && !personDTO.getSurname().equals(person.getName()))
+                if(personDTO.getSurname() != null && !personDTO.getSurname().equals(person.getSurname()))
                     continue;
                 List<ExperienceDTO> experiences = createExperienceDTOs(person, lang);
                 List<AvailabilityDTO> availabilities = createAvailabilityDTOs(person);
@@ -91,6 +97,7 @@ public class JobApplication {
     /**
      * Fetches all job applications that has a certain experience.
      * @param experienceDTO An DTO containing the experience that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -105,7 +112,7 @@ public class JobApplication {
                 switch(lang) {
                     case "sv":
                         for (PersonExperience personExperience : person.getPersonExperiences()) {
-                            if(personExperience.getExperience().getName_sv().equals(experienceDTO.getName()))
+                            if(personExperience.getExperience().getName_sv().equals(Util.capitalize(experienceDTO.getName())))
                                 hasExperience = true;
                             experiences.add(new ExperienceDTO(
                                     personExperience.getExperience().getName_sv(),
@@ -151,6 +158,7 @@ public class JobApplication {
     /**
      * Fetches all job applications by the date the application was registered.
      * @param appDTO an applicationDTO containing the date that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -187,6 +195,7 @@ public class JobApplication {
     /**
      * Fetches all job applications by availability.
      * @param availabilityDTO the availability that we want the applicants to have.
+     * @param lang the language for which we want the return values in.
      * @return All job applications in a <code>List</code> of JobApplicationDTOs.
      * @throws SystemException in case something goes from when fetching from the database.
      */
@@ -229,6 +238,16 @@ public class JobApplication {
             LOG.log(Level.SEVERE, e.toString(), e);
             throw new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
         }
+    }
+
+    /**
+     * Fetches the available experiences from the database.
+     * @param lang the language for which we want the return values in.
+     * @return A list of experienceDTOs containing all experiences available.
+     * @throws SystemException when an error occurs during the fetch of experiences.
+     */
+    public List<String> getExperiences(String lang) throws SystemException {
+        return integration.getExperiences(lang);
     }
 
     /**
@@ -326,13 +345,5 @@ public class JobApplication {
                 application.getAppDate(),
                 accepted
         );
-    }
-
-    /**
-     * Fetches the available experiences from the database.
-     * @return A list of experienceDTOs containing all experiences available.
-     */
-    public List<String> getExperiences(String lang) {
-        return integration.getExperiences(lang);
     }
 }

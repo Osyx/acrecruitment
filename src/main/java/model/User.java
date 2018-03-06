@@ -7,6 +7,10 @@ import integration.Integration;
 
 import javax.transaction.Transactional;
 
+/**
+ * The class which takes the calls from the controller regarding the users and then
+ * forwards these to the integration layer.
+ */
 @Transactional(value = Transactional.TxType.MANDATORY)
 public class User {
 
@@ -26,6 +30,7 @@ public class User {
     /**
      * Register a user with a username and password.
      * @param userDTO The user details for the user to be added.
+     * @throws SystemException if an error occurs during registration.
      */
     public void registerUser(UserDTO userDTO) throws SystemException {
         integration.registerUser(userDTO);

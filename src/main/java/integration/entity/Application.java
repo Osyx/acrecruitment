@@ -4,6 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;
 
+/**
+ * The entity for info about the job applications.
+ * Contains info about when it was registered and what status the application has.
+ */
 @Entity(name = "application")
 public class Application implements Serializable {
 

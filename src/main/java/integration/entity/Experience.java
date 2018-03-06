@@ -4,6 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * The entity containing an experience and the years the applicant has in it.
+ * Also has the fields for Swedish or English.
+ */
 @Entity(name="experience")
 public class Experience implements Serializable {
 

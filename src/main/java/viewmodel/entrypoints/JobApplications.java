@@ -4,12 +4,17 @@ import common.JobApplicationDTO;
 import common.SystemException;
 import controller.Controller;
 import viewmodel.request.JobApplicationRequest;
+import viewmodel.response.Experience;
 import viewmodel.response.Message;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The class which acts as an endpoint for the REST API for the job applications.
+ */
 @Path("/jobApplications")
 public class JobApplications {
     private final Controller controller = new Controller();
@@ -18,6 +23,7 @@ public class JobApplications {
      * REST method for fetching the JobApplications.
      * @return A <code>List</code> containing <code>JobApplicationDTO</code>s,
      * is converted to a JSON object if asked for by REST.
+     * @throws SystemException if an error occurs during the fetch.
      */
     @GET
     @Path("/{lang}")
@@ -31,6 +37,7 @@ public class JobApplications {
      * @param jobApplicationRequest Converted from JSON into an <code>JobApplicationRequest</code> object
      *                              which contains the person, experiences, availability dates and application
      *                              which is registered as an job application.
+     * @return A success message in case of a successful registration.
      * @throws SystemException in case something goes wrong during registration
      *                         which is sent as a response back to the client.
      */
@@ -45,5 +52,25 @@ public class JobApplications {
                 jobApplicationRequest.getApplication()
         );
         return new Message("SUCCESS", "Registered the job application.");
+    }
+
+    /**
+     * Fetches the available experiences.
+     * @param lang The language to have the experiences in.
+     * @return A list of experience names.
+     * @throws SystemException in case an error occurs during the fetch.
+     */
+    @GET
+    @Path("/experiences/{lang}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Experience> getExperiences(@PathParam("lang") String lang) throws SystemException {
+        List<String> experiences = controller.getExperiences(lang);
+        List<Experience> experienceResponse = new ArrayList<>();
+        for (String experience : experiences) {
+            experienceResponse.add(
+                    new Experience(experience)
+            );
+        }
+        return experienceResponse;
     }
 }

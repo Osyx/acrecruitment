@@ -21,6 +21,9 @@ import static common.Util.capitalize;
 import static common.Util.checkDate;
 import static common.Util.checkPerson;
 
+/**
+ * The class which integrates with the database and thus creates and executes queries to it.
+ */
 @Transactional(value = Transactional.TxType.MANDATORY)
 @Singleton
 public class Integration {
@@ -100,7 +103,8 @@ public class Integration {
             User user = getUser(userDTO.getUsername());
             if(user == null || !user.getPassword().equals(userDTO.getPassword()))
                 throw new SystemException(Messages.USER_NOT_LOGGED_IN.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessage());
-            if(personHasUser(personDTO.getSsn()) != null)
+            User prevUser = personHasUser(personDTO.getSsn());
+            if(prevUser != null && !prevUser.getUsername().equals(userDTO.getUsername()))
                 throw new SystemException(Messages.REGISTER_USER_ERROR.name(), Messages.REGISTER_USER_ERROR.getErrorMessage());
             session.evict(user);
             Person person = getAvailablePerson(personDTO, session);
@@ -200,22 +204,27 @@ public class Integration {
      * @return A list of experienceDTOs containing all experiences available.
      */
     @SuppressWarnings("unchecked")
-    public List<String> getExperiences(String lang) {
-        Session session = factory.getCurrentSession();
-        Query query = session.createQuery("from experience");
-        List<Experience> experiences = query.getResultList();
-        List<String> experienceNames = new ArrayList<>();
-        switch(lang) {
-            case "sv":
-                for (Experience experience : experiences)
-                    experienceNames.add(experience.getName_sv());
-                break;
-            default:
-                for (Experience experience : experiences)
-                    experienceNames.add(experience.getName_en());
-                break;
-        }
-        return experienceNames;
+    public List<String> getExperiences(String lang) throws SystemException {
+        try {
+            Session session = factory.getCurrentSession();
+            Query query = session.createQuery("from experience");
+            List<Experience> experiences = query.getResultList();
+            List<String> experienceNames = new ArrayList<>();
+            switch (lang) {
+                case "sv":
+                    for (Experience experience : experiences)
+                        experienceNames.add(experience.getName_sv());
+                    break;
+                default:
+                    for (Experience experience : experiences)
+                        experienceNames.add(experience.getName_en());
+                    break;
+            }
+            return experienceNames;
+        } catch (Exception e) {
+        LOG.log(Level.SEVERE, e.toString(), e);
+        throw new SystemException(Messages.SYSTEM_ERROR.name(), e.getMessage());
+    }
     }
 
     // Private functions
