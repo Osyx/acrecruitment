@@ -26,7 +26,6 @@ public class RecruitmentHandler implements Serializable {
     private final Controller controller = new Controller();
     private PersonDTO personDTO;
     private PersonPublicDTO personPublicDTO;
-    private UserDTO userDTO;
     private AvailabilityDTO availabilityDTO;
     private ExperienceDTO experienceDTO;
     private ApplicationDTO applicationDTO;
@@ -76,8 +75,10 @@ public class RecruitmentHandler implements Serializable {
     public void regUser(){
         try {
             if(conPassword.equals(password)){
-                userDTO = new UserDTO(username, password);
+                UserDTO userDTO = new UserDTO(username, password);
                 controller.registerUser(userDTO);
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("username", userDTO.getUsername());
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("password", userDTO.getPassword());
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
             } else {
                 FacesMessage message = new FacesMessage("The passwords do not match.");
@@ -101,8 +102,9 @@ public class RecruitmentHandler implements Serializable {
     public void login(String from) {
         try {
             RoleDTO roleDTO = controller.login(username, password);
-            userDTO = new UserDTO(username, password);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("role", roleDTO.getRole());
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("username", username);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("password", password);
             if(from.isEmpty())
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
             else
@@ -122,6 +124,8 @@ public class RecruitmentHandler implements Serializable {
      * Is used to logout the current user.
      */
     public void logout() {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("username");
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("password");
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("role");
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
@@ -142,6 +146,10 @@ public class RecruitmentHandler implements Serializable {
                 regAvailability();
                 regApplication();
                 checkIfValidInput();
+                UserDTO userDTO = new UserDTO(
+                        (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("username"),
+                        (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("password")
+                );
                 controller.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
             } else {
                 throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg(" with applicant status."));
@@ -263,6 +271,10 @@ public class RecruitmentHandler implements Serializable {
         }catch(Exception conversionException){
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), conversionException);
         }
+    }
+
+    public String getRegUsername() {
+        return (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("username");
     }
 
     public String getSearchName() {
