@@ -19,7 +19,7 @@
 <h:body>
     <ui:include src="navbar.xhtml"/>
     <b:container>
-        <h:panelGroup rendered="#{!recruitmentHandler.isRecruit()}">
+        <ui:fragment rendered="#{!recruitmentHandler.isRecruit()}">
             <div id="info">
                 <h:link value="You don't have permission to see this site, please login."
                         outcome="login" rendered="#{!recruitmentHandler.isApplicant()}">
@@ -30,78 +30,29 @@
                     <f:param name="from" value="#{view.viewId}" />
                 </h:link>
             </div>
-        </h:panelGroup>
-        <h:panelGroup rendered="#{recruitmentHandler.isRecruit()}">
-            <h:form styleClass="formID">
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
-                            <ui:include src="selectSearch.xhtml"/>
-                            <f:ajax render="@form"/>
-                        </b:selectOneMenu>
-                    </b:column>
-                </b:row>
-                <b:row styleClass="rows" id="allApplications">
-                    <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" style="background-color: red" action="#{recruitmentHandler.fetchJobApplications}" update="repeater" class="btn btn-primary">
-                        </h:commandButton>
-                    </b:column>
-                </b:row>
+        </ui:fragment>
+        <ui:fragment rendered="#{recruitmentHandler.isRecruit()}">
+            <h:form id="appForm">
+                <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
+                    <ui:include src="selectSearch.xhtml"/>
+                    <f:ajax render="appForm"/>
+                </b:selectOneMenu>
+                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 0}">
 
-                <b:row styleClass="rows" id="name">
-                    <b:column col-sm="5" offset="1">
-                        <h:outputLabel for="firstNameSearch">First name *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.searchName}" type="text" class="form-control" id="firstNameSearch" a:placeholder="Enter first name"  requiredMessage="Please enter your first name"/>
-                        <h:message for="firstNameSearch"/>
-                    </b:column>
-                    <b:column col-sm="5">
-                        <h:outputLabel for="lastNameSearch">Last name *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.searchLastName}" type="text" class="form-control" id="lastNameSearch" a:placeholder="Enter last name"  requiredMessage="Please enter your last name"/>
-                        <h:message for="lastNameSearch"/>
-                    </b:column>
-                </b:row>
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" update="repeater" class="btn btn-primary"/>
-                    </b:column>
-                </b:row>
-
-                <b:row styleClass="rows" id="experience">
-                    <b:column col-sm="5" offset="1">
-                        <h:outputLabel for="expSearch">Name of experience *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.searchExp}"  type="text" class="form-control" id="expSearch" a:placeholder="Enter type of experience" requiredMessage="Please enter an experience"/>
-                        <h:message for="expSearch"/>
-                    </b:column>
-                </b:row>
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" update="repeater" class="btn btn-primary"/>
-                    </b:column>
-                </b:row>
-
-                <b:row styleClass="rows" id="availability">
-                    <b:column col-sm="5" offset="1">
-                        <h:outputLabel for="searchFromInput">Available from *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.searchFromDate}" type="date" class="form-control" id="searchFromInput" a:placeholder="Enter from-date" requiredMessage="Please choose a date">
-                            <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
-                        </h:inputText>
-                        <h:message for="searchFromInput"/>
-                    </b:column>
-                    <b:column col-sm="5">
-                        <h:outputLabel for="searchToInput">Available to</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.searchToDate}" type="date" class="form-control" id="searchToInput" a:placeholder="Enter to-date">
-                            <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
-                        </h:inputText>
-                        <h:message for="searchToInput"/>
-                    </b:column>
-                </b:row>
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" update="repeater" class="btn btn-primary"/>
-                    </b:column>
-                </b:row>
+                </ui:fragment>
+                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 1}">
+                        <ui:include src="allApplications.xhtml" />
+                </ui:fragment>
+                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 2}">
+                        <ui:include src="searchByName.xhtml" />
+                </ui:fragment>
+                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 3}">
+                        <ui:include src="searchByExperience.xhtml" />
+                </ui:fragment>
+                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 4}">
+                        <ui:include src="searchByAvailability.xhtml" />
+                </ui:fragment>
             </h:form>
-
             <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app" id="repeater">
                 <b:row styleClass="rows">
                     <b:column col-sm="5">
@@ -109,8 +60,7 @@
                     </b:column>
                 </b:row>
             </ui:repeat>
-
-        </h:panelGroup>
+        </ui:fragment>
 
         <div class="list-group-item list-group-item-action flex-column align-items-start">
             <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
@@ -128,9 +78,9 @@
 
 
     <!-- the scripts that need to be present -->
-    <h:outputScript src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></h:outputScript>
-    <h:outputScript src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></h:outputScript>
-    <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></h:outputScript>
+    <h:outputScript src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous" />
+    <h:outputScript src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous" />
+    <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous" />
 
 </h:body>
 
