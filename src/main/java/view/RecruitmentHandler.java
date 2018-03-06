@@ -220,6 +220,15 @@ public class RecruitmentHandler implements Serializable {
         }
     }
 
+    public void login(String from) {
+        login();
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
+        }  catch (Exception redirectException) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), redirectException);
+        }
+    }
+
     /**
      * Fetches all job applications
      */
@@ -288,14 +297,6 @@ public class RecruitmentHandler implements Serializable {
     public boolean isRecruit() {
         Cookie role = cookieHelper.getCookie("role");
         return role != null && role.getValue().equals("recruit");
-    }
-
-    public String redirectFromApplicant() {
-        return !isApplicant() ? "index?faces-redirect=true" : "";
-    }
-
-    public String redirectFromRecruit() {
-        return !isRecruit() ? "index?faces-redirect=true" : "";
     }
 
     public java.util.Date getFromDate() {

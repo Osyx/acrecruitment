@@ -11,14 +11,16 @@
     <h:head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>Register</title>
-        <h:outputScript src="https://www.w3schools.com/lib/w3.js"></h:outputScript>
+        <h:outputScript src="https://www.w3schools.com/lib/w3.js" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="res/style.css" />
     </h:head>
     <h:body>
         <ui:include src="/navbar.xhtml"/>
+        <f:metadata>
+            <f:viewParam name="from" />
+        </f:metadata>
         <b:container>
-
             <h:form styleClass="formID">
                 <b:row styleClass="rows">
                     <b:column col-md="4" offset="4">
@@ -37,7 +39,7 @@
 
                 <b:row styleClass="rows">
                     <b:column col-md="4" offset="4">
-                        <h:commandButton value="Login" action="#{recruitmentHandler.login}" class="btn btn-primary" />
+                        <h:commandButton value="Login" class="btn btn-primary" action="#{recruitmentHandler.login(from)}" />
                     </b:column>
                 </b:row>
             </h:form>

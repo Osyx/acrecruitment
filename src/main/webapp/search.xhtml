@@ -18,10 +18,19 @@
 
 <h:body>
     <ui:include src="navbar.xhtml"/>
-    <f:metadata>
-        <f:viewAction action="#{recruitmentHandler.redirectFromRecruit()}" />
-    </f:metadata>
     <b:container>
+        <h:panelGroup rendered="#{!recruitmentHandler.isRecruit()}">
+            <div id="info">
+                <h:link value="You don't have permission to see this site, please login."
+                        outcome="login" rendered="#{!recruitmentHandler.isApplicant()}">
+                    <f:param name="from" value="#{view.viewId}" />
+                </h:link>
+                <h:link value="You don't have permission to see this site."
+                        outcome="login" rendered="#{recruitmentHandler.isApplicant()}">
+                    <f:param name="from" value="#{view.viewId}" />
+                </h:link>
+            </div>
+        </h:panelGroup>
         <h:panelGroup rendered="#{recruitmentHandler.isRecruit()}">
             <h:form styleClass="formID">
 
