@@ -79,6 +79,11 @@ public class RecruitmentHandler implements Serializable {
                 controller.registerUser(userDTO);
                 success = true;
             }
+            if(success) {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
+            } else {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/register.xhtml");
+            }
         } catch (Exception registerPersonException) {
             errorMessage = registerPersonException.getMessage();
             LOG.log(Level.WARNING, Messages.REGISTER_USER_ERROR.name(), registerPersonException);
@@ -87,16 +92,6 @@ public class RecruitmentHandler implements Serializable {
             } catch (IOException e) {
                 LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
             }
-        }
-        try {
-            if(success) {
-                    FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
-            }
-            else {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/register.xhtml");
-            }
-        } catch (IOException e) {
-            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
         }
     }
 
@@ -596,14 +591,6 @@ public class RecruitmentHandler implements Serializable {
 
     public void setRoleDTO(RoleDTO roleDTO) {
         this.roleDTO = roleDTO;
-    }
-
-    public boolean isFailedLogin() {
-        return failedLogin;
-    }
-
-    public void setFailedLogin(boolean failedLogin) {
-        this.failedLogin = failedLogin;
     }
 
     public String getErrorMessage() {
