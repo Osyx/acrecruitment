@@ -3,13 +3,12 @@ package view;
 import common.*;
 import controller.Controller;
 import integration.entity.Experience;
+import viewmodel.CookieHelper;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -215,6 +214,7 @@ public class RecruitmentHandler implements Serializable {
         try {
             roleDTO = controller.login(username, password);
             cookieHelper.setCookie("role", roleDTO.getRole(), 3600);
+
         } catch (Exception loginException) {
             LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
         }
@@ -288,6 +288,14 @@ public class RecruitmentHandler implements Serializable {
     public boolean isRecruit() {
         Cookie role = cookieHelper.getCookie("role");
         return role != null && role.getValue().equals("recruit");
+    }
+
+    public String redirectFromApplicant() {
+        return !isApplicant() ? "index?faces-redirect=true" : "";
+    }
+
+    public String redirectFromRecruit() {
+        return !isRecruit() ? "index?faces-redirect=true" : "";
     }
 
     public java.util.Date getFromDate() {
@@ -408,53 +416,4 @@ public class RecruitmentHandler implements Serializable {
         this.roleDTO = roleDTO;
     }
 
-    public class CookieHelper {
-
-        public void setCookie(String name, String value, int expiry) {
-
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-
-            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-            Cookie cookie = null;
-
-            Cookie[] userCookies = request.getCookies();
-            if (userCookies != null && userCookies.length > 0 ) {
-                for (Cookie userCookie : userCookies) {
-                    if (userCookie.getName().equals(name)) {
-                        cookie = userCookie;
-                        break;
-                    }
-                }
-            }
-
-            if (cookie != null) {
-                cookie.setValue(value);
-            } else {
-                cookie = new Cookie(name, value);
-                cookie.setPath(request.getContextPath());
-            }
-
-            cookie.setMaxAge(expiry);
-
-            HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
-            response.addCookie(cookie);
-        }
-
-        public Cookie getCookie(String name) {
-            FacesContext facesContext = FacesContext.getCurrentInstance();
-            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
-            Cookie cookie;
-
-            Cookie[] userCookies = request.getCookies();
-            if (userCookies != null && userCookies.length > 0 ) {
-                for (Cookie userCookie : userCookies) {
-                    if (userCookie.getName().equals(name)) {
-                        cookie = userCookie;
-                        return cookie;
-                    }
-                }
-            }
-            return null;
-        }
-    }
 }
