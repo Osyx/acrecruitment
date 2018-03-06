@@ -16,7 +16,12 @@ public enum Messages {
     PERSON_MISSING("There is either no such person found or a person isn't given"),
     SAVE_TO_DB_FAILED("Something went wrong during the save to the DB"),
     USER_NOT_LOGGED_IN("Cannot access this option when not logged in with a registered user"),
-    WRONG_INPUT("There was an error in one of the input fields: ");
+    WRONG_INPUT("There was an error in one of the input fields: "),
+    ACCEPT_DECLINE_APP_ERROR("There was an error when trying to accept/decline application"),
+    REGISTER_AVAILABILITY_ERROR("There was an error when trying to register the availability"),
+    REGISTER_EXPERIENCE_ERROR("There was an error when trying to register the experience"),
+    REGISTER_APPLICATION_ERROR("There was an error when trying to register the application"),
+    REGISTER_JOB_APP_DTO_ERROR("There was an error when trying to register the job application DTO");
 
     private String errorMessage;
 

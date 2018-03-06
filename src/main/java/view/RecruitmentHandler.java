@@ -4,6 +4,7 @@ import common.*;
 import controller.Controller;
 import integration.entity.Experience;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
@@ -31,7 +32,7 @@ public class RecruitmentHandler implements Serializable {
     private List <JobApplicationDTO> jobApplications = new ArrayList<>();
     private List<ExperienceDTO> experienceDTOs = new ArrayList<>();
     private List<AvailabilityDTO> availabilityDTOs = new ArrayList<>();
-    private List<ApplicationDTO> applicationDTOs = new ArrayList<>();
+    private List<JobApp> jobApplicationsNew = new ArrayList<>();
 
     private Experience experience;
     private String[] experienceNames = new String[5];
@@ -51,12 +52,6 @@ public class RecruitmentHandler implements Serializable {
     private String conPassword;
     private String statusApplication;
     private String errorMessage;
-
-    private final String regJobAppDTOError = "There was an error when trying to register the job application DTO";
-    private final String regAvailabilityError = "There was an error when trying to register the availability";
-    private final String regExperienceError = "There was an error when trying to register the experience";
-    private final String regApplicationError = "There was an error when trying to register the application";
-    private final String loginError = "There was an error when trying to log in";
 
     private boolean success = false;
 
@@ -87,7 +82,7 @@ public class RecruitmentHandler implements Serializable {
             availabilityDTO = new AvailabilityDTO(fromSQLDate, toSQLDate);
             availabilityDTOs.add(availabilityDTO);
         } catch (Exception registerAvailabilityException) {
-            LOG.log(Level.WARNING, regAvailabilityError, registerAvailabilityException);
+            LOG.log(Level.WARNING, Messages.REGISTER_AVAILABILITY_ERROR.name(), registerAvailabilityException);
         }
 
     }
@@ -105,7 +100,7 @@ public class RecruitmentHandler implements Serializable {
             }
 
         } catch (Exception registerExperienceException) {
-            LOG.log(Level.WARNING, regExperienceError, registerExperienceException);
+            LOG.log(Level.WARNING, Messages.REGISTER_EXPERIENCE_ERROR.name(), registerExperienceException);
         }
     }
 
@@ -126,7 +121,7 @@ public class RecruitmentHandler implements Serializable {
             Date regSQLDate = new java.sql.Date(regDate.getTime());
             applicationDTO = new ApplicationDTO(regSQLDate);
         } catch (Exception registerApplicationException) {
-            LOG.log(Level.WARNING, regApplicationError, registerApplicationException);
+            LOG.log(Level.WARNING, Messages.REGISTER_APPLICATION_ERROR.name(), registerApplicationException);
         }
     }
 
@@ -138,7 +133,7 @@ public class RecruitmentHandler implements Serializable {
             personPublicDTO = new PersonPublicDTO(firstName, lastName, email);
             jobApplicationDTO = new JobApplicationDTO(personPublicDTO, availabilityDTOs, experienceDTOs, applicationDTO);
         } catch(Exception registerJobAppDTOException) {
-            LOG.log(Level.WARNING, regJobAppDTOError, registerJobAppDTOException);
+            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_DTO_ERROR.name(), registerJobAppDTOException);
         }
 
 
@@ -195,7 +190,7 @@ public class RecruitmentHandler implements Serializable {
             }
             controller.acceptOrDeclineJobApplication(applicationDTO);
         }catch (Exception acceptDeclieAppException){
-           // LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclieAppException);
+           LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclieAppException);
         }
     }
 
@@ -213,53 +208,86 @@ public class RecruitmentHandler implements Serializable {
     /**
      * Fetches all job applications
      */
-    public List<JobApplicationDTO> fetchJobApplications() {
+    public void fetchJobApplications() {
         try {
-            //jobApplications = controller.fetchJobApplications();
-            return jobApplications;
+            jobApplications = controller.fetchJobApplications("en");
+            convertList();
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
-        return null;
     }
 
     /**
      * Fetches job applications by name of person
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByName(){
+    public void fetchJobApplicationsByName(){
         try {
             jobApplications = controller.fetchJobApplicationsByName(personDTO, "en");
-            return jobApplications;
+            convertList();
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
-        return null;
     }
 
     /**
      * Fetches job applications by experience
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByExperience(){
+    public void fetchJobApplicationsByExperience(){
         try {
             jobApplications = controller.fetchJobApplicationsByExperience(experienceDTO, "en");
-            return jobApplications;
+            convertList();
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
-        return null;
     }
 
     /**
      * Fetches job applications by availability
      */
-    public List<JobApplicationDTO> fetchJobApplicationsByAvailability(){
+    public void fetchJobApplicationsByAvailability(){
         try {
             jobApplications = controller.fetchJobApplicationsByAvailability(availabilityDTO, "en");
-            return jobApplications;
+            convertList();
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
-        return null;
+    }
+
+    /**
+     * Converts a list of JobApplicationDTOs to a list of JobApps
+     */
+    public void convertList(){
+        try {
+            JobApp jobApp;
+            JobApplicationDTO temp;
+            AvailabilityDTO availability;
+            int numOfAvailabilities;
+            int numOfExp;
+            for (int i = 0; i < jobApplications.size(); i++) {
+                temp = jobApplications.get(i);
+                numOfAvailabilities = temp.getAvailabilities().size();
+                availability = temp.getAvailabilities().get(numOfAvailabilities - 1);
+                numOfExp = jobApplicationDTO.getExperiences().size();
+                if (numOfExp == 2) {
+                    jobApp = new JobApp(temp.getPerson(), temp.getApplication(), availability, temp.getExperiences().get(0), temp.getExperiences().get(1));
+                } else if (numOfExp == 3) {
+                    jobApp = new JobApp(temp.getPerson(), temp.getApplication(), availability, temp.getExperiences().get(0), temp.getExperiences().get(1), temp.getExperiences().get(2));
+                } else {
+                    jobApp = new JobApp(temp.getPerson(), temp.getApplication(), availability, temp.getExperiences().get(0), temp.getExperiences().get(1), temp.getExperiences().get(2), temp.getExperiences().get(3));
+                }
+                jobApplicationsNew.add(jobApp);
+            }
+        }catch(Exception conversionException){
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), conversionException);
+        }
+    }
+
+    public List<JobApp> getJobApplicationsNew() {
+        return jobApplicationsNew;
+    }
+
+    public void setJobApplicationsNew(List<JobApp> jobApplicationsNew) {
+        this.jobApplicationsNew = jobApplicationsNew;
     }
 
     public int getSearchSelection() {
@@ -372,6 +400,38 @@ public class RecruitmentHandler implements Serializable {
 
     public String getConPassword() {
         return conPassword;
+    }
+
+    public ApplicationDTO getApplicationDTO() {
+        return applicationDTO;
+    }
+
+    public void setApplicationDTO(ApplicationDTO applicationDTO) {
+        this.applicationDTO = applicationDTO;
+    }
+
+    public List<JobApplicationDTO> getJobApplications() {
+        return jobApplications;
+    }
+
+    public void setJobApplications(List<JobApplicationDTO> jobApplications) {
+        this.jobApplications = jobApplications;
+    }
+
+    public List<ExperienceDTO> getExperienceDTOs() {
+        return experienceDTOs;
+    }
+
+    public void setExperienceDTOs(List<ExperienceDTO> experienceDTOs) {
+        this.experienceDTOs = experienceDTOs;
+    }
+
+    public List<AvailabilityDTO> getAvailabilityDTOs() {
+        return availabilityDTOs;
+    }
+
+    public void setAvailabilityDTOs(List<AvailabilityDTO> availabilityDTOs) {
+        this.availabilityDTOs = availabilityDTOs;
     }
 
     public boolean getSuccess() {

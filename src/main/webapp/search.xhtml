@@ -99,40 +99,18 @@
         </h:form>
 
 
-        <ui:repeat value="RecruitmentHandler.jobApplications" var="app">
-            <b:row styleClass="rows">
-                <b:column col-sm="6">
-
-                </b:column>
-            </b:row>
-        </ui:repeat>
-
-            <div class="list-group">
-                <ui:repeat value="RecruitmentHandler.jobApplications" var="app">
-                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
+                    <b:row styleClass="rows">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">Leonardo Dicaprio</h5>
-                            <small class="regDate">3 days ago</small>
+                            <h:outputText value="#{app.person.name}"></h:outputText>
+                            <small>#{app.application.date}</small>
                         </div>
-                        <div class="justify-content-between">
-                            <h6>Personal information</h6>
-                            <p>Email address:<output id="email"></output></p>
-                        </div>
-                        <div class="justify-content-between">
-                            <h6>Availability</h6>
-                            <p>From:<output id="from"></output></p>
-                            <p>To:<output id="to"></output></p>
-                        </div>
-                        <div class="justify-content-between">
-                            <h6>Experience</h6>
-                            <p>Type:<output id="type1"></output></p>
-                            <p>Years of experience:<output id="years1"></output></p>
-                            <p>Type:<output id="type2"></output></p>
-                            <p>Years of experience:<output id="years2"></output></p>
-                        </div>
-                    </div>
+                    </b:row>
                 </ui:repeat>
             </div>
+
+
 
 
     </b:container>
