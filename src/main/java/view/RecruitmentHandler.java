@@ -9,6 +9,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.Cookie;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -55,6 +56,8 @@ public class RecruitmentHandler implements Serializable {
     private String conPassword;
     private String statusApplication;
     private String errorMessage;
+
+    private boolean failedLogin = false;
 
     private final String regJobAppDTOError = "There was an error when trying to register the job application DTO";
     private final String regAvailabilityError = "There was an error when trying to register the availability";
@@ -210,22 +213,31 @@ public class RecruitmentHandler implements Serializable {
     /**
      * Will let a user log in
      */
-    public void login() {
+    public void login(String from) {
         try {
             roleDTO = controller.login(username, password);
             cookieHelper.setCookie("role", roleDTO.getRole(), 3600);
-
+            if(from.isEmpty() || from.equals("%20failed") || from.equals(" failed"))
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
+            else if (from.contains("failed")) {
+                from = from.replace("%20failed", "");
+                from = from.replace(" failed", "");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
+            } else
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
         } catch (Exception loginException) {
-            LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
-        }
-    }
-
-    public void login(String from) {
-        login();
-        try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
-        }  catch (Exception redirectException) {
-            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), redirectException);
+            String[] fromArr = {};
+            if(from.contains("%20"))
+                fromArr =from.split("%20");
+            else if(from.contains(" "))
+                fromArr = from.split(" ");
+            if(fromArr.length >= 5)
+                LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/login.xhtml?from=" + from + "%20failed");
+            } catch (IOException redirectException) {
+                LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), redirectException);
+            }
         }
     }
 
@@ -417,4 +429,11 @@ public class RecruitmentHandler implements Serializable {
         this.roleDTO = roleDTO;
     }
 
+    public boolean isFailedLogin() {
+        return failedLogin;
+    }
+
+    public void setFailedLogin(boolean failedLogin) {
+        this.failedLogin = failedLogin;
+    }
 }
