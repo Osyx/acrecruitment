@@ -151,6 +151,11 @@ public class RecruitmentHandler implements Serializable {
                         (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("password")
                 );
                 controller.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+                try {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/registeredjobapp.xhtml");
+                } catch (Exception e) {
+                    LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
+                }
             } else {
                 throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg(" with applicant status."));
             }
