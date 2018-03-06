@@ -12,20 +12,35 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapsed">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="register.xhtml">Register</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="jobapp.xhtml">Register job application</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="search.xhtml">Search applications</a>
-            </li>
+            <h:panelGroup rendered="#{!recruitmentHandler.isApplicant() and !recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="register.xhtml">Register</a>
+                </li>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isApplicant()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="jobapp.xhtml">Register job application</a>
+                </li>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="search.xhtml">Search applications</a>
+                </li>
+            </h:panelGroup>
         </ul>
         <ul class="navbar-nav navbar-right ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="login.xhtml">Login</a>
-            </li>
+            <h:panelGroup rendered="#{!recruitmentHandler.isApplicant() and !recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="login.xhtml">Login</a>
+                </li>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isApplicant() or recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <h:form styleClass="navbar-form">
+                        <h:commandButton action="#{recruitmentHandler.logout()}" value="Logout" styleClass="btn btn-link nav-link" />
+                    </h:form>
+                </li>
+            </h:panelGroup>
         </ul>
     </div>
 </nav>

@@ -67,3 +67,17 @@ body{
 #jobapp{
     text-align: center;
 }
+
+#info {
+    max-width: 25%;
+    max-height: 25%;
+    padding: 20px;
+    font-size: 1.2em;
+    border-radius: 10px;
+    background-color: lightgray;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}

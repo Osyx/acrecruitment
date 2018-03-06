@@ -11,7 +11,7 @@
     <h:head>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>Job Application</title>
-        <h:outputScript src="https://www.w3schools.com/lib/w3.js"></h:outputScript>
+        <h:outputScript src="https://www.w3schools.com/lib/w3.js" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="res/style.css" />
     </h:head>
@@ -19,146 +19,158 @@
     <h:body>
         <ui:include src="navbar.xhtml"/>
         <b:container>
+            <h:panelGroup rendered="#{!recruitmentHandler.isApplicant()}">
+                <div id="info">
+                    <h:link value="You don't have permission to see this site, please login."
+                            outcome="login" rendered="#{!recruitmentHandler.isRecruit()}">
+                        <f:param name="from" value="#{view.viewId}" />
+                    </h:link>
+                    <h:link value="You already have a job... Switch account to search for a new one!"
+                            outcome="login" rendered="#{recruitmentHandler.isRecruit()}">
+                        <f:param name="from" value="#{view.viewId}" />
+                    </h:link>
+                </div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isApplicant()}">
+                <h1 id="jobapp">Job Application</h1>
 
-        <h1 id="jobapp">Job Application</h1>
+                <h:form styleClass="formID">
+                    <b:row>
+                        <b:column col-sm="5" offset="1">
+                            <h2>Personal info</h2>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name" required="true" requiredMessage="Please enter your first name"/>
+                            <h:message for="firstNameInput"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name" required="true" requiredMessage="Please enter your last name"/>
+                            <h:message for="lastNameInput"/>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="ssnInput">Social security number *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.ssn}" type="text" class="form-control" id="ssnInput" a:placeholder="Enter social security number" required="true" requiredMessage="Please enter your social security number"/>
+                            <small id="ssnHelp" class="form-text text-muted">&nbsp;e.g. "9212012406"</small>
+                            <h:message for="ssnInput"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="emailInput">Email address *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.email}" type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" a:placeholder="Enter email address" required="true" requiredMessage="Please enter your email address"/>
+                            <small id="emailHelp" class="form-text text-muted">&nbsp;We'll never share your email with anyone else.</small>
+                            <h:message for="emailInput"/>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-sm="5" offset="1">
+                            <h2>Availability</h2>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true" requiredMessage="Please choose a date"/>
+                            <h:message for="AvailableFromInput"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
+                                <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
+                            </h:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row>
+                        <b:column col-sm="5" offset="1">
+                            <h2>Experience</h2>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="experienceTypeInfo1">Name of experience *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceTypeInfo0" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
+                            <h:message for="experienceTypeInfo0"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="experienceYearsInfo1">Years of experience *</h:outputLabel>
+                            <b:selectOneMenu value="#{recruitmentHandler.years[0]}" class="form-control" id="experienceYearsInfo0" required="true" requiredMessage="Please enter the years of experience">
+                                <ui:include src="selectItems.xhtml"/>
+                            </b:selectOneMenu>
+                            <h:message for="experienceYearsInfo0"/>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="experienceTypeInfo2">Name of experience *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.experienceNames[1]}" type="text" class="form-control" id="experienceTypeInfo1" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
+                            <h:message for="experienceTypeInfo1"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="experienceYearsInfo2">Years of experience *</h:outputLabel>
+                            <b:selectOneMenu value="#{recruitmentHandler.years[1]}" class="form-control" id="experienceYearsInfo1" required="true" requiredMessage="Please enter the years of experience">
+                                <ui:include src="selectItems.xhtml"/>
+                            </b:selectOneMenu>
+                            <h:message for="experienceYearsInfo1"/>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.experienceNames[2]}" type="text" class="form-control" id="experienceTypeInfo2" a:placeholder="Enter type of experience"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
+                            <b:selectOneMenu value="#{recruitmentHandler.years[2]}" class="form-control" id="experienceYearsInfo2">
+                                <ui:include src="selectItems.xhtml"/>
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.experienceNames[3]}" type="text" class="form-control" id="experienceTypeInfo3" a:placeholder="Enter type of experience"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
+                            <b:selectOneMenu value="#{recruitmentHandler.years[3]}" class="form-control" id="experienceYearsInfo3">
+                                <ui:include src="selectItems.xhtml"/>
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.experienceNames[4]}" type="text" class="form-control" id="experienceTypeInfo4" a:placeholder="Enter type of experience"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
+                            <b:selectOneMenu value="#{recruitmentHandler.years[4]}" class="form-control" id="experienceYearsInfo4">
+                                <ui:include src="selectItems.xhtml"/>
+                            </b:selectOneMenu>
+                        </b:column>
+                    </b:row>
 
-        <h:form styleClass="formID">
-            <b:row>
-                <b:column col-sm="5" offset="1">
-                    <h2>Personal info</h2>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name" required="true" requiredMessage="Please enter your first name"/>
-                    <h:message for="firstNameInput"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name" required="true" requiredMessage="Please enter your last name"/>
-                    <h:message for="lastNameInput"/>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="ssnInput">Social security number *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.ssn}" type="text" class="form-control" id="ssnInput" a:placeholder="Enter social security number" required="true" requiredMessage="Please enter your social security number"/>
-                    <small id="ssnHelp" class="form-text text-muted">&nbsp;e.g. "9212012406"</small>
-                    <h:message for="ssnInput"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="emailInput">Email address *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.email}" type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" a:placeholder="Enter email address" required="true" requiredMessage="Please enter your email address"/>
-                    <small id="emailHelp" class="form-text text-muted">&nbsp;We'll never share your email with anyone else.</small>
-                    <h:message for="emailInput"/>
-                </b:column>
-            </b:row>
-            <b:row>
-                <b:column col-sm="5" offset="1">
-                    <h2>Availability</h2>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true" requiredMessage="Please choose a date"/>
-                    <h:message for="AvailableFromInput"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
-                        <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
-                    </h:inputText>
-                </b:column>
-            </b:row>
-            <b:row>
-                <b:column col-sm="5" offset="1">
-                    <h2>Experience</h2>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="experienceTypeInfo1">Name of experience *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceTypeInfo0" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
-                    <h:message for="experienceTypeInfo0"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="experienceYearsInfo1">Years of experience *</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[0]}" class="form-control" id="experienceYearsInfo0" required="true" requiredMessage="Please enter the years of experience">
-                        <ui:include src="selectItems.xhtml"/>
-                    </b:selectOneMenu>
-                    <h:message for="experienceYearsInfo0"/>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="experienceTypeInfo2">Name of experience *</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[1]}" type="text" class="form-control" id="experienceTypeInfo1" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
-                    <h:message for="experienceTypeInfo1"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="experienceYearsInfo2">Years of experience *</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[1]}" class="form-control" id="experienceYearsInfo1" required="true" requiredMessage="Please enter the years of experience">
-                        <ui:include src="selectItems.xhtml"/>
-                    </b:selectOneMenu>
-                    <h:message for="experienceYearsInfo1"/>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[2]}" type="text" class="form-control" id="experienceTypeInfo2" a:placeholder="Enter type of experience"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[2]}" class="form-control" id="experienceYearsInfo2">
-                        <ui:include src="selectItems.xhtml"/>
-                    </b:selectOneMenu>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[3]}" type="text" class="form-control" id="experienceTypeInfo3" a:placeholder="Enter type of experience"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[3]}" class="form-control" id="experienceYearsInfo3">
-                        <ui:include src="selectItems.xhtml"/>
-                    </b:selectOneMenu>
-                </b:column>
-            </b:row>
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="experienceTypeInfo3">Name of experience</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.experienceNames[4]}" type="text" class="form-control" id="experienceTypeInfo4" a:placeholder="Enter type of experience"/>
-                </b:column>
-                <b:column col-sm="5">
-                    <h:outputLabel for="experienceYearsInfo3">Years of experience</h:outputLabel>
-                    <b:selectOneMenu value="#{recruitmentHandler.years[4]}" class="form-control" id="experienceYearsInfo4">
-                        <ui:include src="selectItems.xhtml"/>
-                    </b:selectOneMenu>
-                </b:column>
-            </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <small id="formRequiredFieldsHelp" class="form-text text-muted">&nbsp;All required fields are marked with *</small>
+                            <h:commandButton value="Register" action="#{recruitmentHandler.regJobApplication}" class="btn btn-primary" />
+                        </b:column>
+                    </b:row>
 
-            <b:row styleClass="rows">
-                <b:column col-sm="5" offset="1">
-                    <small id="formRequiredFieldsHelp" class="form-text text-muted">&nbsp;All required fields are marked with *</small>
-                    <h:commandButton value="Register" action="#{recruitmentHandler.regJobApplication}" class="btn btn-primary"></h:commandButton>
-                </b:column>
-            </b:row>
-
-        </h:form>
-
+                </h:form>
+            </h:panelGroup>
         </b:container>
 
 
 
     <!-- the scripts that need to be present -->
-    <h:outputScript src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></h:outputScript>
-    <h:outputScript src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></h:outputScript>
-    <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></h:outputScript>
+    <h:outputScript src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous" />
+    <h:outputScript src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous" />
+    <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous" />
 
     </h:body>
 

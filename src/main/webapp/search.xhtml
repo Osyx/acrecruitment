@@ -22,6 +22,20 @@
 
 
     <b:container>
+        <h:panelGroup rendered="#{!recruitmentHandler.isRecruit()}">
+            <div id="info">
+                <h:link value="You don't have permission to see this site, please login."
+                        outcome="login" rendered="#{!recruitmentHandler.isApplicant()}">
+                    <f:param name="from" value="#{view.viewId}" />
+                </h:link>
+                <h:link value="You don't have permission to see this site."
+                        outcome="login" rendered="#{recruitmentHandler.isApplicant()}">
+                    <f:param name="from" value="#{view.viewId}" />
+                </h:link>
+            </div>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{recruitmentHandler.isRecruit()}">
+            <h:form styleClass="formID">
 
 
 
@@ -147,50 +161,75 @@
                 </b:row>
                 <b:row styleClass="rows">
                     <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" class="btn btn-primary"></h:commandButton>
+                        <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
+                            <ui:include src="selectSearch.xhtml"/>
+                            <f:ajax render="@form"/>
+                        </b:selectOneMenu>
                     </b:column>
                 </b:row>
-            </h:form>
 
-            <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 3}">
-                <b:row styleClass="rows" id="experience">
+
+                <b:row styleClass="rows" id="allApplications" rendered="#{recruitmentHandler.searchSelection == 1}">
                     <b:column col-sm="5" offset="1">
-                        <h:outputLabel for="experienceType">Name of experience *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceType" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
-                        <h:message for="experienceType"/>
+                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplications}" class="btn btn-primary"></h:commandButton>
                     </b:column>
                 </b:row>
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" class="btn btn-primary"></h:commandButton>
-                    </b:column>
-                </b:row>
-            </h:form>
 
-            <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 4}">
-                <b:row styleClass="rows" id="availability">
-                    <b:column col-sm="5" offset="1">
-                        <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true" requiredMessage="Please choose a date"/>
-                        <h:message for="AvailableFromInput"/>
-                    </b:column>
-                    <b:column col-sm="5">
-                        <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
-                        <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
-                            <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
-                        </h:inputText>
-                    </b:column>
-                </b:row>
-                <b:row styleClass="rows">
-                    <b:column col-sm="5" offset="1">
-                        <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" class="btn btn-primary"></h:commandButton>
-                    </b:column>
-                </b:row>
-            </h:form>
+                <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 2}">
+                    <b:row styleClass="rows" id="name">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="firstNameInput">First name *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.firstName}" type="text" class="form-control" id="firstNameInput" a:placeholder="Enter first name" required="true" requiredMessage="Please enter your first name"/>
+                            <h:message for="firstNameInput"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="lastNameInput">Last name *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.lastName}" type="text" class="form-control" id="lastNameInput" a:placeholder="Enter last name" required="true" requiredMessage="Please enter your last name"/>
+                            <h:message for="lastNameInput"/>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" class="btn btn-primary"></h:commandButton>
+                        </b:column>
+                    </b:row>
+                </h:form>
 
+                <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 3}">
+                    <b:row styleClass="rows" id="experience">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="experienceType">Name of experience *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.experienceNames[0]}"  type="text" class="form-control" id="experienceType" a:placeholder="Enter type of experience" required="true" requiredMessage="Please enter an experience"/>
+                            <h:message for="experienceType"/>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" class="btn btn-primary"></h:commandButton>
+                        </b:column>
+                    </b:row>
+                </h:form>
 
-        </h:form>
-
+                <h:form styleClass="formID" rendered="#{recruitmentHandler.searchSelection == 4}">
+                    <b:row styleClass="rows" id="availability">
+                        <b:column col-sm="5" offset="1">
+                            <h:outputLabel for="AvailableFromInput">Available from *</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.fromDate}" type="date" converter="myDateTimeConverter" class="form-control" id="AvailableFromInput" a:placeholder="Enter from-date" required="true" requiredMessage="Please choose a date"/>
+                            <h:message for="AvailableFromInput"/>
+                        </b:column>
+                        <b:column col-sm="5">
+                            <h:outputLabel for="AvailableToInput">Available to</h:outputLabel>
+                            <h:inputText value="#{recruitmentHandler.toDate}" type="date" class="form-control" id="AvailableToInput" a:placeholder="Enter to-date">
+                                <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
+                            </h:inputText>
+                        </b:column>
+                    </b:row>
+                    <b:row styleClass="rows">
+                        <b:column col-sm="5" offset="1">
+                            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" class="btn btn-primary"></h:commandButton>
+                        </b:column>
+                    </b:row>
+                </h:form>
 
 
             <div class="list-group-item list-group-item-action flex-column align-items-start">
@@ -204,6 +243,9 @@
                 </ui:repeat>
             </div>
 
+            <ui:repeat value="RecruitmentHandler.jobApplications" var="app">
+                <b:row styleClass="rows">
+                    <b:column col-sm="6">
 
 
 

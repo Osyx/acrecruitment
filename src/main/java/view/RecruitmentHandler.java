@@ -9,11 +9,13 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,7 +80,23 @@ public class RecruitmentHandler implements Serializable {
                 success = true;
             }
         } catch (Exception registerPersonException) {
+            errorMessage = registerPersonException.getMessage();
             LOG.log(Level.WARNING, Messages.REGISTER_USER_ERROR.name(), registerPersonException);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/error.xhtml");
+            } catch (IOException e) {
+                LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
+            }
+        }
+        try {
+            if(success) {
+                    FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
+            }
+            else {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/register.xhtml");
+            }
+        } catch (IOException e) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
         }
     }
 
@@ -161,13 +179,17 @@ public class RecruitmentHandler implements Serializable {
      */
     public void regJobApplication() {
         try {
-            success = true;
-            personDTO = new PersonDTO(firstName, lastName, ssn, email);
-            personDTO.setRole("applicant");
-            regExperiences();
-            regAvailability();
-            regApplication();
-            controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+            if (roleDTO != null && roleDTO.getRole().equals("recruit")) {
+                success = true;
+                personDTO = new PersonDTO(firstName, lastName, ssn, email);
+                personDTO.setRole("applicant");
+                regExperiences();
+                regAvailability();
+                regApplication();
+                controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+            } else {
+                throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg("with recruit status."));
+            }
         } catch(Exception registerJobAppException) {
             FacesMessage message = new FacesMessage(registerJobAppException.getMessage());
             FacesContext context = FacesContext.getCurrentInstance();
@@ -200,9 +222,9 @@ public class RecruitmentHandler implements Serializable {
      */
     public void acceptOrDeclineApplication(){  // bör eventuellt delas upp i två metoder?
         try {
-            if(statusApplication == "accepted") {
+            if(Objects.equals(statusApplication, "accepted")) {
                 applicationDTO.setAccepted("accepted");
-            }else if(statusApplication == "declined"){
+            }else if(Objects.equals(statusApplication, "declined")){
                 applicationDTO.setAccepted("declined");
             }
             controller.acceptOrDeclineJobApplication(applicationDTO);
@@ -214,11 +236,41 @@ public class RecruitmentHandler implements Serializable {
     /**
      * Will let a user log in
      */
-    public void login() {
+    public void login(String from) {
         try {
             roleDTO = controller.login(username, password);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("role", roleDTO.getRole());
+            if(from.isEmpty() || from.equals("%20failed") || from.equals(" failed"))
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
+            else if (from.contains("failed")) {
+                from = from.replace("%20failed", "");
+                from = from.replace(" failed", "");
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
+            } else
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
         } catch (Exception loginException) {
-            LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
+            String[] fromArr = {};
+            if(from.contains("%20"))
+                fromArr =from.split("%20");
+            else if(from.contains(" "))
+                fromArr = from.split(" ");
+            if(fromArr.length >= 5)
+                LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/login.xhtml?from=" + from + "%20failed");
+            } catch (IOException redirectException) {
+                LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), redirectException);
+            }
+        }
+    }
+
+    public void logout() {
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("role");
+        try {
+            roleDTO = null;
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
+        } catch (Exception e) {
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
         }
     }
 
@@ -386,6 +438,16 @@ public class RecruitmentHandler implements Serializable {
         this.searchSelection = searchSelection;
     }
 
+    public boolean isApplicant() {
+        String role = (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("role");
+        return role != null && role.equals("applicant");
+    }
+
+    public boolean isRecruit() {
+        String role = (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("role");
+        return role != null && role.equals("recruit");
+    }
+
     public java.util.Date getFromDate() {
         return fromDate;
     }
@@ -528,5 +590,27 @@ public class RecruitmentHandler implements Serializable {
         return tempSuccess;
     }
 
+    public RoleDTO getRoleDTO() {
+        return roleDTO;
+    }
 
+    public void setRoleDTO(RoleDTO roleDTO) {
+        this.roleDTO = roleDTO;
+    }
+
+    public boolean isFailedLogin() {
+        return failedLogin;
+    }
+
+    public void setFailedLogin(boolean failedLogin) {
+        this.failedLogin = failedLogin;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }
