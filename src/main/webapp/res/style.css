@@ -73,6 +73,7 @@ body{
     max-height: 25%;
     padding: 20px;
     font-size: 1.2em;
+    text-align: center;
     border-radius: 10px;
     background-color: lightgray;
     position: absolute;
@@ -80,4 +81,8 @@ body{
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+}
+
+#popup {
+    visibility: visible;
 }

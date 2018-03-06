@@ -8,6 +8,7 @@ import integration.entity.Experience;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,7 +27,6 @@ public class RecruitmentHandler implements Serializable {
     private PersonDTO personDTO;
     private PersonPublicDTO personPublicDTO;
     private UserDTO userDTO;
-    private RoleDTO roleDTO;
     private AvailabilityDTO availabilityDTO;
     private ExperienceDTO experienceDTO;
     private ApplicationDTO applicationDTO;
@@ -54,7 +54,6 @@ public class RecruitmentHandler implements Serializable {
     private String ssn;
     private String conPassword;
     private String statusApplication;
-    private String errorMessage;
 
     private String searchName;
     private String searchLastName;
@@ -64,7 +63,9 @@ public class RecruitmentHandler implements Serializable {
     private java.sql.Date searchFromSQLDate;
     private java.sql.Date searchToSQLDate;
 
-    private boolean success = false;
+    private UIComponent registerButton;
+    private UIComponent loginButton;
+    private UIComponent registerAppButton;
 
     private static final Logger LOG = Logger.getLogger(RecruitmentHandler.class.getName());
 
@@ -77,154 +78,20 @@ public class RecruitmentHandler implements Serializable {
             if(conPassword.equals(password)){
                 userDTO = new UserDTO(username, password);
                 controller.registerUser(userDTO);
-                success = true;
-            }
-            if(success) {
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
             } else {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/register.xhtml");
+                FacesMessage message = new FacesMessage("The passwords do not match.");
+                FacesContext context = FacesContext.getCurrentInstance();
+                context.addMessage(registerButton.getClientId(context), message);
             }
         } catch (Exception registerPersonException) {
-            errorMessage = registerPersonException.getMessage();
             LOG.log(Level.WARNING, Messages.REGISTER_USER_ERROR.name(), registerPersonException);
-            try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/error.xhtml");
-            } catch (IOException e) {
-                LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
-            }
-        }
-    }
-
-    /**
-     * Registers a persons availabilities
-     */
-    public void regAvailability() {
-        try {
-            dateConverter();
-            availabilityDTO = new AvailabilityDTO(fromSQLDate, toSQLDate);
-            availabilityDTOs.add(availabilityDTO);
-        } catch (Exception registerAvailabilityException) {
-            LOG.log(Level.WARNING, Messages.REGISTER_AVAILABILITY_ERROR.name(), registerAvailabilityException);
-        }
-
-    }
-
-    /**
-     * Registers a persons experiences
-     */
-    public void regExperiences() {
-        try {
-            for (int i = 0; i < experienceNames.length; i++) {
-                if(years[i] != null & experienceNames[i] != null & experienceNames[i].trim().length() > 2) {
-                    ExperienceDTO TempExperienceDTO = new ExperienceDTO(experienceNames[i], years[i]);
-                    experienceDTOs.add(TempExperienceDTO);
-                }
-            }
-
-        } catch (Exception registerExperienceException) {
-            LOG.log(Level.WARNING, Messages.REGISTER_EXPERIENCE_ERROR.name(), registerExperienceException);
-        }
-    }
-
-    /**
-     * Converts a java.util.Date to java.sql.Date
-     */
-    public void dateConverter(){
-        fromSQLDate = fromDate != null ? new java.sql.Date(fromDate.getTime()) : null;
-        toSQLDate = toDate != null ? new java.sql.Date(toDate.getTime()) : null;
-    }
-
-    /**
-     * Converts a java.util.Date to java.sql.Date
-     */
-    public void dateConverterSearch(){
-        searchFromDate = searchFromDate != null ? new java.sql.Date(searchFromDate.getTime()): null;
-        searchToDate = searchToDate != null ? new java.sql.Date(searchToDate.getTime()): null;
-    }
-
-    /**
-     * Registers the date of a new job application
-     */
-    public void regApplication() {
-        try {
-            java.util.Date regDate = Calendar.getInstance().getTime();
-            Date regSQLDate = new java.sql.Date(regDate.getTime());
-            applicationDTO = new ApplicationDTO(regSQLDate);
-        } catch (Exception registerApplicationException) {
-            LOG.log(Level.WARNING, Messages.REGISTER_APPLICATION_ERROR.name(), registerApplicationException);
-        }
-    }
-
-    /**
-     * Registers a job application DTO
-     */
-    public void regJobAppDTO() { // skapade denna om det behövs
-        try {
-            personPublicDTO = new PersonPublicDTO(firstName, lastName, email);
-            jobApplicationDTO = new JobApplicationDTO(personPublicDTO, availabilityDTOs, experienceDTOs, applicationDTO);
-        } catch(Exception registerJobAppDTOException) {
-            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_DTO_ERROR.name(), registerJobAppDTOException);
-        }
-
-
-    }
-
-    /**
-     * Registers a job application
-     */
-    public void regJobApplication() {
-        try {
-            if (roleDTO != null && roleDTO.getRole().equals("recruit")) {
-                success = true;
-                personDTO = new PersonDTO(firstName, lastName, ssn, email);
-                personDTO.setRole("applicant");
-                regExperiences();
-                regAvailability();
-                regApplication();
-                controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
-            } else {
-                throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg("with recruit status."));
-            }
-        } catch(Exception registerJobAppException) {
-            FacesMessage message = new FacesMessage(registerJobAppException.getMessage());
+            FacesMessage message = new FacesMessage(
+                    registerPersonException.getMessage() != null ?
+                            registerPersonException.getMessage() : registerPersonException.getClass().getSimpleName().equals("SystemException") ?
+                            ((SystemException) registerPersonException).getMessageKey() : registerPersonException.toString());
             FacesContext context = FacesContext.getCurrentInstance();
-            //context.addMessage(mybutton.getClientId(context), message);
-            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
-        }
-
-
-    }
-
-    /**
-     * Registers a job application (REST) without a user login
-     */
-    public void regRestJobApplication() { // Var det tillåtet att regga sig utan att logga in?
-        try {
-            personDTO = new PersonDTO(firstName, lastName, ssn, email);
-            regExperiences();
-            regAvailability();
-            regApplication();
-            controller.registerRESTJobApplication(personDTO, experienceDTOs, availabilityDTOs, applicationDTO);
-        } catch(Exception registerRestJobAppException) {
-            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerRestJobAppException);
-        }
-
-
-    }
-
-    /**
-     * Accepts or declines a jobb application
-     */
-    public void acceptOrDeclineApplication(){  // bör eventuellt delas upp i två metoder?
-        try {
-            if(Objects.equals(statusApplication, "accepted")) {
-                applicationDTO.setAccepted("accepted");
-            }else if(Objects.equals(statusApplication, "declined")){
-                applicationDTO.setAccepted("declined");
-            }
-            controller.acceptOrDeclineJobApplication(applicationDTO);
-        }catch (Exception acceptDeclieAppException){
-           LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclieAppException);
+            context.addMessage(registerButton.getClientId(context), message);
         }
     }
 
@@ -233,39 +100,60 @@ public class RecruitmentHandler implements Serializable {
      */
     public void login(String from) {
         try {
-            roleDTO = controller.login(username, password);
+            RoleDTO roleDTO = controller.login(username, password);
+            userDTO = new UserDTO(username, password);
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("role", roleDTO.getRole());
-            if(from.isEmpty() || from.equals("%20failed") || from.equals(" failed"))
+            if(from.isEmpty())
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
-            else if (from.contains("failed")) {
-                from = from.replace("%20failed", "");
-                from = from.replace(" failed", "");
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
-            } else
+            else
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment" + from);
         } catch (Exception loginException) {
-            String[] fromArr = {};
-            if(from.contains("%20"))
-                fromArr =from.split("%20");
-            else if(from.contains(" "))
-                fromArr = from.split(" ");
-            if(fromArr.length >= 5)
-                LOG.log(Level.WARNING, Messages.LOGIN_ERROR.name(), loginException);
-            try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/login.xhtml?from=" + from + "%20failed");
-            } catch (IOException redirectException) {
-                LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), redirectException);
-            }
+            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), loginException);
+            FacesMessage message = new FacesMessage(
+                    loginException.getMessage() != null ? 
+                            loginException.getMessage() : loginException.getClass().getSimpleName().equals("SystemException") ? 
+                                    ((SystemException) loginException).getMessageKey() : loginException.toString());
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(loginButton.getClientId(context), message);
         }
     }
 
+    /**
+     * Is used to logout the current user.
+     */
     public void logout() {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("role");
         try {
-            roleDTO = null;
             FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/index.xhtml");
         } catch (Exception e) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
+        }
+    }
+
+    /**
+     * Registers a job application
+     */
+    public void regJobApplication() {
+        try {
+            if (isApplicant()) {
+                personDTO = new PersonDTO(firstName, lastName, ssn, email);
+                personDTO.setRole("applicant");
+                regExperiences();
+                regAvailability();
+                regApplication();
+                checkIfValidInput();
+                controller.registerJobApplication(personDTO, userDTO, experienceDTOs, availabilityDTOs, applicationDTO);
+            } else {
+                throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg(" with applicant status."));
+            }
+        } catch(Exception registerJobAppException) {
+            LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
+            FacesMessage message = new FacesMessage(
+                    registerJobAppException.getMessage() != null ?
+                            registerJobAppException.getMessage() : registerJobAppException.getClass().getSimpleName().equals("SystemException") ?
+                            ((SystemException) registerJobAppException).getMessageKey() : registerJobAppException.toString());
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.addMessage(registerAppButton.getClientId(context), message);
         }
     }
 
@@ -329,6 +217,22 @@ public class RecruitmentHandler implements Serializable {
             jobApplications = controller.fetchJobApplicationsByAvailability(availability, "en");
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
+        }
+    }
+
+    /**
+     * Accepts or declines a job application
+     */
+    public void acceptOrDeclineApplication(){  // bör eventuellt delas upp i två metoder?
+        try {
+            if(Objects.equals(statusApplication, "accepted")) {
+                applicationDTO.setAccepted("accepted");
+            }else if(Objects.equals(statusApplication, "declined")){
+                applicationDTO.setAccepted("declined");
+            }
+            controller.acceptOrDeclineJobApplication(applicationDTO);
+        }catch (Exception acceptDeclineAppException){
+            LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclineAppException);
         }
     }
 
@@ -579,25 +483,98 @@ public class RecruitmentHandler implements Serializable {
         this.availabilityDTOs = availabilityDTOs;
     }
 
-    public boolean getSuccess() {
-        boolean tempSuccess = success;
-        success = false;
-        return tempSuccess;
+    public UIComponent getRegisterButton() {
+        return registerButton;
     }
 
-    public RoleDTO getRoleDTO() {
-        return roleDTO;
+    public void setRegisterButton(UIComponent registerButton) {
+        this.registerButton = registerButton;
     }
 
-    public void setRoleDTO(RoleDTO roleDTO) {
-        this.roleDTO = roleDTO;
+    public UIComponent getLoginButton() {
+        return loginButton;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public void setLoginButton(UIComponent loginButton) {
+        this.loginButton = loginButton;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public UIComponent getRegisterAppButton() {
+        return registerAppButton;
+    }
+
+    public void setRegisterAppButton(UIComponent registerAppButton) {
+        this.registerAppButton = registerAppButton;
+    }
+
+    // private functions
+
+    /**
+     * Registers a persons availabilities
+     */
+    private void regAvailability() {
+        try {
+            dateConverter();
+            availabilityDTO = new AvailabilityDTO(fromSQLDate, toSQLDate);
+            availabilityDTOs.add(availabilityDTO);
+        } catch (Exception registerAvailabilityException) {
+            LOG.log(Level.WARNING, Messages.REGISTER_AVAILABILITY_ERROR.name(), registerAvailabilityException);
+        }
+
+    }
+
+    /**
+     * Registers a persons experiences
+     */
+    private void regExperiences() {
+        try {
+            for (int i = 0; i < experienceNames.length; i++) {
+                if(years[i] != null & experienceNames[i] != null & experienceNames[i].trim().length() > 2) {
+                    ExperienceDTO TempExperienceDTO = new ExperienceDTO(Util.capitalize(experienceNames[i]), years[i]);
+                    experienceDTOs.add(TempExperienceDTO);
+                }
+            }
+
+        } catch (Exception registerExperienceException) {
+            LOG.log(Level.WARNING, Messages.REGISTER_EXPERIENCE_ERROR.name(), registerExperienceException);
+        }
+    }
+
+    /**
+     * Converts a java.util.Date to java.sql.Date
+     */
+    private void dateConverter(){
+        fromSQLDate = fromDate != null ? new java.sql.Date(fromDate.getTime()) : null;
+        toSQLDate = toDate != null ? new java.sql.Date(toDate.getTime()) : null;
+    }
+
+    /**
+     * Converts a java.util.Date to java.sql.Date
+     */
+    private void dateConverterSearch(){
+        searchFromDate = searchFromDate != null ? new java.sql.Date(searchFromDate.getTime()): null;
+        searchToDate = searchToDate != null ? new java.sql.Date(searchToDate.getTime()): null;
+    }
+
+    /**
+     * Registers the date of a new job application
+     */
+    private void regApplication() {
+        try {
+            java.util.Date regDate = Calendar.getInstance().getTime();
+            Date regSQLDate = new java.sql.Date(regDate.getTime());
+            applicationDTO = new ApplicationDTO(regSQLDate);
+        } catch (Exception registerApplicationException) {
+            LOG.log(Level.WARNING, Messages.REGISTER_APPLICATION_ERROR.name(), registerApplicationException);
+        }
+    }
+
+    private void checkIfValidInput() throws SystemException {
+        Util.checkPerson(personDTO);
+        for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
+            Util.checkDate(availabilityDTO.getFromDate());
+            if(availabilityDTO.getToDate() != null)
+                Util.checkDate(availabilityDTO.getToDate());
+        }
     }
 }
