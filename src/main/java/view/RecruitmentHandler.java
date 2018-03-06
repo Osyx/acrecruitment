@@ -8,6 +8,7 @@ import integration.entity.Experience;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @ManagedBean(name = "recruitmentHandler")
+@ViewScoped
 public class RecruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
