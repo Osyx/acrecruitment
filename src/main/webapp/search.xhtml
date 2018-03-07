@@ -54,25 +54,26 @@
                             <ui:include src="searchByAvailability.xhtml" />
                     </ui:fragment>
                 </h:form>
-
-                <div class="list-group-item list-group-item-action flex-column align-items-start">
-                    <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
-                        <b:row styleClass="rows">
-                            <div class="d-flex w-100 justify-content-between">
-                                <p>
-                                    <h:outputText value="#{app.person.name} #{app.person.surname}"/>
-                                    <br />
-                                    <h:outputText class="email" value="#{app.person.email}"/>
-                                </p>
-                                <p align="right">
-                                    <strong>#{app.application.accepted}</strong>
-                                    <br />
-                                    <small>#{app.application.date}</small>
-                                </p>
-                            </div>
-                        </b:row>
-                    </ui:repeat>
-                </div>
+                <ui:fragment rendered="#{recruitmentHandler.searchSelection != 0}">
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
+                            <b:row styleClass="rows">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p>
+                                        <h:outputText value="#{app.person.name} #{app.person.surname}"/>
+                                        <br />
+                                        <h:outputText class="email" value="#{app.person.email}"/>
+                                    </p>
+                                    <p align="right">
+                                        <strong>#{app.application.accepted}</strong>
+                                        <br />
+                                        <small>#{app.application.date}</small>
+                                    </p>
+                                </div>
+                            </b:row>
+                        </ui:repeat>
+                    </div>
+                </ui:fragment>
             </ui:fragment>
         </div>
     </b:container>
