@@ -9,11 +9,12 @@
       xmlns:b="http://bootsfaces.net/ui">
 <h:head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Register</title>
+    <title><h:outputText value="#{msg['register']}"/></title>
     <h:outputScript src="https://www.w3schools.com/lib/w3.js"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="res/style.css" />
 </h:head>
+<f:view locale="#{languageBean.locale}">
 <h:body>
     <ui:include src="navbar.xhtml"/>
     <b:container>
@@ -61,5 +62,5 @@
     <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous" />
 
 </h:body>
-
+</f:view>
 </html>
