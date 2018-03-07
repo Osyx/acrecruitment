@@ -6,19 +6,19 @@
                 xmlns:b="http://bootsfaces.net/ui">
     <b:row styleClass="rows" id="name">
         <b:column col-sm="5" offset="1">
-            <h:outputLabel for="firstNameSearch">First name *</h:outputLabel>
-            <h:inputText value="#{recruitmentHandler.searchName}" type="text" class="form-control" id="firstNameSearch" a:placeholder="Enter first name"  requiredMessage="Please enter your first name"/>
+            <h:outputLabel for="firstNameSearch"><h:outputText value="#{msg['first_name']}"/>*</h:outputLabel>
+            <h:inputText value="#{recruitmentHandler.searchName}" type="text" class="form-control" id="firstNameSearch" a:placeholder="#{msg['first_name_hint']}"  requiredMessage="#{msg['req_first_name']}"/>
             <h:message for="firstNameSearch"/>
         </b:column>
         <b:column col-sm="5">
-            <h:outputLabel for="lastNameSearch">Last name *</h:outputLabel>
-            <h:inputText value="#{recruitmentHandler.searchLastName}" type="text" class="form-control" id="lastNameSearch" a:placeholder="Enter last name"  requiredMessage="Please enter your last name"/>
+            <h:outputLabel for="lastNameSearch"><h:outputText value="#{msg['last_name']}"/>*</h:outputLabel>
+            <h:inputText value="#{recruitmentHandler.searchLastName}" type="text" class="form-control" id="lastNameSearch" a:placeholder="#{msg['last_name_hint']}"  requiredMessage="#{msg['req_last_name']}"/>
             <h:message for="lastNameSearch"/>
         </b:column>
     </b:row>
     <b:row styleClass="rows">
         <b:column col-sm="5" offset="1">
-            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByName}" update="repeater" class="btn btn-primary"/>
+            <h:commandButton value="#{msg.search}" action="#{recruitmentHandler.fetchJobApplicationsByName}" update="repeater" class="btn btn-primary"/>
         </b:column>
     </b:row>
 </ui:composition>
