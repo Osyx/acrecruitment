@@ -86,8 +86,8 @@
                     <div class="justify-content-between">
                         <ol class="nav-item" id="acceptDecline">
                             <h:form styleClass="navbar-form">
-                                <h:commandButton action="#{recruitmentHandler.acceptOrDeclineApplication()}" value="Accept" styleClass="btn btn-link nav-link" />
-                                <h:commandButton action="#{recruitmentHandler.declineApplication()}" value="Decline" styleClass="btn btn-link nav-link" />
+                                <h:commandButton action="#{recruitmentHandler.acceptApplication(app.application.applicationId)}" value="Accept" styleClass="btn btn-link nav-link" />
+                                <h:commandButton action="#{recruitmentHandler.declineApplication(app.application.applicationId)}" value="Decline" styleClass="btn btn-link nav-link" />
                             </h:form>
                         </ol>
                     </div>

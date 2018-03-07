@@ -27,25 +27,18 @@ public class RecruitmentHandler implements Serializable {
 
     private final Controller controller = new Controller();
     private PersonDTO personDTO;
-    private PersonPublicDTO personPublicDTO;
     private AvailabilityDTO availabilityDTO;
-    private ExperienceDTO experienceDTO;
     private ApplicationDTO applicationDTO;
-    private JobApplicationDTO jobApplicationDTO;
 
     private List <JobApplicationDTO> jobApplications = new ArrayList<>();
     private List<ExperienceDTO> experienceDTOs = new ArrayList<>();
     private List<AvailabilityDTO> availabilityDTOs = new ArrayList<>();
-    private List<JobApp> jobApplicationsNew = new ArrayList<>();
 
-    private Experience experience;
     private String[] experienceNames = new String[5];
     private Double[] years = new Double[5];
 
     private java.util.Date fromDate;
     private java.util.Date toDate;
-    private java.sql.Date fromSQLDate;
-    private java.sql.Date toSQLDate;
     private String username;
     private String password;
     private String firstName;
@@ -53,7 +46,6 @@ public class RecruitmentHandler implements Serializable {
     private String email;
     private String ssn;
     private String conPassword;
-    private String statusApplication;
 
     private int searchSelection;
     private String searchName;
@@ -61,8 +53,6 @@ public class RecruitmentHandler implements Serializable {
     private String searchExp;
     private java.util.Date searchFromDate;
     private java.util.Date searchToDate;
-    private java.sql.Date searchFromSQLDate;
-    private java.sql.Date searchToSQLDate;
 
     private UIComponent registerButton;
     private UIComponent loginButton;
@@ -176,19 +166,13 @@ public class RecruitmentHandler implements Serializable {
      * Fetches all job applications
      */
     public void fetchJobApplications() {
-        LOG.severe("hej");
         try {
-            LOG.severe("hej");
             jobApplications = controller.fetchJobApplications("en");
-            LOG.severe(jobApplications.get(0).getPerson().getName());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
     }
 
-    public void hej(){
-        LOG.severe("hej");
-    }
 
     /**
      * Fetches job applications by name of person
@@ -209,7 +193,6 @@ public class RecruitmentHandler implements Serializable {
      * Fetches job applications by experience
      */
     public void fetchJobApplicationsByExperience(){
-        LOG.warning("hejhej");
         try {
             ExperienceDTO exp = new ExperienceDTO();
             exp.setName(searchExp);
@@ -225,10 +208,12 @@ public class RecruitmentHandler implements Serializable {
      */
     public void fetchJobApplicationsByAvailability(){
         try {
-            dateConverterSearch();
+            java.sql.Date searchFrom = dateConverter(searchFromDate);
+            java.sql.Date searchTo = dateConverter(searchToDate);
             AvailabilityDTO availability = new AvailabilityDTO();
-            availability.setFromDate(searchFromSQLDate);
-            availability.setToDate(searchToSQLDate);
+            availability.setFromDate(searchFrom);
+            if(searchToDate != null)
+                availability.setToDate(searchTo);
             jobApplications = controller.fetchJobApplicationsByAvailability(availability, "en");
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
@@ -236,28 +221,15 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
-     * Accepts or declines a job application
-     */
-    public void acceptOrDeclineApplication(){  // bör eventuellt delas upp i två metoder?
-        try {
-            if(Objects.equals(statusApplication, "accepted")) {
-                applicationDTO.setAccepted("accepted");
-            }else if(Objects.equals(statusApplication, "declined")){
-                applicationDTO.setAccepted("declined");
-            }
-            controller.acceptOrDeclineJobApplication(applicationDTO);
-        }catch (Exception acceptDeclineAppException){
-            LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclineAppException);
-        }
-    }
-
-    /**
      * Accepts a job application
      */
-    public void acceptApplication(){  // bör eventuellt delas upp i två metoder?
+    public void acceptApplication(long id){  // bör eventuellt delas upp i två metoder?
         try {
-            applicationDTO.setAccepted("accepted");
-            controller.acceptOrDeclineJobApplication(applicationDTO);
+            ApplicationDTO application = new ApplicationDTO();
+            application.setAccepted("accepted");
+            application.setApplicationId(id);
+            controller.acceptOrDeclineJobApplication(application);
+            refreshList();
         }catch (Exception acceptDeclineAppException){
             LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclineAppException);
         }
@@ -266,43 +238,20 @@ public class RecruitmentHandler implements Serializable {
     /**
      * Declines a job application
      */
-    public void declineApplication(){  // bör eventuellt delas upp i två metoder?
+    public void declineApplication(long id){  // bör eventuellt delas upp i två metoder?
         try {
-            applicationDTO.setAccepted("declined");
-            controller.acceptOrDeclineJobApplication(applicationDTO);
+            ApplicationDTO application = new ApplicationDTO();
+            application.setApplicationId(id);
+            application.setAccepted("declined");
+            controller.acceptOrDeclineJobApplication(application);
+            refreshList();
         }catch (Exception acceptDeclineAppException){
             LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclineAppException);
         }
     }
 
-    /**
-     * Converts a list of JobApplicationDTOs to a list of JobApps
-     */
-    public void convertList(){
-        try {
-            JobApp jobApp;
-            JobApplicationDTO temp;
-            AvailabilityDTO availability;
-            int numOfAvailabilities;
-            int numOfExp;
-            for (int i = 0; i < jobApplications.size(); i++) {
-                temp = jobApplications.get(i);
-                numOfAvailabilities = temp.getAvailabilities().size();
-                availability = temp.getAvailabilities().get(numOfAvailabilities - 1);
-                numOfExp = jobApplicationDTO.getExperiences().size();
-                if (numOfExp == 2) {
-                    jobApp = new JobApp(temp.getPerson(), temp.getApplication(), availability, temp.getExperiences().get(0), temp.getExperiences().get(1));
-                } else if (numOfExp == 3) {
-                    jobApp = new JobApp(temp.getPerson(), temp.getApplication(), availability, temp.getExperiences().get(0), temp.getExperiences().get(1), temp.getExperiences().get(2));
-                } else {
-                    jobApp = new JobApp(temp.getPerson(), temp.getApplication(), availability, temp.getExperiences().get(0), temp.getExperiences().get(1), temp.getExperiences().get(2), temp.getExperiences().get(3));
-                }
-                jobApplicationsNew.add(jobApp);
-            }
-        }catch(Exception conversionException){
-            LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), conversionException);
-        }
-    }
+
+
 
     public String getRegUsername() {
         return (String) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("username");
@@ -348,30 +297,6 @@ public class RecruitmentHandler implements Serializable {
         this.searchToDate = searchToDate;
     }
 
-    public Date getSearchFromSQLDate() {
-        return searchFromSQLDate;
-    }
-
-    public void setSearchFromSQLDate(Date searchFromSQLDate) {
-        this.searchFromSQLDate = searchFromSQLDate;
-    }
-
-    public Date getSearchToSQLDate() {
-        return searchToSQLDate;
-    }
-
-    public void setSearchToSQLDate(Date searchToSQLDate) {
-        this.searchToSQLDate = searchToSQLDate;
-    }
-
-    public List<JobApp> getJobApplicationsNew() {
-        return jobApplicationsNew;
-    }
-
-    public void setJobApplicationsNew(List<JobApp> jobApplicationsNew) {
-        this.jobApplicationsNew = jobApplicationsNew;
-    }
-
     public int getSearchSelection() {
         return searchSelection;
     }
@@ -404,22 +329,6 @@ public class RecruitmentHandler implements Serializable {
 
     public void setToDate(java.util.Date toDate) {
         this.toDate = toDate;
-    }
-
-    public Date getFromSQLDate() {
-        return fromSQLDate;
-    }
-
-    public void setFromSQLDate(Date fromSQLDate) {
-        this.fromSQLDate = fromSQLDate;
-    }
-
-    public Date getToSQLDate() {
-        return toSQLDate;
-    }
-
-    public void setToSQLDate(Date toSQLDate) {
-        this.toSQLDate = toSQLDate;
     }
 
     public String[] getExperienceNames() {
@@ -557,8 +466,9 @@ public class RecruitmentHandler implements Serializable {
      */
     private void regAvailability() {
         try {
-            dateConverter();
-            availabilityDTO = new AvailabilityDTO(fromSQLDate, toSQLDate);
+            java.sql.Date from = dateConverter(fromDate);
+            java.sql.Date to = dateConverter(toDate);
+            availabilityDTO = new AvailabilityDTO(from, to);
             availabilityDTOs.add(availabilityDTO);
         } catch (Exception registerAvailabilityException) {
             LOG.log(Level.WARNING, Messages.REGISTER_AVAILABILITY_ERROR.name(), registerAvailabilityException);
@@ -586,17 +496,10 @@ public class RecruitmentHandler implements Serializable {
     /**
      * Converts a java.util.Date to java.sql.Date
      */
-    private void dateConverter(){
-        fromSQLDate = fromDate != null ? new java.sql.Date(fromDate.getTime()) : null;
-        toSQLDate = toDate != null ? new java.sql.Date(toDate.getTime()) : null;
-    }
-
-    /**
-     * Converts a java.util.Date to java.sql.Date
-     */
-    private void dateConverterSearch(){
-        searchFromDate = searchFromDate != null ? new java.sql.Date(searchFromDate.getTime()): null;
-        searchToDate = searchToDate != null ? new java.sql.Date(searchToDate.getTime()): null;
+    private java.sql.Date dateConverter(java.util.Date utilDate){
+        java.sql.Date sqlDate;
+        sqlDate = utilDate != null ? new java.sql.Date(utilDate.getTime()): null;
+        return sqlDate;
     }
 
     /**
@@ -618,6 +521,23 @@ public class RecruitmentHandler implements Serializable {
             Util.checkDate(availabilityDTO.getFromDate());
             if(availabilityDTO.getToDate() != null)
                 Util.checkDate(availabilityDTO.getToDate());
+        }
+    }
+
+    private void refreshList() {
+        switch (searchSelection){
+            case 1:
+                fetchJobApplications();
+                break;
+            case 2:
+                fetchJobApplicationsByName();
+                break;
+            case 3:
+                fetchJobApplicationsByExperience();
+                break;
+            case 4:
+                fetchJobApplicationsByAvailability();
+                break;
         }
     }
 }
