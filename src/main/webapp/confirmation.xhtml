@@ -9,7 +9,7 @@
       xmlns:b="http://bootsfaces.net/ui">
 <h:head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Success</title>
+    <title><h:outputText value="#{msg.success}"/></title>
     <h:outputScript src="https://www.w3schools.com/lib/w3.js" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="res/style.css" />
@@ -18,11 +18,13 @@
 <h:body>
     <b:container>
         <div id="info">
-            <h2>Congratulations #{recruitmentHandler.getRegUsername()}!</h2>
-            <p><small>You are now one step closer to getting a job!</small></p>
+            <h:outputFormat value="#{msg['conf_title']}">
+                <f:param value="#{recruitmentHandler.getRegUsername()}" />
+            </h:outputFormat>
+            <p><small><h:outputText value="#{msg['conf_sub']}"/></small></p>
             <p>
                 <h:link outcome="index">
-                    Click here if you are not redirected within 3 seconds.
+                    <h:outputText value="#{msg.redirect}"/>
                 </h:link>
             </p>
         </div>

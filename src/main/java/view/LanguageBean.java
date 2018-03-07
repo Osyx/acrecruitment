@@ -1,61 +1,34 @@
 package view;
 
-import sun.util.locale.BaseLocale;
-
-import java.io.Serializable;
-import java.util.LinkedHashMap;
 import java.util.Locale;
-import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 
-@ManagedBean(name="language")
+@ManagedBean
 @SessionScoped
-public class LanguageBean implements Serializable{
+public class LanguageBean {
 
-    private static final long serialVersionUID = 1L;
+    private Locale locale;
 
-    private String localeCode;
-
-    private static Map<String,Object> countries;
-    static{
-        countries = new LinkedHashMap<String,Object>();
-        countries.put("English", Locale.ENGLISH); //label, value
-        countries.put("Swedish", Locale.forLanguageTag("sv"));
+    @PostConstruct
+    public void init() {
+        locale = FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
     }
 
-    public Map<String, Object> getCountriesInMap() {
-        return countries;
+    public Locale getLocale() {
+        return locale;
     }
 
-
-    public String getLocaleCode() {
-        return localeCode;
+    public String getLanguage() {
+        return locale.getLanguage();
     }
 
-
-    public void setLocaleCode(String localeCode) {
-        this.localeCode = localeCode;
-    }
-
-    //value change event listener
-    public void countryLocaleCodeChanged(ValueChangeEvent e){
-
-        String newLocaleValue = e.getNewValue().toString();
-
-        //loop country map to compare the locale code
-        for (Map.Entry<String, Object> entry : countries.entrySet()) {
-
-            if(entry.getValue().toString().equals(newLocaleValue)){
-
-                FacesContext.getCurrentInstance()
-                        .getViewRoot().setLocale((Locale)entry.getValue());
-
-            }
-        }
+    public void setLanguage(String language) {
+        locale = new Locale(language);
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(locale);
     }
 
 }

@@ -14,10 +14,7 @@ import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
@@ -75,7 +72,8 @@ public class RecruitmentHandler implements Serializable {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("password", userDTO.getPassword());
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
             } else {
-                FacesMessage message = new FacesMessage("The passwords do not match.");
+                ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+                FacesMessage message = new FacesMessage(rb.getString("passwords_dont_match"));
                 FacesContext context = FacesContext.getCurrentInstance();
                 context.addMessage(registerButton.getClientId(context), message);
             }
@@ -151,7 +149,8 @@ public class RecruitmentHandler implements Serializable {
                     LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
                 }
             } else {
-                throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg(" with applicant status."));
+                ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+                throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg(rb.getString("wrong_input_applicant_status")));
             }
         } catch(Exception registerJobAppException) {
             LOG.log(Level.WARNING, Messages.REGISTER_JOB_APP_ERROR.name(), registerJobAppException);
@@ -168,10 +167,8 @@ public class RecruitmentHandler implements Serializable {
      * Fetches all job applications
      */
     public void fetchJobApplications() {
-        LOG.severe("hej");
         try {
-            LOG.severe("hej");
-            jobApplications = controller.fetchJobApplications("en");
+            jobApplications = controller.fetchJobApplications(FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -187,7 +184,7 @@ public class RecruitmentHandler implements Serializable {
             person.setName(Util.capitalize(searchName));
             person.setSurname(Util.capitalize(searchLastName));
             LOG.warning(person.toString());
-            jobApplications = controller.fetchJobApplicationsByName(person, "en");
+            jobApplications = controller.fetchJobApplicationsByName(person, FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -197,12 +194,10 @@ public class RecruitmentHandler implements Serializable {
      * Fetches job applications by experience
      */
     public void fetchJobApplicationsByExperience(){
-        LOG.warning("hejhej");
         try {
             ExperienceDTO exp = new ExperienceDTO();
             exp.setName(Util.capitalize(searchExp));
-            jobApplications = controller.fetchJobApplicationsByExperience(exp, "en");
-            System.out.println("");
+            jobApplications = controller.fetchJobApplicationsByExperience(exp, FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -219,7 +214,7 @@ public class RecruitmentHandler implements Serializable {
             availability.setFromDate(searchFrom);
             if(searchToDate != null)
                 availability.setToDate(searchTo);
-            jobApplications = controller.fetchJobApplicationsByAvailability(availability, "en");
+            jobApplications = controller.fetchJobApplicationsByAvailability(availability, FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -229,7 +224,7 @@ public class RecruitmentHandler implements Serializable {
      * Accepts a job application
      * @param id is an id for the application that should be accepted
      */
-    public void acceptApplication(long id){  // bör eventuellt delas upp i två metoder?
+    public void acceptApplication(long id) {
         try {
             ApplicationDTO application = new ApplicationDTO();
             application.setAccepted("accepted");
@@ -245,7 +240,7 @@ public class RecruitmentHandler implements Serializable {
      * Declines a job application
      * @param id is an id for the application that should be declined
      */
-    public void declineApplication(long id){  // bör eventuellt delas upp i två metoder?
+    public void declineApplication(long id) {
         try {
             ApplicationDTO application = new ApplicationDTO();
             application.setApplicationId(id);

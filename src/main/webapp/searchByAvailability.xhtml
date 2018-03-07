@@ -6,15 +6,15 @@
                 xmlns:b="http://bootsfaces.net/ui">
     <b:row styleClass="rows" id="availability">
         <b:column col-sm="5" offset="1">
-            <h:outputLabel for="searchFromInput">Available from *</h:outputLabel>
-            <h:inputText value="#{recruitmentHandler.searchFromDate}" type="date" class="form-control" id="searchFromInput" a:placeholder="Enter from-date" requiredMessage="Please choose a date">
+            <h:outputLabel for="searchFromInput"><h:outputText value="#{msg['available_from']}"/>*</h:outputLabel>
+            <h:inputText value="#{recruitmentHandler.searchFromDate}" type="date" class="form-control" id="searchFromInput" a:placeholder="#{msg['available_from_hint']}" requiredMessage="#{msg['req_date']}">
                 <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
             </h:inputText>
             <h:message for="searchFromInput"/>
         </b:column>
         <b:column col-sm="5">
-            <h:outputLabel for="searchToInput">Available to</h:outputLabel>
-            <h:inputText value="#{recruitmentHandler.searchToDate}" type="date" class="form-control" id="searchToInput" a:placeholder="Enter to-date">
+            <h:outputLabel for="searchToInput"><h:outputText value="#{msg['available_to']}"/></h:outputLabel>
+            <h:inputText value="#{recruitmentHandler.searchToDate}" type="date" class="form-control" id="searchToInput" a:placeholder="#{msg['available_to_hint']}">
                 <f:convertDateTime type="date" dateStyle="full" pattern="yyyy-MM-dd" />
             </h:inputText>
             <h:message for="searchToInput"/>
@@ -22,7 +22,7 @@
     </b:row>
     <b:row styleClass="rows">
         <b:column col-sm="5" offset="1">
-            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" update="repeater" class="btn btn-primary"/>
+            <h:commandButton value="#{msg.search}" action="#{recruitmentHandler.fetchJobApplicationsByAvailability}" update="repeater" class="btn btn-primary"/>
         </b:column>
     </b:row>
 </ui:composition>

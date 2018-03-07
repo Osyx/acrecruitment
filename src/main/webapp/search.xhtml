@@ -10,7 +10,7 @@
 
 <h:head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Job Application</title>
+    <title><h:outputText value="#{msg['job_app_title']}"/></title>
     <h:outputScript src="https://www.w3schools.com/lib/w3.js"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="res/style.css" />
@@ -21,11 +21,11 @@
     <b:container>
         <ui:fragment rendered="#{!recruitmentHandler.isRecruit()}">
             <div id="info">
-                <h:link value="You don't have permission to see this site, please login."
+                <h:link value="#{msg['error_no_permission']}"
                         outcome="login" rendered="#{!recruitmentHandler.isApplicant()}">
                     <f:param name="from" value="#{view.viewId}" />
                 </h:link>
-                <h:link value="You don't have permission to see this site."
+                <h:link value="#{msg['error_wrong_permission']}"
                         outcome="login" rendered="#{recruitmentHandler.isApplicant()}">
                     <f:param name="from" value="#{view.viewId}" />
                 </h:link>
@@ -64,21 +64,21 @@
                         <div class="d-flex w-100 justify-content-between">
                             <h4>#{app.person.name} #{app.person.surname}</h4>
                             <h4>#{app.application.accepted}</h4>
-                            <small>Application was registered #{app.application.date}</small>
+                            <small><h:outputText value="#{msg.registered}"/> #{app.application.date}</small>
                         </div>
                         <div class="justify-content-between">
-                            <p>Email address: #{app.person.email}</p>
+                            <p><h:outputText value="#{msg.email}"/> : #{app.person.email}</p>
                         </div>
                         <div class="justify-content-between">
-                            <h5>Availabilities</h5>
+                            <h5><h:outputText value="#{msg.availabilities}"/></h5>
                             <ui:repeat value="#{app.availabilities}" var="availability">
-                                <p>Available from: #{availability.fromDate} &nbsp;&nbsp; to: #{availability.toDate}</p>
+                                <p><h:outputText value="#{msg['available_from']}"/> : #{availability.fromDate} &nbsp;&nbsp; <h:outputText value="#{msg['available_to']}"/> #{availability.toDate}</p>
                             </ui:repeat>
                         </div>
                         <div class="justify-content-between">
-                            <h5>Experiences</h5>
+                            <h5><h:outputText value="#{msg.experiences}"/></h5>
                             <ui:repeat value="#{app.experiences}" var="experience">
-                                <p>Has experience of #{experience.name} for #{experience.yearsOfExperience} years</p>
+                                <p><h:outputText value="#{msg['exp_of']}"/> #{experience.name} <h:outputText value="#{msg.for}"/> #{experience.yearsOfExperience} <h:outputText value="#{msg.years}"/></p>
                             </ui:repeat>
                         </div>
                         <div class="justify-content-between">
@@ -98,13 +98,13 @@
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
                         <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            <a class="page-link" href="#" tabindex="-1"><h:outputText value="#{msg.previous}"/></a>
                         </li>
                         <li class="page-item"><a class="page-link" href="#">1</a></li>
                         <li class="page-item"><a class="page-link" href="#">2</a></li>
                         <li class="page-item"><a class="page-link" href="#">3</a></li>
                         <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
+                            <a class="page-link" href="#"><h:outputText value="#{msg.next}"/></a>
                         </li>
                     </ul>
                 </nav>
