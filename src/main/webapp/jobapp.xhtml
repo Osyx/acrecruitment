@@ -62,7 +62,7 @@
                             <b:column col-sm="5">
                                 <h:outputLabel for="emailInput"><h:outputText value="#{msg.email}"/>*</h:outputLabel>
                                 <h:inputText value="#{recruitmentHandler.email}" type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" a:placeholder="#{msg['email_hint']}" required="true" requiredMessage="#{msg['req_email']}"/>
-                                <small id="emailHelp" class="form-text text-muted">&nbsp;We'll never share your email with anyone else.</small>
+                                <small id="emailHelp" class="form-text text-muted">&nbsp;<h:outputText value="#{msg['job_app_email']}"/></small>
                                 <h:message for="emailInput"/>
                             </b:column>
                         </b:row>

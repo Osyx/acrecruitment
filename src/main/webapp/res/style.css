@@ -70,7 +70,7 @@ body{
     text-align: center;
 }
 
-#info {
+.info {
     max-width: 25%;
     max-height: 25%;
     padding: 20px;
@@ -83,6 +83,10 @@ body{
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+}
+
+.flag {
+    padding-top: 50%;
 }
 
 #popup {

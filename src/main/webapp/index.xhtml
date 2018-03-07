@@ -18,12 +18,6 @@
     </h:head>
     <h:body id="indexBody">
         <ui:include src="navbar.xhtml"/>
-        <h:form>
-            <h:selectOneMenu value="#{languageBean.language}" onchange="submit()">
-                <f:selectItem itemValue="en" itemLabel="English" />
-                <f:selectItem itemValue="sv" itemLabel="Swedish" />
-            </h:selectOneMenu>
-        </h:form>
         <b:jumbotron id="jumbotron">
             <h1><h:outputText value="#{msg['cover_title']}"/></h1>
             <p><h:outputText value="#{msg['cover_sub']}"/></p>

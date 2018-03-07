@@ -41,6 +41,14 @@
                     </h:form>
                 </li>
             </h:panelGroup>
+            <h:form>
+                <h:panelGroup rendered="#{languageBean.language.equals('sv')}">
+                    <h:commandButton styleClass="flag" action="#{languageBean.setLanguage('en')}" value="English" image="res/uk-flag.png" />
+                </h:panelGroup>
+                <h:panelGroup rendered="#{languageBean.language.equals('en')}">
+                    <h:commandButton styleClass="flag" action="#{languageBean.setLanguage('sv')}" value="Swedish" image="res/sweden-flag.png" />
+                </h:panelGroup>
+            </h:form>
         </ul>
     </div>
 </nav>
