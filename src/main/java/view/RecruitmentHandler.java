@@ -58,8 +58,6 @@ public class RecruitmentHandler implements Serializable {
     private UIComponent registerAppButton;
 
     private static final Logger LOG = Logger.getLogger(RecruitmentHandler.class.getName());
-    private final ResourceBundle rb = ResourceBundle.getBundle("messages");
-    private LanguageBean languageBean = new LanguageBean();
 
 
     /**
@@ -74,6 +72,7 @@ public class RecruitmentHandler implements Serializable {
                 FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("password", userDTO.getPassword());
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/acrecruitment/confirmation.xhtml");
             } else {
+                ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
                 FacesMessage message = new FacesMessage(rb.getString("passwords_dont_match"));
                 FacesContext context = FacesContext.getCurrentInstance();
                 context.addMessage(registerButton.getClientId(context), message);
@@ -150,6 +149,7 @@ public class RecruitmentHandler implements Serializable {
                     LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), e);
                 }
             } else {
+                ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
                 throw new SystemException(Messages.LOGIN_ERROR.name(), Messages.USER_NOT_LOGGED_IN.getErrorMessageWithArg(rb.getString("wrong_input_applicant_status")));
             }
         } catch(Exception registerJobAppException) {
@@ -168,7 +168,7 @@ public class RecruitmentHandler implements Serializable {
      */
     public void fetchJobApplications() {
         try {
-            jobApplications = controller.fetchJobApplications(languageBean.getLocaleCode());
+            jobApplications = controller.fetchJobApplications(FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -184,7 +184,7 @@ public class RecruitmentHandler implements Serializable {
             person.setName(Util.capitalize(searchName));
             person.setSurname(Util.capitalize(searchLastName));
             LOG.warning(person.toString());
-            jobApplications = controller.fetchJobApplicationsByName(person, languageBean.getLocaleCode());
+            jobApplications = controller.fetchJobApplicationsByName(person, FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -197,7 +197,7 @@ public class RecruitmentHandler implements Serializable {
         try {
             ExperienceDTO exp = new ExperienceDTO();
             exp.setName(Util.capitalize(searchExp));
-            jobApplications = controller.fetchJobApplicationsByExperience(exp, languageBean.getLocaleCode());
+            jobApplications = controller.fetchJobApplicationsByExperience(exp, FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
@@ -214,7 +214,7 @@ public class RecruitmentHandler implements Serializable {
             availability.setFromDate(searchFrom);
             if(searchToDate != null)
                 availability.setToDate(searchTo);
-            jobApplications = controller.fetchJobApplicationsByAvailability(availability, languageBean.getLocaleCode());
+            jobApplications = controller.fetchJobApplicationsByAvailability(availability, FacesContext.getCurrentInstance().getViewRoot().getLocale().toLanguageTag());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }

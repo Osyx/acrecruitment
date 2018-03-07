@@ -15,12 +15,19 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
         <link rel="stylesheet" type="text/css" href="res/style.css" />
     </h:head>
+    <f:view locale="#{languageBean.locale}">
     <h:body>
         <ui:include src="/navbar.xhtml"/>
         <f:metadata>
             <f:viewParam name="from" />
         </f:metadata>
         <b:container>
+            <h:form>
+                <h:selectOneMenu value="#{languageBean.language}" onchange="submit()">
+                    <f:selectItem itemValue="en" itemLabel="English" />
+                    <f:selectItem itemValue="sv" itemLabel="Swedish" />
+                </h:selectOneMenu>
+            </h:form>
             <h:form styleClass="formID">
                 <b:row styleClass="rows">
                     <b:column col-md="4" offset="4">
@@ -56,5 +63,5 @@
 
 
     </h:body>
-
+    </f:view>
 </html>
