@@ -5,8 +5,8 @@
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:b="http://bootsfaces.net/ui">
     <b:row styleClass="rows" id="allApplications">
-        <b:column col-sm="12" offset="0">
-            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplications}" update="repeater" class="btn btn-primary">
+        <b:column col-sm="5" offset="1">
+            <h:commandButton value="Search" style="background-color: red" action="#{recruitmentHandler.fetchJobApplications}" update="repeater" class="btn btn-primary">
             </h:commandButton>
         </b:column>
     </b:row>

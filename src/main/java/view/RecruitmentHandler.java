@@ -168,7 +168,9 @@ public class RecruitmentHandler implements Serializable {
      * Fetches all job applications
      */
     public void fetchJobApplications() {
+        LOG.severe("hej");
         try {
+            LOG.severe("hej");
             jobApplications = controller.fetchJobApplications("en");
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
@@ -195,6 +197,7 @@ public class RecruitmentHandler implements Serializable {
      * Fetches job applications by experience
      */
     public void fetchJobApplicationsByExperience(){
+        LOG.warning("hejhej");
         try {
             ExperienceDTO exp = new ExperienceDTO();
             exp.setName(Util.capitalize(searchExp));

@@ -70,7 +70,7 @@ body{
     text-align: center;
 }
 
-.info {
+#info {
     max-width: 25%;
     max-height: 25%;
     padding: 20px;
@@ -85,43 +85,6 @@ body{
     transform: translate(-50%, -50%);
 }
 
-.appTable {
-    max-width: 90%;
-    min-width: 75%;
-    max-height: 90%;
-    min-height: 75%;
-    padding: 20px;
-    font-size: 1.2em;
-    text-align: center;
-    border-radius: 10px;
-    background-color: lightgray;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
 #popup {
     visibility: visible;
-}
-
-.email {
-    color: blueviolet;
-    font-size: small;
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-select.form-control:not([size]):not([multiple]) {
-    height: calc(3.25rem + 2px);
-}
-
-.list-group-item {
-    margin-top: 5px;
-    border-radius: 10px;
-}
-
-.d-flex {
-    padding: 10px;
-    border-bottom-color: dimgray;
 }
