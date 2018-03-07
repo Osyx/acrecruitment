@@ -5,14 +5,14 @@
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:b="http://bootsfaces.net/ui">
     <b:row styleClass="rows" id="experience">
-        <b:column col-sm="6" offset="3">
+        <b:column col-sm="5" offset="1">
             <h:outputLabel for="expSearch">Name of experience *</h:outputLabel>
             <h:inputText value="#{recruitmentHandler.searchExp}"  type="text" class="form-control" id="expSearch" a:placeholder="Enter type of experience" requiredMessage="Please enter an experience"/>
             <h:message for="expSearch"/>
         </b:column>
     </b:row>
     <b:row styleClass="rows">
-        <b:column col-sm="12" offset="0">
+        <b:column col-sm="5" offset="1">
             <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" update="repeater" class="btn btn-primary"/>
         </b:column>
     </b:row>
