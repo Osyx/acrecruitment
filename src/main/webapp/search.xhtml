@@ -43,39 +43,6 @@
                 </b:row>
                 <ui:fragment rendered="#{recruitmentHandler.searchSelection == 0}">
 
-                    </ui:fragment>
-                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 1}">
-                            <ui:include src="allApplications.xhtml" />
-                    </ui:fragment>
-                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 2}">
-                            <ui:include src="searchByName.xhtml" />
-                    </ui:fragment>
-                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 3}">
-                            <ui:include src="searchByExperience.xhtml" />
-                    </ui:fragment>
-                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 4}">
-                            <ui:include src="searchByAvailability.xhtml" />
-                    </ui:fragment>
-                </h:form>
-                <ui:fragment rendered="#{recruitmentHandler.searchSelection != 0}">
-                    <div class="list-group-item list-group-item-action flex-column align-items-start">
-                        <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
-                            <b:row styleClass="rows">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <p>
-                                        <h:outputText value="#{app.person.name} #{app.person.surname}"/>
-                                        <br />
-                                        <h:outputText class="email" value="#{app.person.email}"/>
-                                    </p>
-                                    <p align="right">
-                                        <strong>#{app.application.accepted}</strong>
-                                        <br />
-                                        <small>#{app.application.date}</small>
-                                    </p>
-                                </div>
-                            </b:row>
-                        </ui:repeat>
-                    </div>
                 </ui:fragment>
                 <ui:fragment rendered="#{recruitmentHandler.searchSelection == 1}">
                         <ui:include src="allApplications.xhtml" />
@@ -90,61 +57,60 @@
                         <ui:include src="searchByAvailability.xhtml" />
                 </ui:fragment>
             </h:form>
+
+            <div class="list-group col-sm-10 offset-sm-1">
+                <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h4>#{app.person.name} #{app.person.surname}</h4>
+                            <h4>#{app.application.accepted}</h4>
+                            <small>Application was registered #{app.application.date}</small>
+                        </div>
+                        <div class="justify-content-between">
+                            <p>Email address: #{app.person.email}</p>
+                        </div>
+                        <div class="justify-content-between">
+                            <h5>Availabilities</h5>
+                            <ui:repeat value="#{app.availabilities}" var="availability">
+                                <p>Available from: #{availability.fromDate} &nbsp;&nbsp; to: #{availability.toDate}</p>
+                            </ui:repeat>
+                        </div>
+                        <div class="justify-content-between">
+                            <h5>Experiences</h5>
+                            <ui:repeat value="#{app.experiences}" var="experience">
+                                <p>Has experience of #{experience.name} for #{experience.yearsOfExperience} years</p>
+                            </ui:repeat>
+                        </div>
+                        <div class="justify-content-between">
+                            <ol class="nav-item" id="acceptDecline">
+                                <h:form styleClass="navbar-form">
+                                    <h:commandButton action="#{recruitmentHandler.acceptApplication(app.application.applicationId)}" value="Accept" styleClass="btn btn-link nav-link" />
+                                    <h:commandButton action="#{recruitmentHandler.declineApplication(app.application.applicationId)}" value="Decline" styleClass="btn btn-link nav-link" />
+                                </h:form>
+                            </ol>
+                        </div>
+                    </div>
+                </ui:repeat>
+            </div>
+
+
+            <div class="col-sm-5 offset-sm-4">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
         </ui:fragment>
-
-
-        <div class="list-group col-sm-10 offset-sm-1">
-            <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
-                <div class="list-group-item list-group-item-action flex-column align-items-start">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h4>#{app.person.name} #{app.person.surname}</h4>
-                        <h4>#{app.application.accepted}</h4>
-                        <small>Application was registered #{app.application.date}</small>
-                    </div>
-                    <div class="justify-content-between">
-                        <p>Email address: #{app.person.email}</p>
-                    </div>
-                    <div class="justify-content-between">
-                        <h5>Availabilities</h5>
-                        <ui:repeat value="#{app.availabilities}" var="availability">
-                            <p>Available from: #{availability.fromDate} &nbsp;&nbsp; to: #{availability.toDate}</p>
-                        </ui:repeat>
-                    </div>
-                    <div class="justify-content-between">
-                        <h5>Experiences</h5>
-                        <ui:repeat value="#{app.experiences}" var="experience">
-                            <p>Has experience of #{experience.name} for #{experience.yearsOfExperience} years</p>
-                        </ui:repeat>
-                    </div>
-                    <div class="justify-content-between">
-                        <ol class="nav-item" id="acceptDecline">
-                            <h:form styleClass="navbar-form">
-                                <h:commandButton action="#{recruitmentHandler.acceptApplication(app.application.applicationId)}" value="Accept" styleClass="btn btn-link nav-link" />
-                                <h:commandButton action="#{recruitmentHandler.declineApplication(app.application.applicationId)}" value="Decline" styleClass="btn btn-link nav-link" />
-                            </h:form>
-                        </ol>
-                    </div>
-                </div>
-            </ui:repeat>
-        </div>
-
-
-        <div class="col-sm-5 offset-sm-4">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">Previous</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
     </b:container>
 
 
