@@ -15,9 +15,10 @@
     <link rel="stylesheet" type="text/css" href="res/style.css" />
     <meta http-equiv="refresh" content="3;url=index.xhtml" />
 </h:head>
+<f:view locale="#{languageBean.locale}">
 <h:body>
     <b:container>
-        <div id="info">
+        <div class="info">
             <h:outputFormat value="#{msg['conf_title']}">
                 <f:param value="#{recruitmentHandler.getRegUsername()}" />
             </h:outputFormat>
@@ -30,4 +31,5 @@
         </div>
     </b:container>
 </h:body>
+</f:view>
 </html>
