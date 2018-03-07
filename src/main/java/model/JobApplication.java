@@ -211,9 +211,10 @@ public class JobApplication {
                 for (Availability availability : person.getAvailabilities()) {
                     if(availabilityDTO.getToDate() != null){
                         if((availability.getToDate().before(Date.valueOf(availabilityDTO.getToDate()))
-                                && availability.getFromDate().after(Date.valueOf(availabilityDTO.getFromDate())))
-                                || (availability.getFromDate().equals(Date.valueOf(availabilityDTO.getFromDate()))
-                                && availability.getToDate().equals(Date.valueOf(availabilityDTO.getToDate()))))
+                                || availability.getToDate().equals(Date.valueOf(availabilityDTO.getToDate())))
+                                && (availability.getFromDate().after(Date.valueOf(availabilityDTO.getFromDate()))
+                                || availability.getFromDate().equals(Date.valueOf(availabilityDTO.getFromDate())))
+                        )
                             isAvailable = true;
                     } else {
                         if(availability.getFromDate().equals(Date.valueOf(availabilityDTO.getFromDate()))
