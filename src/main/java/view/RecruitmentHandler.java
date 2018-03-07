@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/**
+ * The RecruitmentHandler handles all communication with the client UI
+ */
 @ManagedBean(name = "recruitmentHandler")
 @ViewScoped
 public class RecruitmentHandler implements Serializable {
@@ -222,6 +224,7 @@ public class RecruitmentHandler implements Serializable {
 
     /**
      * Accepts a job application
+     * @param id is an id for the application that should be accepted
      */
     public void acceptApplication(long id){  // bör eventuellt delas upp i två metoder?
         try {
@@ -237,6 +240,7 @@ public class RecruitmentHandler implements Serializable {
 
     /**
      * Declines a job application
+     * @param id is an id for the application that should be declined
      */
     public void declineApplication(long id){  // bör eventuellt delas upp i två metoder?
         try {
@@ -495,6 +499,7 @@ public class RecruitmentHandler implements Serializable {
 
     /**
      * Converts a java.util.Date to java.sql.Date
+     * @param utilDate is the date that is supposed to be converted
      */
     private java.sql.Date dateConverter(java.util.Date utilDate){
         java.sql.Date sqlDate;
@@ -515,6 +520,9 @@ public class RecruitmentHandler implements Serializable {
         }
     }
 
+    /**
+     * Checks if the input is valid
+     */
     private void checkIfValidInput() throws SystemException {
         Util.checkPerson(personDTO);
         for(AvailabilityDTO availabilityDTO : availabilityDTOs) {
@@ -524,6 +532,9 @@ public class RecruitmentHandler implements Serializable {
         }
     }
 
+    /**
+     * Will refresh the page if the status of the application has been changed
+     */
     private void refreshList() {
         switch (searchSelection){
             case 1:
