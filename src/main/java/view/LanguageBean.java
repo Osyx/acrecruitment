@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -17,6 +18,7 @@ import javax.faces.event.ValueChangeEvent;
 public class LanguageBean implements Serializable{
 
     private static final long serialVersionUID = 1L;
+    private static ResourceBundle rb = ResourceBundle.getBundle("messages");
 
     private String localeCode;
 
@@ -39,6 +41,10 @@ public class LanguageBean implements Serializable{
 
     public void setLocaleCode(String localeCode) {
         this.localeCode = localeCode;
+    }
+
+    public static ResourceBundle getRb() {
+        return rb;
     }
 
     //value change event listener
