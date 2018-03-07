@@ -182,8 +182,8 @@ public class RecruitmentHandler implements Serializable {
     public void fetchJobApplicationsByName(){
         try {
             PersonDTO person = new PersonDTO();
-            person.setName(searchName);
-            person.setSurname(searchLastName);
+            person.setName(Util.capitalize(searchName));
+            person.setSurname(Util.capitalize(searchLastName));
             LOG.warning(person.toString());
             jobApplications = controller.fetchJobApplicationsByName(person, "en");
         } catch (Exception fetchException) {
@@ -197,8 +197,8 @@ public class RecruitmentHandler implements Serializable {
     public void fetchJobApplicationsByExperience(){
         try {
             ExperienceDTO exp = new ExperienceDTO();
-            exp.setName(searchExp);
-            jobApplications = controller.fetchJobApplicationsByExperience(exp, "sv");
+            exp.setName(Util.capitalize(searchExp));
+            jobApplications = controller.fetchJobApplicationsByExperience(exp, "en");
             System.out.println("");
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
