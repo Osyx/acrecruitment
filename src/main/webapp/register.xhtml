@@ -9,32 +9,33 @@
       xmlns:b="http://bootsfaces.net/ui">
 <h:head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title>Register</title>
+    <title><h:outputText value="#{msg['register']}"/></title>
     <h:outputScript src="https://www.w3schools.com/lib/w3.js"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="res/style.css" />
 </h:head>
+<f:view locale="#{languageBean.locale}">
 <h:body>
     <ui:include src="navbar.xhtml"/>
     <b:container>
         <h:form styleClass="formID">
             <b:row styleClass="rows">
                 <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="usernameInput">Username</h:outputLabel>
-                    <h:inputText value="#{recruitmentHandler.username}" class="form-control" id="usernameInput" a:placeholder="Enter username" required="true" requiredMessage="Please choose a username"/>
+                    <h:outputLabel for="usernameInput"><h:outputText value="#{msg.username}"/></h:outputLabel>
+                    <h:inputText value="#{recruitmentHandler.username}" class="form-control" id="usernameInput" a:placeholder="#{msg['username_placeholder']}" required="true" requiredMessage="#{msg['req_username']}"/>
                     <h:message for="usernameInput"/>
                 </b:column>
                 <b:column col-sm="5">
-                    <h:outputLabel for="passwordInput">Password</h:outputLabel>
-                    <h:inputSecret value="#{recruitmentHandler.password}" type="password" class="form-control" id="passwordInput" a:placeholder="Enter password" required="true" requiredMessage="Please choose a password"/>
-                    <small id="passwordHelp" class="form-text text-muted">&nbsp;Minimum of 6 figures using A-Z, 0-9</small>
+                    <h:outputLabel for="passwordInput"><h:outputText value="#{msg.password}"/></h:outputLabel>
+                    <h:inputSecret value="#{recruitmentHandler.password}" type="password" class="form-control" id="passwordInput" a:placeholder="#{msg['password_placeholder']}" required="true" requiredMessage="#{msg['req_password']}"/>
+                    <small id="passwordHelp" class="form-text text-muted"><h:outputText value="#{msg['reg_password_hint']}"/></small>
                     <h:message for="passwordInput"/>
                 </b:column>
             </b:row>
             <b:row styleClass="rows">
                 <b:column col-sm="5" offset="1">
-                    <h:outputLabel for="passwordInput2">Confirm password</h:outputLabel>
-                    <h:inputSecret value="#{recruitmentHandler.conPassword}" type="password" class="form-control" id="passwordInput2" a:placeholder="Enter password" required="true" requiredMessage="Please confirm your password">
+                    <h:outputLabel for="passwordInput2"><h:outputText value="#{msg['confirm_password']}"/></h:outputLabel>
+                    <h:inputSecret value="#{recruitmentHandler.conPassword}" type="password" class="form-control" id="passwordInput2" a:placeholder="#{msg['password_placeholder']}" required="true" requiredMessage="#{msg['req_confirm']}">
                         <f:validateLength minimum="6" maximum="30" />
                     </h:inputSecret>
                     <h:message for="passwordInput2"/>
@@ -43,7 +44,7 @@
 
             <b:row styleClass="rows">
                 <b:column col-sm="5" offset="1">
-                    <h:commandButton id="registerButton" value="Register" action="#{recruitmentHandler.regUser}" class="btn btn-primary" binding="#{recruitmentHandler.registerButton}" />
+                    <h:commandButton id="registerButton" value="#{msg.register}" action="#{recruitmentHandler.regUser}" class="btn btn-primary" binding="#{recruitmentHandler.registerButton}" />
                     <h:message for="registerButton"/>
                 </b:column>
             </b:row>
@@ -61,5 +62,5 @@
     <h:outputScript src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous" />
 
 </h:body>
-
+</f:view>
 </html>

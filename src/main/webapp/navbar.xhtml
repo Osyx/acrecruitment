@@ -6,7 +6,7 @@
                 xmlns:b="http://bootsfaces.net/ui">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbarID">
-    <a class="navbar-brand" href="index.xhtml">A Company</a>
+    <a class="navbar-brand" href="index.xhtml"><h:outputText value="#{msg['nav_brand']}"/></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapsed" aria-controls="navbarCollapsed" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon" />
     </button>
@@ -14,33 +14,41 @@
         <ul class="navbar-nav mr-auto">
             <h:panelGroup rendered="#{!recruitmentHandler.isApplicant() and !recruitmentHandler.isRecruit()}">
                 <li class="nav-item">
-                    <a class="nav-link" href="register.xhtml">Register</a>
+                    <a class="nav-link" href="register.xhtml"><h:outputText value="#{msg.register}"/></a>
                 </li>
             </h:panelGroup>
             <h:panelGroup rendered="#{recruitmentHandler.isApplicant()}">
                 <li class="nav-item">
-                    <a class="nav-link" href="jobapp.xhtml">Register job application</a>
+                    <a class="nav-link" href="jobapp.xhtml"><h:outputText value="#{msg['nav_register']}"/></a>
                 </li>
             </h:panelGroup>
             <h:panelGroup rendered="#{recruitmentHandler.isRecruit()}">
                 <li class="nav-item">
-                    <a class="nav-link" href="search.xhtml">Search applications</a>
+                    <a class="nav-link" href="search.xhtml"><h:outputText value="#{msg['nav_search']}"/></a>
                 </li>
             </h:panelGroup>
         </ul>
         <ul class="navbar-nav navbar-right ml-auto">
             <h:panelGroup rendered="#{!recruitmentHandler.isApplicant() and !recruitmentHandler.isRecruit()}">
                 <li class="nav-item">
-                    <a class="nav-link" href="login.xhtml">Login</a>
+                    <a class="nav-link" href="login.xhtml"><h:outputText value="#{msg.login}"/></a>
                 </li>
             </h:panelGroup>
             <h:panelGroup rendered="#{recruitmentHandler.isApplicant() or recruitmentHandler.isRecruit()}">
                 <li class="nav-item">
                     <h:form styleClass="navbar-form">
-                        <h:commandButton action="#{recruitmentHandler.logout()}" value="Logout" styleClass="btn btn-link nav-link" />
+                        <h:commandButton action="#{recruitmentHandler.logout()}" value="#{msg.logout}" styleClass="btn btn-link nav-link" />
                     </h:form>
                 </li>
             </h:panelGroup>
+            <h:form>
+                <h:panelGroup rendered="#{languageBean.language.equals('sv')}">
+                    <h:commandButton styleClass="flag" action="#{languageBean.setLanguage('en')}" value="English" image="res/uk-flag.png" />
+                </h:panelGroup>
+                <h:panelGroup rendered="#{languageBean.language.equals('en')}">
+                    <h:commandButton styleClass="flag" action="#{languageBean.setLanguage('sv')}" value="Swedish" image="res/sweden-flag.png" />
+                </h:panelGroup>
+            </h:form>
         </ul>
     </div>
 </nav>
