@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE resources PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN" "http://glassfish.org/dtds/glassfish-resources_1_5.dtd">
+<resources>
+    <jdbc-connection-pool
+            connection-validation-method="auto-commit" datasource-classname="com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
+            name="recruitment_pool" res-type="javax.sql.DataSource"
+            wrap-jdbc-objects="false">
+        <property name="serverName" value="localhost"/>
+        <property name="portNumber" value="3306"/>
+        <property name="databaseName" value="recruitment"/>
+        <property name="User" value="admin"/>
+        <property name="Password" value="kiwi"/>
+        <property name="URL" value="jdbc:sql://localhost:3306/recruitment"/>
+        <property name="driverClass" value="com.mysql.jdbc.Driver"/>
+    </jdbc-connection-pool>
+    <jdbc-resource jndi-name="jdbc/recruitment" pool-name="recruitment_pool"/>
+</resources>

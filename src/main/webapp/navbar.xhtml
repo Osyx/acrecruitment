@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbarID">
+    <a class="navbar-brand" href="index.xhtml">A Company</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapsed" aria-controls="navbarCollapsed" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" />
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapsed">
+        <ul class="navbar-nav mr-auto">
+            <h:panelGroup rendered="#{!recruitmentHandler.isApplicant() and !recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="register.xhtml">Register</a>
+                </li>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isApplicant()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="jobapp.xhtml">Register job application</a>
+                </li>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="search.xhtml">Search applications</a>
+                </li>
+            </h:panelGroup>
+        </ul>
+        <ul class="navbar-nav navbar-right ml-auto">
+            <h:panelGroup rendered="#{!recruitmentHandler.isApplicant() and !recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <a class="nav-link" href="login.xhtml">Login</a>
+                </li>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{recruitmentHandler.isApplicant() or recruitmentHandler.isRecruit()}">
+                <li class="nav-item">
+                    <h:form styleClass="navbar-form">
+                        <h:commandButton action="#{recruitmentHandler.logout()}" value="Logout" styleClass="btn btn-link nav-link" />
+                    </h:form>
+                </li>
+            </h:panelGroup>
+        </ul>
+    </div>
+</nav>
+
+</ui:composition>

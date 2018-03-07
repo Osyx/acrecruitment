@@ -1,0 +1,13 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:b="http://bootsfaces.net/ui">
+    <b:row styleClass="rows" id="allApplications">
+        <b:column col-sm="5" offset="1">
+            <h:commandButton value="Search" style="background-color: red" action="#{recruitmentHandler.fetchJobApplications}" update="repeater" class="btn btn-primary">
+            </h:commandButton>
+        </b:column>
+    </b:row>
+</ui:composition>
