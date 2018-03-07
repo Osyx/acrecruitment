@@ -31,14 +31,14 @@
             <h:form styleClass="formID">
                 <b:row styleClass="rows">
                     <b:column col-md="4" offset="4">
-                        <h:outputLabel for="usernameInput">Username</h:outputLabel>
+                        <h:outputLabel for="usernameInput"><h:outputText value="#{msg.username}"/></h:outputLabel>
                         <h:inputText value="#{recruitmentHandler.username}" type="text" class="form-control" id="usernameInput" a:placeholder="Enter username" required="true" requiredMessage="Please enter your username"/>
                         <h:message for="usernameInput"/>
                     </b:column>
                 </b:row>
                 <b:row styleClass="rows">
                     <b:column col-md="4" offset="4">
-                        <h:outputLabel for="passwordInput">Password</h:outputLabel>
+                        <h:outputLabel for="passwordInput"><h:outputText value="#{msg.password}"/></h:outputLabel>
                         <h:inputSecret value="#{recruitmentHandler.password}" type="password" class="form-control" id="passwordInput" a:placeholder="Enter password" required="true" requiredMessage="Please enter your password"/>
                         <h:message for="passwordInput"/>
                     </b:column>
@@ -46,7 +46,7 @@
 
                 <b:row styleClass="rows">
                     <b:column col-md="4" offset="4">
-                        <h:commandButton id="loginButton" value="Login" class="btn btn-primary"
+                        <h:commandButton id="loginButton" value="#{msg.login}" class="btn btn-primary"
                                          action="#{recruitmentHandler.login(from)}" binding="#{recruitmentHandler.loginButton}" />
                         <h:message for="loginButton"/>
                     </b:column>
