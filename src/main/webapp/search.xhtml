@@ -19,60 +19,62 @@
 <h:body>
     <ui:include src="navbar.xhtml"/>
     <b:container>
-        <ui:fragment rendered="#{!recruitmentHandler.isRecruit()}">
-            <div id="info">
-                <h:link value="You don't have permission to see this site, please login."
-                        outcome="login" rendered="#{!recruitmentHandler.isApplicant()}">
-                    <f:param name="from" value="#{view.viewId}" />
-                </h:link>
-                <h:link value="You don't have permission to see this site."
-                        outcome="login" rendered="#{recruitmentHandler.isApplicant()}">
-                    <f:param name="from" value="#{view.viewId}" />
-                </h:link>
-            </div>
-        </ui:fragment>
-        <ui:fragment rendered="#{recruitmentHandler.isRecruit()}">
-            <h:form id="appForm">
-                <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
-                    <ui:include src="selectSearch.xhtml"/>
-                    <f:ajax render="appForm"/>
-                </b:selectOneMenu>
-                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 0}">
+        <div class="appTable">
+            <ui:fragment rendered="#{!recruitmentHandler.isRecruit()}">
+                <div class="info">
+                    <h:link value="You don't have permission to see this site, please login."
+                            outcome="login" rendered="#{!recruitmentHandler.isApplicant()}">
+                        <f:param name="from" value="#{view.viewId}" />
+                    </h:link>
+                    <h:link value="You don't have permission to see this site."
+                            outcome="login" rendered="#{recruitmentHandler.isApplicant()}">
+                        <f:param name="from" value="#{view.viewId}" />
+                    </h:link>
+                </div>
+            </ui:fragment>
+            <ui:fragment rendered="#{recruitmentHandler.isRecruit()}">
+                <h:form id="appForm">
+                    <b:selectOneMenu value="#{recruitmentHandler.searchSelection}" class="form-control" id="searchSelection">
+                        <ui:include src="selectSearch.xhtml"/>
+                        <f:ajax render="appForm"/>
+                    </b:selectOneMenu>
+                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 0}">
 
-                </ui:fragment>
-                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 1}">
-                        <ui:include src="allApplications.xhtml" />
-                </ui:fragment>
-                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 2}">
-                        <ui:include src="searchByName.xhtml" />
-                </ui:fragment>
-                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 3}">
-                        <ui:include src="searchByExperience.xhtml" />
-                </ui:fragment>
-                <ui:fragment rendered="#{recruitmentHandler.searchSelection == 4}">
-                        <ui:include src="searchByAvailability.xhtml" />
-                </ui:fragment>
-            </h:form>
-            <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app" id="repeater">
-                <b:row styleClass="rows">
-                    <b:column col-sm="5">
-                        <h:outputText value="#{app.person.name}"/>
-                    </b:column>
-                </b:row>
-            </ui:repeat>
-        </ui:fragment>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 1}">
+                            <ui:include src="allApplications.xhtml" />
+                    </ui:fragment>
+                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 2}">
+                            <ui:include src="searchByName.xhtml" />
+                    </ui:fragment>
+                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 3}">
+                            <ui:include src="searchByExperience.xhtml" />
+                    </ui:fragment>
+                    <ui:fragment rendered="#{recruitmentHandler.searchSelection == 4}">
+                            <ui:include src="searchByAvailability.xhtml" />
+                    </ui:fragment>
+                </h:form>
 
-        <div class="list-group-item list-group-item-action flex-column align-items-start">
-            <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
-                <b:row styleClass="rows">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h:outputText value="#{app.person.name}"/>
-                        <small>#{app.application.date}</small>
-                    </div>
-                </b:row>
-            </ui:repeat>
+                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                    <ui:repeat value="#{recruitmentHandler.jobApplications}" var="app">
+                        <b:row styleClass="rows">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p>
+                                    <h:outputText value="#{app.person.name} #{app.person.surname}"/>
+                                    <br />
+                                    <h:outputText class="email" value="#{app.person.email}"/>
+                                </p>
+                                <p align="right">
+                                    <strong>#{app.application.accepted}</strong>
+                                    <br />
+                                    <small>#{app.application.date}</small>
+                                </p>
+                            </div>
+                        </b:row>
+                    </ui:repeat>
+                </div>
+            </ui:fragment>
         </div>
-
     </b:container>
 
 

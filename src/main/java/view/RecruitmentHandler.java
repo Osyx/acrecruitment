@@ -176,18 +176,12 @@ public class RecruitmentHandler implements Serializable {
      * Fetches all job applications
      */
     public void fetchJobApplications() {
-        LOG.severe("hej");
         try {
-            LOG.severe("hej");
             jobApplications = controller.fetchJobApplications("en");
             LOG.severe(jobApplications.get(0).getPerson().getName());
         } catch (Exception fetchException) {
             LOG.log(Level.WARNING, Messages.SYSTEM_ERROR.name(), fetchException);
         }
-    }
-
-    public void hej(){
-        LOG.severe("hej");
     }
 
     /**
@@ -209,7 +203,6 @@ public class RecruitmentHandler implements Serializable {
      * Fetches job applications by experience
      */
     public void fetchJobApplicationsByExperience(){
-        LOG.warning("hejhej");
         try {
             ExperienceDTO exp = new ExperienceDTO();
             exp.setName(searchExp);
