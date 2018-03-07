@@ -245,6 +245,30 @@ public class RecruitmentHandler implements Serializable {
     }
 
     /**
+     * Accepts a job application
+     */
+    public void acceptApplication(){  // bör eventuellt delas upp i två metoder?
+        try {
+            applicationDTO.setAccepted("accepted");
+            controller.acceptOrDeclineJobApplication(applicationDTO);
+        }catch (Exception acceptDeclineAppException){
+            LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclineAppException);
+        }
+    }
+
+    /**
+     * Declines a job application
+     */
+    public void declineApplication(){  // bör eventuellt delas upp i två metoder?
+        try {
+            applicationDTO.setAccepted("declined");
+            controller.acceptOrDeclineJobApplication(applicationDTO);
+        }catch (Exception acceptDeclineAppException){
+            LOG.log(Level.WARNING, Messages.ACCEPT_DECLINE_APP_ERROR.name(), acceptDeclineAppException);
+        }
+    }
+
+    /**
      * Converts a list of JobApplicationDTOs to a list of JobApps
      */
     public void convertList(){
