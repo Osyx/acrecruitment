@@ -6,14 +6,14 @@
                 xmlns:b="http://bootsfaces.net/ui">
     <b:row styleClass="rows" id="experience">
         <b:column col-sm="5" offset="1">
-            <h:outputLabel for="expSearch">Name of experience *</h:outputLabel>
-            <h:inputText value="#{recruitmentHandler.searchExp}"  type="text" class="form-control" id="expSearch" a:placeholder="Enter type of experience" requiredMessage="Please enter an experience"/>
+            <h:outputLabel for="expSearch"><h:outputText value="#{msg['experience_name']}"/> *</h:outputLabel>
+            <h:inputText value="#{recruitmentHandler.searchExp}"  type="text" class="form-control" id="expSearch" a:placeholder="#{msg['experience_hint']}" requiredMessage="#{msg['req_experience']}"/>
             <h:message for="expSearch"/>
         </b:column>
     </b:row>
     <b:row styleClass="rows">
         <b:column col-sm="5" offset="1">
-            <h:commandButton value="Search" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" update="repeater" class="btn btn-primary"/>
+            <h:commandButton value="#{msg.search}" action="#{recruitmentHandler.fetchJobApplicationsByExperience}" update="repeater" class="btn btn-primary"/>
         </b:column>
     </b:row>
 </ui:composition>

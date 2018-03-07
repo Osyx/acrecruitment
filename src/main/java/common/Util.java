@@ -3,7 +3,10 @@ package common;
 import org.apache.commons.validator.routines.DateValidator;
 import org.apache.commons.validator.routines.EmailValidator;
 
+import javax.faces.context.FacesContext;
+import java.text.MessageFormat;
 import java.time.Year;
+import java.util.ResourceBundle;
 
 /**
  * A helper class containing methods for checking for input errors, thus used for validation.
@@ -72,11 +75,13 @@ public class Util {
      * @throws SystemException if the <code>String</code> didn't contain a valid date.
      */
     public static String checkDate(String date) throws SystemException {
-        if(!DateValidator.getInstance().isValid(date, "yyyy-MM-dd"))
+        if(!DateValidator.getInstance().isValid(date, "yyyy-MM-dd")) {
+            ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
             throw new SystemException(
                     Messages.WRONG_INPUT.name(),
-                    Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid date: " + date)
+                    Messages.WRONG_INPUT.getErrorMessageWithArg(MessageFormat.format(rb.getString("wrong_input_date"), date))
             );
+        }
         return date;
     }
 
@@ -93,39 +98,58 @@ public class Util {
                     Messages.PERSON_MISSING.getErrorMessage()
             );
 
-        if(!checkLetterOnlyString(personDTO.getName()+personDTO.getSurname()))
+        if(!checkLetterOnlyString(personDTO.getName()+personDTO.getSurname())) {
+            ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
             throw new SystemException(
                     Messages.WRONG_INPUT.name(),
-                    Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid characters in first or/and last name: \'" + personDTO.getName() + " " + personDTO.getSurname() + "\'.")
+                    Messages.WRONG_INPUT.getErrorMessageWithArg(MessageFormat.format(
+                            rb.getString("wrong_input_name"), personDTO.getName(), personDTO.getSurname()
+                    ))
             );
+        }
 
-        if(!checkValidEmail(personDTO.getEmail()) || personDTO.getEmail() == null)
+        if(!checkValidEmail(personDTO.getEmail()) || personDTO.getEmail() == null) {
+            ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
             throw new SystemException(
                     Messages.WRONG_INPUT.name(),
-                    Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid email: \'" + personDTO.getEmail() + "\'.")
+                    Messages.WRONG_INPUT.getErrorMessageWithArg(MessageFormat.format(
+                            rb.getString("wrong_input_email"), personDTO.getEmail()
+                    ))
             );
+        }
 
         String orgSsn = personDTO.getSsn();
         personDTO.setSsn(checkSsn(personDTO.getSsn()));
-        if(personDTO.getSsn() == null)
+        if(personDTO.getSsn() == null) {
+            ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
             throw new SystemException(
                     Messages.WRONG_INPUT.name(),
-                    Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid ssn: \'" + orgSsn + "\'.")
+                    Messages.WRONG_INPUT.getErrorMessageWithArg(MessageFormat.format(
+                            rb.getString("wrong_input_ssn"), personDTO.getSsn()
+                    ))
             );
+        }
 
         if(personDTO.getRole() != null) {
             personDTO.setRole(personDTO.getRole().toLowerCase());
-            if(!personDTO.getRole().equals("applicant"))
+            if(!personDTO.getRole().equals("applicant")) {
+                ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
                 throw new SystemException(
                         Messages.WRONG_INPUT.name(),
-                        Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid role: \'" + personDTO.getRole() + "\'.")
+                        Messages.WRONG_INPUT.getErrorMessageWithArg(MessageFormat.format(
+                                rb.getString("wrong_input_role"), personDTO.getRole()
+                        ))
                 );
-        } else
+            }
+        } else {
+            ResourceBundle rb = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
             throw new SystemException(
                     Messages.WRONG_INPUT.name(),
-                    Messages.WRONG_INPUT.getErrorMessageWithArg("Invalid role: \'" + personDTO.getRole() + "\'.")
+                    Messages.WRONG_INPUT.getErrorMessageWithArg(MessageFormat.format(
+                            rb.getString("wrong_input_role"), personDTO.getRole()
+                    ))
             );
-
+        }
         personDTO.setName(capitalize(personDTO.getName()));
         personDTO.setSurname(capitalize(personDTO.getSurname()));
         return personDTO;

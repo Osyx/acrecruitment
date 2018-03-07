@@ -5,6 +5,7 @@ import integration.Integration;
 import integration.entity.*;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -208,9 +209,18 @@ public class JobApplication {
                 boolean isAvailable = false;
                 List<AvailabilityDTO> availabilities = new ArrayList<>();
                 for (Availability availability : person.getAvailabilities()) {
-                    if(availability.getToDate().toString().equals(availabilityDTO.getToDate())
-                            && availability.getFromDate().toString().equals(availabilityDTO.getFromDate()))
-                        isAvailable = true;
+                    if(availabilityDTO.getToDate() != null){
+                        if((availability.getToDate().before(Date.valueOf(availabilityDTO.getToDate()))
+                                || availability.getToDate().equals(Date.valueOf(availabilityDTO.getToDate())))
+                                && (availability.getFromDate().after(Date.valueOf(availabilityDTO.getFromDate()))
+                                || availability.getFromDate().equals(Date.valueOf(availabilityDTO.getFromDate())))
+                        )
+                            isAvailable = true;
+                    } else {
+                        if(availability.getFromDate().equals(Date.valueOf(availabilityDTO.getFromDate()))
+                        || availability.getFromDate().after(Date.valueOf(availabilityDTO.getFromDate())))
+                            isAvailable = true;
+                    }
                     availabilities.add(new AvailabilityDTO(
                             availability.getFromDate(),
                             availability.getToDate()
