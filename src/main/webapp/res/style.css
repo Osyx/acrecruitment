@@ -92,3 +92,7 @@ body{
 #popup {
     visibility: visible;
 }
+
+select.form-control:not([size]):not([multiple]) {
+    height: calc(3.25rem + 2px);
+}
