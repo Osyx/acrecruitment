@@ -29,22 +29,13 @@ public enum Messages {
     REGISTER_APPLICATION_ERROR,
     REGISTER_JOB_APP_DTO_ERROR;
 
-    private String errorMessage;
-
-    Messages() {
-        ResourceBundle res = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
-        this.errorMessage = res.getString(name().toLowerCase());
-    }
-
     public String getErrorMessage() {
-        return errorMessage;
+        ResourceBundle res = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+        return res.getString(name().toLowerCase());
     }
 
     public String getErrorMessageWithArg(String arg) {
-        return errorMessage + arg;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        ResourceBundle res = ResourceBundle.getBundle("messages", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+        return res.getString(name().toLowerCase()) + arg;
     }
 }
